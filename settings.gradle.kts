@@ -7,6 +7,15 @@ dependencyResolutionManagement {
     }
 }
 
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://repo.spring.io/milestone")
+        maven("https://repo.spring.io/snapshot")
+    }
+}
+
 rootProject.name = "replace-app"
 
 include("application")

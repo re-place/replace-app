@@ -3,8 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+allprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
