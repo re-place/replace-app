@@ -7,8 +7,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(kotlin("reflect"))
+//    "commonImplementation"(project(":domain"))
+//    "commonImplementation"(kotlin("reflect"))
     /*
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
