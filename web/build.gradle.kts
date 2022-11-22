@@ -1,8 +1,9 @@
 import com.github.gradle.node.npm.task.NpxTask
 
+@Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     id("kotlin-js.base-conventions")
-    id("com.github.node-gradle.node").version("3.0.1")
+    alias(libs.plugins.node)
 }
 
 dependencies {
@@ -10,11 +11,11 @@ dependencies {
 }
 
 tasks.register<NpxTask>("buildAngularApp") {
-    dependsOn("npmInstall")
+    group = "build"
+    dependsOn("npmInstall", "jsBrowserDistribution")
     command.set("ng")
-    args.set(listOf("build", "--prod"))
-    inputs.files("package.json", "package-lock.json", "angular.json", "tsconfig.json", "tsconfig.app.json")
-    inputs.dir("src")
-    inputs.dir(fileTree("node_modules").exclude(".cache"))
+    args.set(listOf("build"))
+    workingDir.set(File("src/angular"))
+    inputs.dir("src/angular")
     outputs.dir("dist")
 }
