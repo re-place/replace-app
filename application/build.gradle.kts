@@ -6,7 +6,12 @@ application {
     mainClass.set("replace.MainKt")
 }
 
+kotlin {
+    jvm()
+}
+
 dependencies {
-    implementation(project(":domain"))
-    runtimeOnly(project(":infrastructure"))
+    jvmMainImplementation(kotlin("reflect"))
+    commonMainImplementation(project(":domain"))
+    commonMainRuntimeOnly(project(":infrastructure"))
 }
