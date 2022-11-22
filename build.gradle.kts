@@ -3,15 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
 
+kotlin {
+    // TODO: Figure out how to only define common target
+    jvm()
+}
+
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.multiplatform")
-    kotlin {
-        jvm()
-        js(IR)
-    }
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
-    }
 }

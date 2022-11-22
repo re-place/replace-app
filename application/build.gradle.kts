@@ -1,17 +1,13 @@
 plugins {
     application
+    id("kotlin-jvm.base-conventions")
 }
 
 application {
     mainClass.set("replace.MainKt")
 }
 
-kotlin {
-    jvm()
-}
-
 dependencies {
-    jvmMainImplementation(kotlin("reflect"))
     commonMainImplementation(project(":domain"))
     commonMainRuntimeOnly(project(":infrastructure"))
 }

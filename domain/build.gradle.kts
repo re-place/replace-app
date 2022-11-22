@@ -1,10 +1,3 @@
-kotlin {
-    js(IR) {
-        browser {
-            binaries.executable()
-        }
-    }
-}
-
-dependencies {
+plugins {
+    id("kotlin-js.base-conventions")
 }
