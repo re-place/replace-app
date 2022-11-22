@@ -21,7 +21,14 @@ pluginManagement {
 
 rootProject.name = "replace-app"
 
-include("application")
-include("domain")
-include("infrastructure")
-include("web")
+sequenceOf(
+    "api",
+    "application",
+    "domain",
+    "infrastructure",
+    "web",
+).forEach {
+    val project = ":replace-$it"
+    include(project)
+    project(project).projectDir = file(it)
+}

@@ -1,5 +1,5 @@
 package replace
 
-fun main() {
-    println("Hello World!")
+fun main(args: Array<String>) {
+    App.backend.start(args)
 }

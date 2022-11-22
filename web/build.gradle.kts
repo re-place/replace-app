@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    commonMainImplementation(project(":domain"))
+    commonMainImplementation(project(":replace-domain"))
 }
 
 tasks.register<NpxTask>("buildAngularApp") {
