@@ -1,5 +1,4 @@
 import {Component} from "@angular/core";
-import {replace} from "replace";
 
 @Component({
     selector: "app-root",
@@ -8,5 +7,4 @@ import {replace} from "replace";
 })
 export class AppComponent {
     title = "app";
-    foo: replace.model.BookableEntity = new replace.model.BookableEntity("foo");
 }
