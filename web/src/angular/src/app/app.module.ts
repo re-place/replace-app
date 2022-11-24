@@ -7,11 +7,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { FormsModule } from "@angular/forms";
 import { LoginComponent } from "./components/login/login.component";
+import { OverviewComponent } from './components/overview/overview.component';
+import { AdministrationComponent } from './components/administration/administration.component';
+import { BookingsComponent } from './components/bookings/bookings.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
+        OverviewComponent,
+        AdministrationComponent,
+        BookingsComponent,
     ],
     imports: [
         BrowserModule,
