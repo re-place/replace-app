@@ -22,7 +22,6 @@ pluginManagement {
 rootProject.name = "replace-app"
 
 sequenceOf(
-    "api",
     "application",
     "domain",
     "infrastructure",

@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    commonMainImplementation(project(":replace-api"))
+    commonMainImplementation(project(":replace-application"))
     commonMainImplementation(project(":replace-domain"))
     jvmMainImplementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     jvmMainImplementation("org.springframework.boot:spring-boot-starter-data-rest")
