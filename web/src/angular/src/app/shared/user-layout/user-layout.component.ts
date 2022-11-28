@@ -23,7 +23,7 @@ export class UserLayoutComponent {
         {
             title: "Reservation",
             route: "/reservation",
-            icon: "calendar",
+            icon: "calendar_today",
         },
     ]
 
