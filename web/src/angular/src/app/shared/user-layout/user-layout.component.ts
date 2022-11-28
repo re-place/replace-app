@@ -1,12 +1,32 @@
 import { Component } from "@angular/core"
 import { NavigationEnd , Router } from "@angular/router"
 
+type MenuItem = {
+    title: string;
+    route: string;
+    icon: string;
+};
+
 @Component({
     selector: "app-user-layout",
     templateUrl: "./user-layout.component.html",
     styleUrls: ["./user-layout.component.scss"],
 })
 export class UserLayoutComponent {
+
+    public menuItems: MenuItem[] = [
+        {
+            title: "Dashboard",
+            route: "/dashboard",
+            icon: "dashboard",
+        },
+        {
+            title: "Reservation",
+            route: "/reservation",
+            icon: "calendar",
+        },
+    ]
+
     public isCollapsed = true
     public currentRoute = ""
 
