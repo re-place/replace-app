@@ -4,5 +4,4 @@ module.exports = {
   semi: false,
   singleQuote: false,
   printWidth: 130,
-  files: ["*.html"],
 }
