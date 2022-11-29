@@ -2,21 +2,18 @@ import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
 
 import { UserLayoutComponent } from "./shared/user-layout/user-layout.component"
-import { DashboardComponent } from "src/app/components/dashboard/dashboard.component"
-import { LoginComponent } from "src/app/components/login/login.component"
-import { ReservationComponent } from "src/app/components/reservation/reservation.component"
 
 import type { Routes } from "@angular/router"
 
 const routes: Routes = [
     {
         path: "",
-        redirectTo: "/login",
+        redirectTo: "/dashboard",
         pathMatch: "full",
     },
     {
         path: "login",
-        component: LoginComponent,
+        loadChildren: () => import("./features/login/login.module").then(m => m.LoginModule),
     },
     {
         path: "",
@@ -24,11 +21,11 @@ const routes: Routes = [
         children: [
             {
                 path: "dashboard",
-                component: DashboardComponent,
+                loadChildren: () => import("./features/dashboard/dashboard.module").then(m => m.DashboardModule),
             },
             {
                 path: "reservation",
-                component: ReservationComponent,
+                loadChildren: () => import("./features/reservation/reservation.module").then(m => m.ReservationModule),
             },
         ],
     },

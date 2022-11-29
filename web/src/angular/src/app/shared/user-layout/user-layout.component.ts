@@ -8,7 +8,7 @@ type MenuItem = {
 };
 
 @Component({
-    selector: "app-user-layout",
+    selector: "user-layout",
     templateUrl: "./user-layout.component.html",
     styleUrls: ["./user-layout.component.scss"],
 })

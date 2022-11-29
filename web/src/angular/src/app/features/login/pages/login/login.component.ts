@@ -1,19 +1,19 @@
 import { Component } from "@angular/core"
 
-import {AppService} from "src/app/services/app.service"
+import { AuthService } from "src/app/core/services/auth.service"
 
 @Component({
     selector: "app-login",
     templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.scss"],
+    styles: [],
 })
 export class LoginComponent {
     user = ""
     pass = ""
 
-    constructor(private readonly appService: AppService) {}
+    constructor(private readonly authService: AuthService) {}
 
     login() {
-        this.appService.login(this.user, this.pass)
+        this.authService.login(this.user, this.pass)
     }
 }
