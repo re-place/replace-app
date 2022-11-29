@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
-import {AppService} from 'src/app/services/app.service';
+import { Component } from "@angular/core"
+
+import {AppService} from "src/app/services/app.service"
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: "app-login",
+    templateUrl: "./login.component.html",
+    styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent {
-    user: string = '';
-    pass: string = '';
+    user = ""
+    pass = ""
 
-    constructor(private appService: AppService) {}
+    constructor(private readonly appService: AppService) {}
 
     login() {
-        this.appService.login(this.user, this.pass);
+        this.appService.login(this.user, this.pass)
     }
 }

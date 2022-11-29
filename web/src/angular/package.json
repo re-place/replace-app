@@ -6,10 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
+    "@angular-eslint/builder": "^15.1.0",
     "@angular/animations": "^15.0.0",
     "@angular/cdk": "^15.0.0",
     "@angular/common": "^15.0.0",
@@ -27,10 +29,19 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.0.0",
+    "@angular-eslint/builder": "15.1.0",
+    "@angular-eslint/eslint-plugin": "15.1.0",
+    "@angular-eslint/eslint-plugin-template": "15.1.0",
+    "@angular-eslint/schematics": "15.1.0",
+    "@angular-eslint/template-parser": "15.1.0",
     "@angular/cli": "~15.0.0",
     "@angular/compiler-cli": "^15.0.0",
     "@types/jasmine": "~4.3.0",
+    "@typescript-eslint/eslint-plugin": "5.44.0",
+    "@typescript-eslint/parser": "5.44.0",
     "autoprefixer": "^10.4.13",
+    "eslint": "^8.28.0",
+    "eslint-plugin-import": "^2.26.0",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",

@@ -1,6 +1,9 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { AppService } from "./services/app.service";
+import { Component } from "@angular/core"
+import { Router } from "@angular/router"
+
+import { AppService } from "./services/app.service"
+
+import type { OnInit } from "@angular/core"
 
 @Component({
     selector: "app-root",
@@ -8,13 +11,13 @@ import { AppService } from "./services/app.service";
     styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-    title = "app";
+    title = "app"
 
-    constructor(public appService: AppService, private router: Router) {}
+    constructor(public appService: AppService, private readonly router: Router) {}
 
     ngOnInit(): void {
         if (!this.appService.isLoggedIn) {
-            this.router.navigate(["login"]);
+            this.router.navigate(["login"])
         }
     }
 }
