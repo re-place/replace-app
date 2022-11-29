@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
 
-import { UserLayoutComponent } from "./common/layouts/user-layout/user-layout.component"
+import { UserLayoutComponent } from "./shared/user-layout/user-layout.component"
 import { DashboardComponent } from "src/app/components/dashboard/dashboard.component"
 import { LoginComponent } from "src/app/components/login/login.component"
 import { ReservationComponent } from "src/app/components/reservation/reservation.component"

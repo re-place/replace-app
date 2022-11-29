@@ -1,5 +1,11 @@
-import { Component } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { NavigationEnd , Router } from "@angular/router"
+
+type MenuItem = {
+    title: string;
+    route: string;
+    icon: string;
+};
 
 @Component({
     selector: "app-user-layout",
@@ -7,6 +13,22 @@ import { NavigationEnd , Router } from "@angular/router"
     styleUrls: ["./user-layout.component.scss"],
 })
 export class UserLayoutComponent {
+
+    @Input() public class = ""
+
+    public menuItems: MenuItem[] = [
+        {
+            title: "Dashboard",
+            route: "/dashboard",
+            icon: "dashboard",
+        },
+        {
+            title: "Reservation",
+            route: "/reservation",
+            icon: "calendar_today",
+        },
+    ]
+
     public isCollapsed = true
     public currentRoute = ""
 
