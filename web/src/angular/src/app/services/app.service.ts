@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
+import { Injectable } from "@angular/core"
+import { Router } from "@angular/router"
 
 @Injectable({
     providedIn: "root",
@@ -7,11 +7,11 @@ import { Router } from "@angular/router";
 export class AppService {
     constructor(private router: Router) {}
 
-    isLoggedIn: boolean = false;
+    isLoggedIn: boolean = false
 
     login(user: string, pass: string) {
         // send login request
-        this.isLoggedIn = true;
-        this.router.navigate(["dashboard"]);
+        this.isLoggedIn = true
+        this.router.navigate(["dashboard"])
     }
 }

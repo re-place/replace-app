@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { Router, NavigationEnd } from "@angular/router";
+import { Component } from "@angular/core"
+import { NavigationEnd, Router } from "@angular/router"
 
 @Component({
     selector: "app-user-layout",
@@ -7,22 +7,22 @@ import { Router, NavigationEnd } from "@angular/router";
     styleUrls: ["./user-layout.component.scss"],
 })
 export class UserLayoutComponent {
-    public isCollapsed = true;
-    public currentRoute = "";
+    public isCollapsed = true
+    public currentRoute = ""
 
     constructor(private router: Router) {
-        this.currentRoute = this.router.url;
+        this.currentRoute = this.router.url
         this.router.events.subscribe((event) => {
             if (!(event instanceof NavigationEnd)) {
-                return;
+                return
             }
 
-            this.currentRoute = event.url;
-            this.isCollapsed = true;
-        });
+            this.currentRoute = event.url
+            this.isCollapsed = true
+        })
     }
 
     public toggleCollapsed(): void {
-        this.isCollapsed = !this.isCollapsed;
+        this.isCollapsed = !this.isCollapsed
     }
 }
