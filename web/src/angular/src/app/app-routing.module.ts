@@ -13,7 +13,7 @@ const routes: Routes = [
     },
     {
         path: "login",
-        loadChildren: () => import("./features/login/login.module").then(m => m.LoginModule),
+        loadChildren: () => import("./features/login/login.module").then((m) => m.LoginModule),
     },
     {
         path: "",
@@ -21,11 +21,11 @@ const routes: Routes = [
         children: [
             {
                 path: "dashboard",
-                loadChildren: () => import("./features/dashboard/dashboard.module").then(m => m.DashboardModule),
+                loadChildren: () => import("./features/dashboard/dashboard.module").then((m) => m.DashboardModule),
             },
             {
                 path: "reservation",
-                loadChildren: () => import("./features/reservation/reservation.module").then(m => m.ReservationModule),
+                loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),
             },
         ],
     },

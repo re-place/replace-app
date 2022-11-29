@@ -6,7 +6,7 @@ module.exports = {
   printWidth: 130,
   overrides: [
     {
-      files: "*.json",
+      files: ["*.js", ".json"],
       options: {
         tabWidth: 2,
       },
