@@ -8,5 +8,7 @@ plugins {
 dependencies {
     commonMainImplementation(project(":replace-domain"))
     jvmMainApi(libs.guice)
+    jvmMainApi(libs.logging.api)
+    jvmMainImplementation(libs.logging.core)
     jvmMainImplementation(libs.kotlinx.serialization)
 }
