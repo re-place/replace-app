@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { NavigationEnd, Router } from "@angular/router"
+import { NavigationEnd , Router } from "@angular/router"
 
 @Component({
     selector: "app-user-layout",
@@ -10,7 +10,7 @@ export class UserLayoutComponent {
     public isCollapsed = true
     public currentRoute = ""
 
-    constructor(private router: Router) {
+    constructor(private readonly router: Router) {
         this.currentRoute = this.router.url
         this.router.events.subscribe((event) => {
             if (!(event instanceof NavigationEnd)) {

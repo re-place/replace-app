@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+
 import {AppService} from "src/app/services/app.service"
 
 @Component({
@@ -7,10 +8,10 @@ import {AppService} from "src/app/services/app.service"
     styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent {
-    user: string = ""
-    pass: string = ""
+    user = ""
+    pass = ""
 
-    constructor(private appService: AppService) {}
+    constructor(private readonly appService: AppService) {}
 
     login() {
         this.appService.login(this.user, this.pass)

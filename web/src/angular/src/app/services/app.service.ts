@@ -5,9 +5,9 @@ import { Router } from "@angular/router"
     providedIn: "root",
 })
 export class AppService {
-    constructor(private router: Router) {}
+    constructor(private readonly router: Router) {}
 
-    isLoggedIn: boolean = false
+    isLoggedIn = false
 
     login(user: string, pass: string) {
         // send login request
