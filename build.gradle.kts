@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.shadow)
     id("kotlin-jvm.base-conventions")
     application
 }
@@ -15,6 +16,7 @@ application {
 }
 
 dependencies {
-    commonMainImplementation(project(":replace-application"))
-    commonMainRuntimeOnly(project(":replace-infrastructure"))
+    jvmMainImplementation(project(":replace-application"))
+    jvmMainImplementation(project(":replace-infrastructure"))
+    commonMainRuntimeOnly(project(":replace-web"))
 }
