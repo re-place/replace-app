@@ -8,8 +8,10 @@ dependencies {
     commonMainImplementation(project(":replace-domain"))
     jvmMainImplementation(libs.kotlinx.coroutines)
     jvmMainImplementation(libs.kotlinx.serialization)
+    jvmMainImplementation(libs.ktor.serialization)
+    jvmMainImplementation(libs.ktor.server.auth)
     jvmMainImplementation(libs.ktor.server.content.negotiation)
     jvmMainImplementation(libs.ktor.server.netty)
     jvmMainImplementation(libs.ktor.server.sessions)
-    jvmMainImplementation(libs.ktor.serialization)
+    jvmMainImplementation(libs.ktor.server.status.pages)
 }
