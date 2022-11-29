@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { NavigationEnd , Router } from "@angular/router"
 
 type MenuItem = {
@@ -13,6 +13,8 @@ type MenuItem = {
     styleUrls: ["./user-layout.component.scss"],
 })
 export class UserLayoutComponent {
+
+    @Input() public class = ""
 
     public menuItems: MenuItem[] = [
         {

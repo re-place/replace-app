@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component } from "@angular/core"
 
 @Component({
     selector: "user-card",
@@ -6,5 +6,5 @@ import { Component } from "@angular/core";
     styleUrls: ["./user-card.component.scss"],
 })
 export class UserCardComponent {
-    public name = "Max Mustermann";
+    public name = "Max Mustermann"
 }
