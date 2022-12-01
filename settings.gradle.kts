@@ -25,6 +25,7 @@ sequenceOf(
     "application",
     "domain",
     "infrastructure",
+    "protobuf",
     "web",
 ).forEach {
     val project = ":replace-$it"

@@ -1,0 +1,8 @@
+openapi: "3.0.3"
+info:
+  title: "replace_app API"
+  description: "replace_app API"
+  version: "1.0.0"
+servers:
+- url: "https://replace_app"
+paths: {}
