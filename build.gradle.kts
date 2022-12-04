@@ -18,5 +18,13 @@ application {
 dependencies {
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-infrastructure"))
-    commonMainRuntimeOnly(project(":replace-web"))
+//    commonMainRuntimeOnly(project(":replace-web"))
 }
+
+//tasks {
+//    register<JavaExec>("runBackendBare") {
+//        group = "application"
+//        description = "Runs the backend without the frontend"
+//        classpath = sourceSets["main"].runtimeClasspath
+//    }
+//}
