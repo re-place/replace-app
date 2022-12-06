@@ -1,4 +1,4 @@
-name: Gradle Check
+name: ktlint-check
 on:
   workflow_dispatch:
   pull_request:
