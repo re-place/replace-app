@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.shadow)
     id("kotlin-jvm.base-conventions")
     application
@@ -9,6 +10,7 @@ plugins {
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.multiplatform")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }
 
 application {
