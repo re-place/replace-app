@@ -24,9 +24,12 @@ fun Application.routeAllRepositories(
         }
         route("/api/bookable-entity") {
             routeRepository(bookableEntityRepository)
+            bookableEntityPost(bookableEntityRepository)
+
         }
         route("/api/booking") {
             routeRepository(bookingRepository)
+            bookingPost(bookingRepository)
         }
     }
 }
