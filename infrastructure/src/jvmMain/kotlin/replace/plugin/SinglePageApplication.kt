@@ -1,15 +1,28 @@
 package replace.plugin
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.http.content.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.util.*
-import io.ktor.util.pipeline.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.BaseApplicationPlugin
+import io.ktor.server.application.call
+import io.ktor.server.auth.authenticate
+import io.ktor.server.http.content.HttpStatusCodeContent
+import io.ktor.server.http.content.files
+import io.ktor.server.http.content.resolveResource
+import io.ktor.server.http.content.resources
+import io.ktor.server.http.content.static
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.acceptItems
+import io.ktor.server.request.uri
+import io.ktor.server.response.ApplicationSendPipeline
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondFile
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.routing
+import io.ktor.util.AttributeKey
+import io.ktor.util.pipeline.PipelineContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Path
@@ -74,9 +87,13 @@ class SinglePageApplication(private val configuration: Configuration) {
         val requestUrl = call.request.uri
         val regex = configuration.ignoreIfContains
         val stop by lazy {
-            !((regex == null || !requestUrl.contains(regex))
-                && (requestUrl.startsWith(configuration.spaRoute)
-                || requestUrl.startsWith("/${configuration.spaRoute}")))
+            !(
+                (regex == null || !requestUrl.contains(regex)) &&
+                    (
+                        requestUrl.startsWith(configuration.spaRoute) ||
+                            requestUrl.startsWith("/${configuration.spaRoute}")
+                        )
+                )
         }
         val is404 by lazy {
             when (message) {
