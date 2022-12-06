@@ -1,19 +1,18 @@
 import { Component, Input } from "@angular/core"
-import { NavigationEnd , Router } from "@angular/router"
+import { NavigationEnd, Router } from "@angular/router"
 
 type MenuItem = {
-    title: string;
-    route: string;
-    icon: string;
-};
+    title: string
+    route: string
+    icon: string
+}
 
 @Component({
-    selector: "app-user-layout",
+    selector: "user-layout",
     templateUrl: "./user-layout.component.html",
-    styleUrls: ["./user-layout.component.scss"],
+    styles: [],
 })
 export class UserLayoutComponent {
-
     @Input() public class = ""
 
     public menuItems: MenuItem[] = [

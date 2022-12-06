@@ -4,7 +4,7 @@ import { Router } from "@angular/router"
 @Injectable({
     providedIn: "root",
 })
-export class AppService {
+export class AuthService {
     constructor(private readonly router: Router) {}
 
     isLoggedIn = false
