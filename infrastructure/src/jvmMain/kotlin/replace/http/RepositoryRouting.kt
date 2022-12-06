@@ -16,16 +16,9 @@ fun Application.routeAllRepositories(
     bookingRepository: Repository<Booking>,
 ) {
     routing {
-        get("/foo") {
-            call.respond(Booking(listOf()).also { it._id = ObjectId() })
-        }
-        get("/foos") {
-            call.respond(listOf(Booking(listOf()).also { it._id = ObjectId() }))
-        }
         route("/api/bookable-entity") {
             routeRepository(bookableEntityRepository)
             bookableEntityPost(bookableEntityRepository)
-
         }
         route("/api/booking") {
             routeRepository(bookingRepository)
@@ -37,7 +30,6 @@ fun Application.routeAllRepositories(
 inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Repository<T>) {
     get {
         try {
-            // .toTypedArray() is necessary because of a bug with reified inline functions and coroutines
             call.respond(repository.getAll().toTypedArray())
         } catch (e: Exception) {
             e.printStackTrace()

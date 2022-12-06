@@ -17,10 +17,6 @@ class MongoRepository<T : ObjectWithId>(private val collection: CoroutineCollect
     override suspend fun deleteOne(id: String): Boolean =
         collection.deleteOneById(id).deletedCount > 0
 
-    override suspend fun getAll(): List<T> {
-        println("getAll 1")
-        val result = collection.find().toList()
-        println("getAll: $result")
-        return result
-    }
+    override suspend fun getAll(): List<T> =
+        collection.find().toList()
 }
