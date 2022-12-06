@@ -28,4 +28,3 @@ fun Route.bookableEntityPost(repository: Repository<BookableEntity>) {
         }
     }
 }
-

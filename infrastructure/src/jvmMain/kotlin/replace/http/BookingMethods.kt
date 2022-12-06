@@ -28,4 +28,3 @@ fun Route.bookingPost(repository: Repository<Booking>) {
         }
     }
 }
-
