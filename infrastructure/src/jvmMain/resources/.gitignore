@@ -1,2 +1,3 @@
 ### Ignore build files ###
 /public/*
+application.conf

@@ -6,6 +6,7 @@ extensions.getByName<KotlinMultiplatformExtension>("kotlin").apply {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "17"
+                freeCompilerArgs = listOf("-Xcontext-receivers")
             }
         }
     }
