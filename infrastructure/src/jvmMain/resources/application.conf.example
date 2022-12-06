@@ -1,0 +1,7 @@
+database: {
+    user: "user"
+    password: "password"
+    host: "localhost"
+    port: "27017"
+    database: "replace-app"
+}
