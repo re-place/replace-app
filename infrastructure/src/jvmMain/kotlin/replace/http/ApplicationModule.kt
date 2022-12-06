@@ -1,4 +1,4 @@
-package replace
+package replace.http
 
 import com.typesafe.config.ConfigFactory
 import io.ktor.serialization.kotlinx.json.*
@@ -7,7 +7,6 @@ import io.ktor.server.config.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.Json.Default.serializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -40,7 +39,8 @@ fun Application.applicationModule() {
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)
 
-    configureRouting(
+    routeAllRepositories(
+        bookableEntityRepository = MongoRepository(db.getCollection()),
         bookingRepository = MongoRepository(db.getCollection()),
     )
 }

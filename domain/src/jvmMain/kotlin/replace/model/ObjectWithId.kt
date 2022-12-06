@@ -7,5 +7,5 @@ import org.bson.types.ObjectId
 @Serializable
 sealed class ObjectWithId {
     @Contextual
-    lateinit var id: ObjectId
+    var _id: ObjectId? = null
 }

@@ -1,25 +1,27 @@
 package replace.datastore
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import org.litote.kmongo.coroutine.CoroutineCollection
+import replace.model.ObjectWithId
 
-class MongoRepository<T : Any>(private val collection: CoroutineCollection<T>) : Repository<T> {
-    override suspend fun insertOne(item: T): T? {
-        return if (collection.insertOne(item).wasAcknowledged()) {
-            return item
-        } else null
-    }
+class MongoRepository<T : ObjectWithId>(private val collection: CoroutineCollection<T>) : Repository<T> {
+    override suspend fun insertOne(item: T): T? =
+        if (collection.insertOne(item).wasAcknowledged()) item else null
 
-    override suspend fun updateOne(item: T): T? {
-        TODO("Not yet implemented")
-    }
+    // TODO: Should not replace but merge document with existing in DB
+    override suspend fun updateOne(item: T): T? =
+        item._id?.let { id -> if (collection.replaceOneById(id, item).modifiedCount > 0) item else null }
 
-    override suspend fun getOne(id: String): T? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getOne(id: String): T? =
+        collection.findOneById(id)
 
-    override fun getAll(): Flow<T> {
-        return emptyFlow()
+    override suspend fun deleteOne(id: String): Boolean =
+        collection.deleteOneById(id).deletedCount > 0
+
+    override suspend fun getAll(): List<T> {
+        println("getAll 1")
+        val result = collection.find().toList()
+        println("getAll: $result")
+        return result
     }
 }

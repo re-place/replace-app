@@ -3,6 +3,7 @@ package replace
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import replace.http.applicationModule
 
 object KtorBackend : Backend {
     override fun start(args: Array<String>) {
