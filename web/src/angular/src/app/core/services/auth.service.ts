@@ -19,14 +19,8 @@ export class AuthService {
 
     public async login(username: string, password: string) {
         this.currentUser = await firstValueFrom(this.http.post<User>("/api/login", { username, password }))
-        const intendedUrl = this.router.getCurrentNavigation()?.extras?.state?.["intendedUrl"]
 
-        if (typeof intendedUrl === "string") {
-            this.router.navigateByUrl(intendedUrl)
-            return
-        }
-
-        this.router.navigateByUrl("/")
+        return this.currentUser
     }
 
     public async isAuthenticated(): Promise<boolean> {
