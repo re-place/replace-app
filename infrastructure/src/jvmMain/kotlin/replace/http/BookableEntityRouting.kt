@@ -10,7 +10,7 @@ import io.ktor.server.routing.post
 import replace.datastore.Repository
 import replace.model.BookableEntity
 
-fun Route.bookableEntityPost(repository: Repository<BookableEntity>) {
+fun Route.routeBooking(repository: Repository<BookableEntity>) {
     post {
         val item = try {
             call.receive<BookableEntity>()

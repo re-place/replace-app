@@ -10,7 +10,7 @@ import io.ktor.server.routing.post
 import replace.datastore.Repository
 import replace.model.Booking
 
-fun Route.bookingPost(repository: Repository<Booking>) {
+fun Route.routeBooking(repository: Repository<Booking>) {
     post {
         val item = try {
             call.receive<Booking>()
