@@ -15,6 +15,9 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 import replace.datastore.MongoRepository
+import replace.datastore.MongoUserRepository
+import replace.model.BookableEntity
+import replace.model.Booking
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
 
@@ -41,10 +44,11 @@ fun Application.applicationModule() {
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)
 
-    routeAllRepositories(
-        bookableEntityRepository = MongoRepository(db.getCollection()),
-        bookingRepository = MongoRepository(db.getCollection()),
-    )
+    val bookableEntityRepository = MongoRepository<BookableEntity>(db.getCollection())
+    val bookingRepository = MongoRepository<Booking>(db.getCollection())
+    val userRepository = MongoUserRepository(db.getCollection())
+    routeAllRepositories(bookableEntityRepository, bookingRepository, userRepository)
+    authenticationModule(userRepository)
 }
 
 fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
@@ -54,6 +58,8 @@ fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
     val password = config.tryGetString("ktor.database.password") ?: "password"
     val database = config.tryGetString("ktor.database.database") ?: "replace-app"
 
-    val client = KMongo.createClient("mongodb://$user:$password@$host:$port").coroutine
+    // TODO: Should we just use a blank password by default for development
+//    val client = KMongo.createClient("mongodb://$user:$password@$host:$port").coroutine
+    val client = KMongo.createClient().coroutine
     return client.getDatabase(database)
 }

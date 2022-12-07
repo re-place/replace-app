@@ -11,7 +11,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.bson.types.ObjectId
 import replace.datastore.Repository
+import replace.datastore.UserRepository
 import replace.model.BookableEntity
 import replace.model.Booking
 import replace.model.ObjectWithId
@@ -19,6 +21,7 @@ import replace.model.ObjectWithId
 fun Application.routeAllRepositories(
     bookableEntityRepository: Repository<BookableEntity>,
     bookingRepository: Repository<Booking>,
+    userRepository: UserRepository,
 ) {
     routing {
         route("/api/bookable-entity") {
@@ -26,6 +29,9 @@ fun Application.routeAllRepositories(
         }
         route("/api/booking") {
             routeRepository(bookingRepository)
+        }
+        route("/api/user") {
+            routeRepository(userRepository)
         }
     }
 }
@@ -40,7 +46,10 @@ inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Reposito
     }
     get("{id}") {
         val id = call.parameters["id"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
-        val dbResult = repository.getOne(id)
+        if (!ObjectId.isValid(id)) {
+            return@get call.respondText("Id $id is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+        }
+        val dbResult = repository.findOneById(ObjectId(id))
         if (dbResult == null) {
             call.respondText("No document with id $id", status = HttpStatusCode.NotFound)
         } else {
