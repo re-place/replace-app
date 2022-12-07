@@ -1,6 +1,8 @@
 import { Component, Input } from "@angular/core"
 import { NavigationEnd, Router } from "@angular/router"
 
+import { AuthService } from "src/app/core/services/auth.service"
+
 type MenuItem = {
     title: string
     route: string
@@ -30,8 +32,9 @@ export class UserLayoutComponent {
 
     public isCollapsed = true
     public currentRoute = ""
+    public currentUserName = ""
 
-    constructor(private readonly router: Router) {
+    constructor(private readonly router: Router, private readonly authService: AuthService) {
         this.currentRoute = this.router.url
         this.router.events.subscribe((event) => {
             if (!(event instanceof NavigationEnd)) {
@@ -41,9 +44,15 @@ export class UserLayoutComponent {
             this.currentRoute = event.url
             this.isCollapsed = true
         })
+
+        this.currentUserName = `${this.authService.currentUser?.firstName} ${this.authService.currentUser?.lastName}`
     }
 
     public toggleCollapsed(): void {
         this.isCollapsed = !this.isCollapsed
+    }
+
+    public logout(): void {
+        this.authService.logout()
     }
 }

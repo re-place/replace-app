@@ -1,4 +1,5 @@
-import { Component } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
+import { Router } from "@angular/router"
 
 import { AuthService } from "src/app/core/services/auth.service"
 
@@ -7,13 +8,26 @@ import { AuthService } from "src/app/core/services/auth.service"
     templateUrl: "./login.component.html",
     styles: [],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     user = ""
-    pass = ""
+    password = ""
+    loginError: string | undefined = undefined
 
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
     login() {
-        this.authService.login(this.user, this.pass)
+        this.authService.login(this.user, this.password).catch((reason) => {
+            this.loginError = reason.error
+        })
+    }
+
+    ngOnInit(): void {
+        this.authService.isAuthenticated().then((isAuthenticated) => {
+            if (!isAuthenticated) {
+                return
+            }
+
+            this.router.navigateByUrl("/")
+        })
     }
 }

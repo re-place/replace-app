@@ -4,15 +4,15 @@ import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import io.ktor.server.auth.Principal
 
 @Serializable
-data class LoginSession(
-    val userId: String,
-    val userName: String,
+data class UserSession(
+    val userId: String?,
     val startUtcFormatted: String = OffsetDateTime.now(ZoneOffset.UTC).toString(),
-)
+) : Principal
 
-val LoginSession.startUtc: Instant
+val UserSession.startUtc: Instant
     get() = OffsetDateTime.parse(startUtcFormatted).toInstant()
 
-fun User.createSession(): LoginSession = LoginSession(userId = _id.toString(), userName = userName)
+fun User.createSession(): UserSession = UserSession(userId = _id.toString())

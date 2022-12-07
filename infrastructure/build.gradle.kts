@@ -1,9 +1,12 @@
 @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     id("kotlin-jvm.base-conventions")
+    kotlin("plugin.serialization")
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-auth-jvm:2.1.3")
+    implementation("io.ktor:ktor-server-core-jvm:2.1.3")
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-domain"))
     jvmMainImplementation(libs.kotlinx.coroutines)

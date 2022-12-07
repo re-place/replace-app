@@ -3,6 +3,7 @@ package replace.http
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
+import io.ktor.server.auth.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -24,14 +25,16 @@ fun Application.routeAllRepositories(
     userRepository: UserRepository,
 ) {
     routing {
-        route("/api/bookable-entity") {
-            routeRepository(bookableEntityRepository)
-        }
-        route("/api/booking") {
-            routeRepository(bookingRepository)
-        }
-        route("/api/user") {
-            routeRepository(userRepository)
+        authenticate {
+            route("/api/bookable-entity") {
+                routeRepository(bookableEntityRepository)
+            }
+            route("/api/booking") {
+                routeRepository(bookingRepository)
+            }
+            route("/api/user") {
+                routeRepository(userRepository)
+            }
         }
     }
 }

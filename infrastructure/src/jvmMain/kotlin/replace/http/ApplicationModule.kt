@@ -1,6 +1,7 @@
 package replace.http
 
 import com.typesafe.config.ConfigFactory
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -24,6 +25,14 @@ import replace.serializer.ObjectIdSerializer
 fun Application.applicationModule() {
     install(CORS) {
         anyHost() // TODO: Don't do this in production
+        allowHeader("SESSION_TOKEN")
+        allowHeader(HttpHeaders.ContentType)
+        exposeHeader("SESSION_TOKEN")
+        exposeHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Put)
     }
     install(ContentNegotiation) {
         json(
@@ -36,10 +45,7 @@ fun Application.applicationModule() {
             }
         )
     }
-    install(SinglePageApplication) {
-        folderPath = "static"
-        ignoreIfContains = Regex("^/api.*$")
-    }
+
 
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)
@@ -47,19 +53,31 @@ fun Application.applicationModule() {
     val bookableEntityRepository = MongoRepository<BookableEntity>(db.getCollection())
     val bookingRepository = MongoRepository<Booking>(db.getCollection())
     val userRepository = MongoUserRepository(db.getCollection())
-    routeAllRepositories(bookableEntityRepository, bookingRepository, userRepository)
+    sessionModule()
     authenticationModule(userRepository)
+
+    install(SinglePageApplication) {
+        folderPath = "static"
+        ignoreIfContains = Regex("^/api.*$")
+    }
+
+    routeAllRepositories(bookableEntityRepository, bookingRepository, userRepository)
 }
 
 fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
-    val host = config.tryGetString("ktor.database.host") ?: "localhost"
-    val port = config.tryGetString("ktor.database.port") ?: "27017"
-    val user = config.tryGetString("ktor.database.user") ?: "admin"
-    val password = config.tryGetString("ktor.database.password") ?: "password"
-    val database = config.tryGetString("ktor.database.database") ?: "replace-app"
+    val host = config.tryGetString("database.host") ?: "localhost"
+    val port = config.tryGetString("database.port") ?: "27017"
+    val user = config.tryGetString("database.user") ?: ""
+    val password = config.tryGetString("database.password")?.prependIndent(":") ?: ""
+    val database = config.tryGetString("database.database") ?: "replace-app"
 
-    // TODO: Should we just use a blank password by default for development
-//    val client = KMongo.createClient("mongodb://$user:$password@$host:$port").coroutine
-    val client = KMongo.createClient().coroutine
+    var credentials = "$user$password"
+
+    if (credentials.isNotBlank()) {
+        credentials += "@"
+    }
+
+    val client = KMongo.createClient("mongodb://$credentials$host:$port").coroutine
+
     return client.getDatabase(database)
 }

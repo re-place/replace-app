@@ -1,5 +1,6 @@
 package replace.plugin
 
+import io.ktor.client.engine.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -138,6 +139,6 @@ class SinglePageApplication(private val configuration: Configuration) {
 
     class AuthConfiguration(
         vararg var configurations: String? = arrayOf(null),
-        var optional: Boolean = false,
+        var optional: Boolean = false
     )
 }

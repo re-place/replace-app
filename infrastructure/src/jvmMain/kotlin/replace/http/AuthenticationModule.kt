@@ -1,25 +1,32 @@
 package replace.http
 
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.routing.routing
-import io.ktor.server.sessions.Sessions
-import io.ktor.server.sessions.cookie
-import io.ktor.server.sessions.directorySessionStorage
-import io.ktor.server.sessions.maxAge
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import replace.datastore.UserRepository
-import replace.model.LoginSession
-import java.io.File
-import kotlin.time.Duration.Companion.hours
+import replace.model.UserSession
 
 fun Application.authenticationModule(
     userRepository: UserRepository,
 ) {
-    install(Sessions) {
-        cookie<LoginSession>("LOGIN_SESSION", directorySessionStorage(File(".sessions"), cached = false)) {
-            cookie.maxAge = 2.hours
+    authentication {
+        session<UserSession> {
+            validate { session ->
+                if (session.userId !== null) {
+                    session
+                } else {
+                    null
+                }
+            }
+
+            challenge {
+                call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
+            }
         }
     }
+
     routing {
         routeAuthentication(userRepository)
     }

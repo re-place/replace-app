@@ -26,20 +26,18 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
-import io.ktor.server.sessions.clear
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
-import io.ktor.server.sessions.set
+import io.ktor.server.sessions.*
 import org.bson.types.ObjectId
 import replace.datastore.UserRepository
-import replace.model.LoginSession
+import replace.model.UserSession
 import replace.model.User
 import replace.model.createSession
+import replace.dto.LoginRequest
 
 fun Route.routeAuthentication(userRepository: UserRepository) {
     get("/api/current-user") {
-        val session = call.sessions.get<LoginSession>()
-        if (session == null) {
+        val session = call.sessions.get<UserSession>()
+        if (session?.userId === null) {
             call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
             return@get
         }
@@ -54,28 +52,29 @@ fun Route.routeAuthentication(userRepository: UserRepository) {
         }
         call.respond(user)
     }
-    post("/api/sign-out") {
-        call.sessions.clear<LoginSession>()
+    post("/api/logout") {
+        call.sessions.clear<UserSession>()
         call.respond(HttpStatusCode.OK)
     }
-    post("/api/sign-in") {
-        if (call.sessions.get<LoginSession>() != null) {
+    post("/api/login") {
+        if (call.sessions.get<UserSession>()?.userId != null) {
             call.respondText("Already authenticated", status = HttpStatusCode.BadRequest)
             return@post
         }
+
         val user = try {
-            call.receive<User>()
+            call.receive<LoginRequest>()
         } catch (e: Exception) {
             return@post call.respondText(
                 "Could not sign in: ${e.message} caused by ${e.cause?.message}",
                 status = HttpStatusCode.BadRequest
             )
         }
-        val userFromDb = userRepository.findByUserName(user.userName)
+        val userFromDb = userRepository.findByUsername(user.username)
         when {
             userFromDb == null -> {
                 call.respondText(
-                    "User ${user.userName} does not exist",
+                    "User ${user.username} does not exist",
                     status = HttpStatusCode.BadRequest
                 )
             }
@@ -83,14 +82,13 @@ fun Route.routeAuthentication(userRepository: UserRepository) {
                 // TODO: Replace with OAuth
                 // Never store plaintext passwords in a production DB
                 call.respondText(
-                    "Wrong password for user ${user.userName}",
+                    "Wrong password for user ${user.username}",
                     status = HttpStatusCode.BadRequest
                 )
             }
             else -> {
-                val session = userFromDb.createSession()
-                call.sessions.set(session)
-                call.respond(session)
+                call.sessions.set(userFromDb.createSession())
+                call.respond(userFromDb)
             }
         }
     }

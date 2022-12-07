@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { Component, Input } from "@angular/core"
 
 @Component({
     selector: "user-card",
@@ -6,5 +6,5 @@ import { Component } from "@angular/core"
     styles: [],
 })
 export class UserCardComponent {
-    public name = "Max Mustermann"
+    @Input() public name!: string
 }

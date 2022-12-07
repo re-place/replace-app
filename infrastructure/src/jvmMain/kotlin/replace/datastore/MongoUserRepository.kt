@@ -6,6 +6,6 @@ import replace.model.User
 
 class MongoUserRepository(collection: CoroutineCollection<User>) :
     MongoRepository<User>(collection), UserRepository {
-    override suspend fun findByUserName(userName: String): User? =
-        collection.findOne(User::userName eq userName)
+    override suspend fun findByUsername(username: String): User? =
+        collection.findOne(User::username eq username)
 }
