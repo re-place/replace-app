@@ -26,13 +26,16 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
-import io.ktor.server.sessions.*
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import org.bson.types.ObjectId
 import replace.datastore.UserRepository
-import replace.model.UserSession
-import replace.model.User
-import replace.model.createSession
 import replace.dto.LoginRequest
+import replace.model.User
+import replace.model.UserSession
+import replace.model.createSession
 
 fun Route.routeAuthentication(userRepository: UserRepository) {
     get("/api/current-user") {

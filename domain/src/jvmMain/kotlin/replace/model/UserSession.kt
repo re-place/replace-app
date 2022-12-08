@@ -1,10 +1,10 @@
 package replace.model
 
+import io.ktor.server.auth.Principal
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import io.ktor.server.auth.Principal
 
 @Serializable
 data class UserSession(

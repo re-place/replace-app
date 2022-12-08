@@ -1,7 +1,8 @@
 package replace.http
 
 import com.typesafe.config.ConfigFactory
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -45,7 +46,6 @@ fun Application.applicationModule() {
             }
         )
     }
-
 
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)

@@ -1,11 +1,14 @@
 package replace.http
 
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
-import replace.datastore.UserRepository
+import io.ktor.server.application.Application
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.directorySessionStorage
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.header
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import replace.model.UserSession
 import java.io.File
 
