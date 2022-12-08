@@ -138,6 +138,6 @@ class SinglePageApplication(private val configuration: Configuration) {
 
     class AuthConfiguration(
         vararg var configurations: String? = arrayOf(null),
-        var optional: Boolean = false
+        var optional: Boolean = false,
     )
 }
