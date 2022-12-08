@@ -1,10 +1,11 @@
 package replace.http
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.session
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.routing
 import replace.datastore.UserRepository
 import replace.model.UserSession
 
