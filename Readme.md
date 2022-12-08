@@ -16,6 +16,7 @@
 - Java 17
 - Yarn 2
 - Node
+- Angular CLI
 
 ### Setup
 
