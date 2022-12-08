@@ -4,7 +4,8 @@
 
 - Backend: [Ktor](https://ktor.io/)
 - Datatabase: [MongoDB](https://www.mongodb.com)
-- Frontend: [Angular](https://angular.io/)
+- Frontend:
+  - [Angular](https://angular.io/)
   - [Angular Material](https://material.angular.io/)
   - [Tailwind CSS](https://tailwindcss.com/)
 
@@ -59,4 +60,5 @@
 
   ```
 
-  - frontend won't be compiled and server anymore by Ktor, which is irrelevant in Dev, since we are using the angular dev server
+  - frontend won't be compiled and served anymore by Ktor, which is irrelevant in Dev, since we are using the angular dev server
+- You can execute `./gradlew ktlintCheck` and `./gradlew ktlintFormat` to check for backend formatting (alternatively ctrl + ctrl in intellij ot execute gradle commands)
