@@ -1,43 +1,16 @@
 package replace.http
 
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
-import io.ktor.server.routing.route
-import io.ktor.server.routing.routing
 import org.bson.types.ObjectId
 import replace.datastore.Repository
-import replace.datastore.UserRepository
-import replace.model.BookableEntity
-import replace.model.Booking
 import replace.model.ObjectWithId
-
-fun Application.routeAllRepositories(
-    bookableEntityRepository: Repository<BookableEntity>,
-    bookingRepository: Repository<Booking>,
-    userRepository: UserRepository,
-) {
-    routing {
-        authenticate {
-            route("/api/bookable-entity") {
-                routeRepository(bookableEntityRepository)
-            }
-            route("/api/booking") {
-                routeRepository(bookingRepository)
-            }
-            route("/api/user") {
-                routeRepository(userRepository)
-            }
-        }
-    }
-}
 
 inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Repository<T>) {
     get {

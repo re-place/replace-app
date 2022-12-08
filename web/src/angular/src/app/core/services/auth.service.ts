@@ -2,13 +2,7 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { firstValueFrom } from "rxjs"
-
-type User = {
-    firstName: string
-    lastName: string
-    username: string
-    password: string
-}
+import { User } from "types"
 
 @Injectable({
     providedIn: "root",
