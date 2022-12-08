@@ -1,19 +1,20 @@
 import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
 
+import { AuthGuard } from "./core/guards/auth.guard"
 import { UserLayoutComponent } from "./shared/user-layout/user-layout.component"
 
 import type { Routes } from "@angular/router"
 
 const routes: Routes = [
     {
+        path: "login",
+        loadChildren: () => import("./features/login/login.module").then((m) => m.LoginModule),
+    },
+    {
         path: "",
         redirectTo: "/dashboard",
         pathMatch: "full",
-    },
-    {
-        path: "login",
-        loadChildren: () => import("./features/login/login.module").then((m) => m.LoginModule),
     },
     {
         path: "",
@@ -28,6 +29,7 @@ const routes: Routes = [
                 loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),
             },
         ],
+        canActivate: [AuthGuard],
     },
 ]
 

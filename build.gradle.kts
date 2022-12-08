@@ -22,3 +22,13 @@ dependencies {
     jvmMainImplementation(project(":replace-infrastructure"))
     commonMainRuntimeOnly(project(":replace-web"))
 }
+
+tasks {
+    val runDir = File("build/run")
+    withType<JavaExec> {
+        doFirst {
+            runDir.mkdirs()
+        }
+        workingDir = runDir
+    }
+}

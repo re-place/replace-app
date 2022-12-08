@@ -1,4 +1,4 @@
-<div class="flex items-center">
+<div class="flex">
     <div>
         <img
             class="inline-block h-10 w-10 rounded-full"
@@ -6,7 +6,8 @@
             alt=""
         />
     </div>
-    <div class="ml-3">
+    <div class="ml-3 grow flex items-center">
         <p class="text-base font-medium text-white">{{ name }}</p>
+        <ng-content></ng-content>
     </div>
 </div>
