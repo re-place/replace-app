@@ -1,4 +1,4 @@
-package replace.http.controllers
+package replace.http.controller
 
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route

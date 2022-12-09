@@ -4,11 +4,11 @@ import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.routing
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.http.controllers.registerBookableEntityRoutes
-import replace.http.controllers.registerBookingRoutes
-import replace.http.controllers.registerFloorRoutes
-import replace.http.controllers.registerOfficeRoutes
-import replace.http.controllers.registerUserRoutes
+import replace.http.controller.registerBookableEntityRoutes
+import replace.http.controller.registerBookingRoutes
+import replace.http.controller.registerFloorRoutes
+import replace.http.controller.registerOfficeRoutes
+import replace.http.controller.registerUserRoutes
 
 fun Application.routeControllers(
     db: CoroutineDatabase
