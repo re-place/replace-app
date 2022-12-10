@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from "@angular/core"
+import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 import { Office } from "types"
@@ -17,9 +18,14 @@ export class EditComponent implements OnDestroy {
 
     private readonly routeSub: Subscription
 
-    constructor(private readonly api: ApiService, private readonly route: ActivatedRoute) {
+    constructor(
+        private readonly api: ApiService,
+        private readonly route: ActivatedRoute,
+        private readonly snackBar: MatSnackBar,
+    ) {
         this.routeSub = route.params.subscribe(async (params) => {
             this.form = new Form(await api.getOffice(params["id"]))
+            this.form.useSnackbar(snackBar)
             this.title = `Büro ${this.form.data.name} bearbeiten`
         })
     }

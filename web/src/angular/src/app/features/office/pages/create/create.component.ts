@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { Router } from "@angular/router"
+import { MatSnackBar } from "@angular/material/snack-bar"
 
 import { ApiService } from "src/app/core/services/api.service"
 import { Form } from "src/app/util"
@@ -14,7 +14,9 @@ export class CreateComponent {
         name: "",
     })
 
-    constructor(private readonly api: ApiService, private readonly router: Router) {}
+    constructor(private readonly api: ApiService, private readonly snackBar: MatSnackBar) {
+        this.form.useSnackbar(snackBar)
+    }
 
     public submit() {
         this.form.submit(this.api.createOffice)

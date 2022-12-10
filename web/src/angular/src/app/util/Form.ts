@@ -1,12 +1,40 @@
+import { MatSnackBar } from "@angular/material/snack-bar"
 import cloneDeep from "lodash/cloneDeep"
+import { Subject, Subscription } from "rxjs"
 
 export default class From<T> {
     protected _data: T
     protected _isProcessing = false
     protected _error: string | undefined = undefined
 
+    public onError: Subject<string>
+
+    protected snackBar: undefined | MatSnackBar
+    protected snackBarSubscription: undefined | Subscription
+
     constructor(protected readonly initialData: T) {
         this._data = cloneDeep(initialData)
+
+        this.onError = new Subject<string>()
+    }
+
+    public static from<T>(initialData: T) {
+        return new From(initialData)
+    }
+
+    public useSnackbar(snackBar?: undefined | MatSnackBar) {
+        if (this.snackBar) {
+            this.snackBar.dismiss()
+            this.snackBarSubscription?.unsubscribe()
+        }
+
+        this.snackBar = snackBar
+
+        if (this.snackBar) {
+            this.snackBarSubscription = this.onError.subscribe((error) => {
+                this.snackBar?.open(error, "OK")
+            })
+        }
     }
 
     public get processing() {
@@ -36,6 +64,7 @@ export default class From<T> {
         } catch (error) {
             this._error = JSON.stringify(error)
             this._isProcessing = false
+            this.onError.next(this._error)
             return undefined
         }
     }

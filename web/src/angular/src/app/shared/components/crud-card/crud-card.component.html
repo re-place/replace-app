@@ -2,14 +2,16 @@
     <ng-template *ngIf="header !== undefined">
         <ng-container [ngTemplateOutlet]="header.templateRef"></ng-container>
     </ng-template>
-    <form (submit)="submit($event)">
+    <form [attr.id]="formId" (submit)="submit($event)">
         <div>
             <ng-content></ng-content>
         </div>
     </form>
     <ng-template [footer]>
         <div class="flex justify-end">
-            <button *ngIf="saveText !== null" mat-raised-button color="primary" type="submit">{{ saveText }}</button>
+            <button [attr.form]="formId" *ngIf="saveText !== null" mat-raised-button color="primary" type="submit">
+                {{ saveText }}
+            </button>
             <button *ngIf="deletable" mat-raised-button color="error" type="button" (click)="emitDelete()">Löschen</button>
         </div>
     </ng-template>

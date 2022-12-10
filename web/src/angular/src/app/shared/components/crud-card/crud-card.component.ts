@@ -1,4 +1,5 @@
 import { Component, ContentChild, EventEmitter, Input, Output } from "@angular/core"
+import { v4 } from "uuid"
 
 import { HeaderDirective } from "../../directives/header.directive"
 
@@ -16,6 +17,8 @@ export class CrudCardComponent {
     @Output() delete = new EventEmitter()
 
     @ContentChild(HeaderDirective) header: HeaderDirective | undefined
+
+    public formId = v4()
 
     public submit(event: SubmitEvent) {
         if (this.saveText === null) {
