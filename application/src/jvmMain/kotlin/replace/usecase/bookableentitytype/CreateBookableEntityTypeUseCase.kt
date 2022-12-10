@@ -1,16 +1,23 @@
 package replace.usecase.bookableentitytype
 
-import replace.datastore.Repository
+import replace.datastore.BookableEntityTypeRepository
 import replace.dto.BookableEntityTypeDto
-import replace.dto.BookingDto
-import replace.model.Booking
+import replace.dto.toDto
+import replace.model.BookableEntityType
 
 object CreateBookableEntityTypeUseCase {
 
     suspend fun execute(
         bookableEntityTypeDto: BookableEntityTypeDto,
-        bookingRepository: Repository<Booking>,
-    ): BookingDto {
-        TODO("Check if already exists")
+        bookableEntityTypeRepository: BookableEntityTypeRepository,
+    ): BookableEntityTypeDto {
+        val foundType = bookableEntityTypeRepository.findByName(bookableEntityTypeDto.name)
+        if (foundType != null) {
+            throw IllegalStateException("BookableEntityType with given name already exists")
+        }
+        val type = BookableEntityType(bookableEntityTypeDto.name)
+        val insertedBookableEntityType = bookableEntityTypeRepository.insertOne(type)
+        checkNotNull(insertedBookableEntityType) { "Could not insert BookableEntityType" }
+        return insertedBookableEntityType.toDto()
     }
 }
