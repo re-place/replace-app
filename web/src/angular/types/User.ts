@@ -1,5 +1,6 @@
-export default interface User {
-    _id: string
+import { Model } from "."
+
+export default interface User extends Model {
     username: string
     password: string
     firstName: string

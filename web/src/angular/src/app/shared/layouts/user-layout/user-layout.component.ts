@@ -28,6 +28,11 @@ export class UserLayoutComponent implements OnInit {
             route: "/reservation",
             icon: "calendar_today",
         },
+        {
+            title: "Büros",
+            route: "/office",
+            icon: "location_city",
+        },
     ]
 
     public isCollapsed = true
@@ -44,14 +49,19 @@ export class UserLayoutComponent implements OnInit {
         this.authService.logout()
     }
 
+    protected setCurrentRoute(url: string): void {
+        this.currentRoute = this.menuItems.find((item) => url.startsWith(item.route))?.route ?? ""
+    }
+
     ngOnInit(): void {
-        this.currentRoute = this.router.url
+        this.setCurrentRoute(this.router.url)
+
         this.router.events.subscribe((event) => {
             if (!(event instanceof NavigationEnd)) {
                 return
             }
 
-            this.currentRoute = event.url
+            this.setCurrentRoute(event.url)
             this.isCollapsed = true
         })
 

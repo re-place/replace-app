@@ -1,0 +1,11 @@
+<div class="bg-white overflow-hidden shadow divide-y divide-gray-200" [ngClass]="expandOnMobile ? 'sm:rounded-lg' : 'rounded-lg'">
+    <div *ngIf="header !== undefined" class="px-4 py-5 sm:px-6">
+        <ng-container [ngTemplateOutlet]="header.templateRef"></ng-container>
+    </div>
+    <div class="px-4 py-5 sm:p-6">
+        <ng-content></ng-content>
+    </div>
+    <div *ngIf="footer !== undefined" class="p-4 sm:px-6" [ngClass]="grayFooter ? 'bg-gray-50' : ''">
+        <ng-container [ngTemplateOutlet]="footer.templateRef"></ng-container>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<crud-layout [title]="'Neues Büro erstellen'">
+    <crud-card (save)="submit()" [saveText]="'speichern'">
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Büro name</mat-label>
+            <input
+                type="text"
+                matInput
+                [(ngModel)]="this.form.data.name"
+                placeholder="Büro"
+                required
+                [disabled]="this.form.processing"
+            />
+            <mat-hint>Der Name des Büro Gebäudes</mat-hint>
+        </mat-form-field>
+        <div *ngIf="this.form.error" class="text-red-500 font-medium">
+            {{ this.form.error }}
+        </div>
+    </crud-card>
+</crud-layout>

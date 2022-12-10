@@ -1,0 +1,21 @@
+<crud-layout [title]="title">
+    <crud-card (save)="onSubmit()" [saveText]="'speichern'">
+        <loading-state [loading]="form === undefined">
+            <mat-form-field *ngIf="form !== undefined" appearance="fill" class="w-full">
+                <mat-label>Büro name</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [(ngModel)]="form.data.name"
+                    placeholder="Büro"
+                    required
+                    [disabled]="form.processing"
+                />
+                <mat-hint>Der Name des Büro Gebäudes</mat-hint>
+            </mat-form-field>
+            <div *ngIf="form?.error" class="text-red-500 font-medium">
+                {{ form?.error }}
+            </div>
+        </loading-state>
+    </crud-card>
+</crud-layout>

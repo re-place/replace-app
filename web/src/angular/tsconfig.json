@@ -19,14 +19,10 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2022", "dom"],
     "paths": {
-      "replace": [
-        "../../build/compileSync/js/main/productionExecutable/kotlin/replace-app-web"
-      ],
+      "replace": ["../../build/compileSync/js/main/productionExecutable/kotlin/replace-app-web"]
     }
   },
   "angularCompilerOptions": {

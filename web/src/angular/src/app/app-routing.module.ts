@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
 
 import { AuthGuard } from "./core/guards/auth.guard"
-import { UserLayoutComponent } from "./shared/user-layout/user-layout.component"
+import { UserLayoutComponent } from "./shared/layouts/user-layout/user-layout.component"
 
 import type { Routes } from "@angular/router"
 
@@ -27,6 +27,10 @@ const routes: Routes = [
             {
                 path: "reservation",
                 loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),
+            },
+            {
+                path: "office",
+                loadChildren: () => import("./features/office/office.module").then((m) => m.OfficeModule),
             },
         ],
         canActivate: [AuthGuard],
