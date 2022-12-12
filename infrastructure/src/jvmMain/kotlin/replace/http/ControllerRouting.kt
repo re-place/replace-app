@@ -15,11 +15,11 @@ fun Application.routeControllers(
 ) {
     routing {
         authenticate {
-            this.registerBookableEntityRoutes(db)
-            this.registerBookingRoutes(db)
-            this.registerFloorRoutes(db)
-            this.registerOfficeRoutes(db)
-            this.registerUserRoutes(db)
+            registerBookableEntityRoutes(db)
+            registerBookingRoutes(db)
+            registerFloorRoutes(db)
+            registerOfficeRoutes(db)
+            registerUserRoutes(db)
         }
     }
 }

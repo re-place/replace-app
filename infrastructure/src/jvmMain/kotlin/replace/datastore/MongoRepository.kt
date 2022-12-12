@@ -15,7 +15,7 @@ open class MongoRepository<T : ObjectWithId>(protected val collection: Coroutine
     override suspend fun findOneById(id: ObjectId): T? =
         collection.findOneById(id)
 
-    override suspend fun deleteOne(id: ObjectId): Boolean =
+    override suspend fun deleteOneById(id: ObjectId): Boolean =
         collection.deleteOneById(id).deletedCount > 0
 
     override suspend fun getAll(): List<T> =
