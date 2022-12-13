@@ -19,6 +19,6 @@ export class CreateComponent {
     }
 
     public submit() {
-        this.form.submit(this.api.createOffice)
+        this.form.submit(this.api.createOfficeBuilding)
     }
 }

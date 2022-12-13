@@ -30,7 +30,7 @@ export class UserLayoutComponent implements OnInit {
         },
         {
             title: "Büros",
-            route: "/office",
+            route: "/office-building",
             icon: "location_city",
         },
     ]

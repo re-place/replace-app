@@ -8,7 +8,6 @@ open class MongoRepository<T : ObjectWithId>(protected val collection: Coroutine
     override suspend fun insertOne(item: T): T? =
         if (collection.insertOne(item).wasAcknowledged()) item else null
 
-    // TODO: Should not replace but merge document with existing in DB
     override suspend fun updateOne(item: T): T? =
         item._id?.let { id -> if (collection.updateOneById(id, item).wasAcknowledged()) item else null }
 

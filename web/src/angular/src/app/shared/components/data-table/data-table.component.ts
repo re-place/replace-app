@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ContentChild, Input, TemplateRef } from "@angular/core"
+import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } from "@angular/core"
 
 @Component({
     selector: "data-table",
@@ -9,8 +9,13 @@ import { Component, ContentChild, Input, TemplateRef } from "@angular/core"
 export class DataTableComponent {
     @Input() public data: any[] | undefined
     @Input() public columns: { key: string; label: string }[] = []
+    @Input() public selectable: "single" | "multiple" | "none" = "none"
 
-    @ContentChild(TemplateRef) templateRef: TemplateRef<any> | undefined
+    @Output() public readonly selectChange = new EventEmitter<any[]>()
+
+    @ContentChild(TemplateRef) public templateRef: TemplateRef<any> | undefined
+
+    public selected: any[] = []
 
     get dataToDisplay() {
         return this.data ?? []
@@ -24,5 +29,31 @@ export class DataTableComponent {
         }
 
         return columns
+    }
+
+    public select(row: any) {
+        if (this.selectable === "none") {
+            return
+        }
+
+        if (this.selected.includes(row)) {
+            this.selected = this.selected.filter((selected) => selected !== row)
+            this.selectChange.emit(this.selected)
+            return
+        }
+
+        if (this.selectable === "single") {
+            this.selected = []
+        }
+
+        this.selected.push(row)
+    }
+
+    public isSelected(row: any) {
+        if (this.selectable === "none") {
+            return false
+        }
+
+        return this.selected.includes(row)
     }
 }

@@ -7,9 +7,9 @@
             <ng-content></ng-content>
         </div>
     </form>
-    <ng-template [footer]>
+    <ng-template *ngIf="saveText !== undefined || deletable" [footer]>
         <div class="flex justify-end">
-            <button [attr.form]="formId" *ngIf="saveText !== null" mat-raised-button color="primary" type="submit">
+            <button [attr.form]="formId" *ngIf="saveText !== undefined" mat-raised-button color="primary" type="submit">
                 {{ saveText }}
             </button>
             <button *ngIf="deletable" mat-raised-button color="error" type="button" (click)="emitDelete()">Löschen</button>

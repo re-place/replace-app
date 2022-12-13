@@ -1,0 +1,22 @@
+<ng-container [ngSwitch]="element">
+    <button *ngSwitchCase="'button'" class="rounded-full w-8 h-8 flex justify-center items-center" [ngClass]="colorStyle">
+        <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
+    </button>
+    <a
+        *ngSwitchCase="'a'"
+        [attr.href]="href"
+        [attr.target]="target"
+        class="rounded-full w-8 h-8 flex justify-center items-center"
+        [ngClass]="colorStyle"
+    >
+        <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
+    </a>
+    <div
+        *ngSwitchCase="'a'"
+        [routerLink]="href"
+        class="rounded-full w-8 h-8 flex justify-center items-center"
+        [ngClass]="colorStyle"
+    >
+        <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
+    </div>
+</ng-container>

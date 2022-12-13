@@ -14,18 +14,18 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.MongoFloorRepository
 import replace.datastore.MongoRepository
 import replace.http.routeRepository
-import replace.model.Office
+import replace.model.OfficeBuilding
 
-fun Route.registerOfficeRoutes(db: CoroutineDatabase) {
-    val officeRepository = MongoRepository<Office>(db.getCollection())
+fun Route.registerOfficeBuildingRoutes(db: CoroutineDatabase) {
+    val officeBuildingRepository = MongoRepository<OfficeBuilding>(db.getCollection())
     val floorRepository = MongoFloorRepository(db.getCollection())
 
-    route("/api/office") {
-        routeRepository(officeRepository)
+    route("/api/office-building") {
+        routeRepository(officeBuildingRepository)
 
         put("/update") {
             val office = try {
-                call.receive<Office>()
+                call.receive<OfficeBuilding>()
             } catch (e: Exception) {
                 return@put call.respondText(
                     "Invalid request: ${e.message} caused by ${e.cause?.message}",
@@ -33,17 +33,18 @@ fun Route.registerOfficeRoutes(db: CoroutineDatabase) {
                 )
             }
 
-            officeRepository.updateOne(office)
+            officeBuildingRepository.updateOne(office)
+            return@put call.respond(HttpStatusCode.NoContent)
         }
 
-        get("/{officeId}/floor") {
-            val officeId = call.parameters["officeId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
+        get("/{officeBuildingId}/floor") {
+            val officeBuildingId = call.parameters["officeBuildingId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            if (!ObjectId.isValid(officeId)) {
-                return@get call.respondText("Id $officeId is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+            if (!ObjectId.isValid(officeBuildingId)) {
+                return@get call.respondText("Id $officeBuildingId is not a valid ObjectId", status = HttpStatusCode.BadRequest)
             }
 
-            val floors = floorRepository.forOffice(ObjectId(officeId))
+            val floors = floorRepository.forOfficeBuilding(ObjectId(officeBuildingId))
 
             call.respond(floors)
         }

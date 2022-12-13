@@ -1,8 +1,11 @@
 <ng-container *ngIf="loading; else showContent">
-    <div class="flex justify-center items-center h-full grow w-full">
-        <mat-spinner class="max-w-[4rem]"></mat-spinner>
+    <div class="h-full w-full grow relative">
+        <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
+        <div class="inset-0 absolute flex justify-center items-center h-full grow w-full bg-white/70">
+            <mat-spinner class="max-w-[4rem]"></mat-spinner>
+        </div>
     </div>
 </ng-container>
 <ng-template #showContent>
-    <ng-content></ng-content>
+    <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
 </ng-template>

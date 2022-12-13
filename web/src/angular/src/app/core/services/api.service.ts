@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { firstValueFrom } from "rxjs"
-import { Floor, Office } from "types"
+import { Floor, OfficeBuilding } from "types"
 
 @Injectable({
     providedIn: "root",
@@ -9,28 +9,28 @@ import { Floor, Office } from "types"
 export class ApiService {
     constructor(private readonly http: HttpClient) {}
 
-    public async getOffices() {
-        return await firstValueFrom(this.http.get<Office[]>("/api/office"))
+    public async getOfficeBuildings() {
+        return await firstValueFrom(this.http.get<OfficeBuilding[]>("/api/office-building"))
     }
 
-    public async getOffice(id: string) {
-        return await firstValueFrom(this.http.get<Office>(`/api/office/${id}`))
+    public async getOfficeBuilding(id: string) {
+        return await firstValueFrom(this.http.get<OfficeBuilding>(`/api/office-building/${id}`))
     }
 
-    public async createOffice(office: Omit<Office, "_id">) {
-        return await firstValueFrom(this.http.post<Office>("/api/office", office))
+    public async createOfficeBuilding(office: Omit<OfficeBuilding, "_id">) {
+        return await firstValueFrom(this.http.post<OfficeBuilding>("/api/office-building", office))
     }
 
-    public async updateOffice(office: Office) {
-        return await firstValueFrom(this.http.put<Office>(`/api/office/${office._id}`, office))
+    public async updateOfficeBuilding(office: OfficeBuilding) {
+        return await firstValueFrom(this.http.put<OfficeBuilding>("/api/office-building/update", office))
     }
 
-    public async getFloors(officeId?: string) {
-        if (officeId === undefined) {
+    public async getFloors(officeBuildingId?: string) {
+        if (officeBuildingId === undefined) {
             return await firstValueFrom(this.http.get<Floor[]>("/api/floor"))
         }
 
-        return await firstValueFrom(this.http.get<Floor[]>(`/api/office/${officeId}/floor`))
+        return await firstValueFrom(this.http.get<Floor[]>(`/api/office-building/${officeBuildingId}/floor`))
     }
 
     public async getFloor(id: string) {
@@ -42,6 +42,6 @@ export class ApiService {
     }
 
     public async updateFloor(floor: Floor) {
-        return await firstValueFrom(this.http.put<Floor>(`/api/floor/${floor._id}`, floor))
+        return await firstValueFrom(this.http.put<Floor>("/api/floor/update", floor))
     }
 }

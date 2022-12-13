@@ -29,8 +29,9 @@ const routes: Routes = [
                 loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),
             },
             {
-                path: "office",
-                loadChildren: () => import("./features/office/office.module").then((m) => m.OfficeModule),
+                path: "office-building",
+                loadChildren: () =>
+                    import("./features/office-building/office-building.module").then((m) => m.OfficeBuildingModule),
             },
         ],
         canActivate: [AuthGuard],

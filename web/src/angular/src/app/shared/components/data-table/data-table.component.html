@@ -10,5 +10,10 @@
         </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+    <tr
+        mat-row
+        *matRowDef="let myRowData; columns: columnsToDisplay"
+        class="border-y border-transparent"
+        [ngClass]="selectable !== 'none' ? 'hover:border-tran' : ''"
+    ></tr>
 </table>

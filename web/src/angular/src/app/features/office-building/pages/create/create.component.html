@@ -1,7 +1,7 @@
-<crud-layout [title]="'Neues Büro erstellen'">
+<crud-layout [title]="'Neues Büro Gebäude erstellen'">
     <crud-card (save)="submit()" [saveText]="'erstellen'">
         <mat-form-field appearance="fill" class="w-full">
-            <mat-label>Büro name</mat-label>
+            <mat-label>Büro Gebäude name</mat-label>
             <input type="text" matInput [(ngModel)]="this.form.data.name" placeholder="Büro" [disabled]="this.form.processing" />
             <mat-hint>Der Name des Büro Gebäudes</mat-hint>
         </mat-form-field>
