@@ -24,4 +24,8 @@ export class FloorListComponent {
     public onCreate() {
         this.create.emit()
     }
+
+    public getFloorEditLink(floor: Floor) {
+        return `/floor/${floor._id}/edit`
+    }
 }

@@ -21,8 +21,7 @@
         <h2 class="text-lg font-medium">Stockwerke</h2>
         <loading-state [loading]="floors.loading()" class="flex h-96">
             <ng-template>
-                <floor-list class="grow" [floors]="floors.data" (edit)="onEditFloor($event)" (create)="onCreateFloor()">
-                </floor-list>
+                <floor-list class="grow" [floors]="floors.data" (create)="onCreateFloor()"> </floor-list>
                 <div *ngIf="editingFloor !== undefined" class="border-l-2 border-gray-300 mx-4 my-8"></div>
                 <create-or-update-floor
                     class="min-w-56"

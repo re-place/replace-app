@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
+import { ActivatedRoute, Router } from "@angular/router"
 
 import { ApiService } from "src/app/core/services/api.service"
 import { Form } from "src/app/util"
@@ -14,11 +15,22 @@ export class CreateComponent {
         name: "",
     })
 
-    constructor(private readonly api: ApiService, private readonly snackBar: MatSnackBar) {
+    constructor(
+        private readonly api: ApiService,
+        public readonly router: Router,
+        public readonly route: ActivatedRoute,
+        private readonly snackBar: MatSnackBar,
+    ) {
         this.form.useSnackbar(snackBar)
     }
 
-    public submit() {
-        this.form.submit(this.api.createOfficeBuilding)
+    public async submit() {
+        const officeBuilding = await this.form.submit((data) => this.api.createOfficeBuilding(data))
+
+        if (officeBuilding === undefined) {
+            return
+        }
+
+        this.router.navigate(["./../", officeBuilding._id, "edit"], { relativeTo: this.route })
     }
 }

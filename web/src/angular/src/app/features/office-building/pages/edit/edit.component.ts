@@ -17,7 +17,7 @@ export class EditComponent implements OnDestroy {
     title = ""
     form: Form<OfficeBuilding> | undefined = undefined
     floors = new DataLoader<Floor[]>()
-    editingFloor: SetOptional<Floor, "_id" | "officeId"> | undefined = undefined
+    editingFloor: SetOptional<Floor, "_id" | "officeBuildingId"> | undefined = undefined
 
     private readonly routeSub: Subscription
 
@@ -29,13 +29,13 @@ export class EditComponent implements OnDestroy {
         this.routeSub = route.params.subscribe(async (params) => {
             this.form = new Form(await api.getOfficeBuilding(params["id"]))
             this.form.useSnackbar(snackBar)
-            this.title = `${this.form.data.name} bearbeiten`
+            this.title = `Gebäude ${this.form.data.name} bearbeiten`
 
             this.floors.source(() => api.getFloors(params["id"])).refresh()
         })
     }
 
-    public onSubmit() {
+    public async onSubmit() {
         this.form?.submit((data) => this.api.updateOfficeBuilding(data))
     }
 
@@ -43,22 +43,18 @@ export class EditComponent implements OnDestroy {
         this.routeSub.unsubscribe()
     }
 
-    public onEditFloor(floor?: Floor) {
-        this.editingFloor = floor
-    }
-
     public onCreateFloor() {
         this.editingFloor = { name: "" }
     }
 
-    public onSubmitFloor(floor: SetOptional<Floor, "_id" | "officeId">) {
+    public onSubmitFloor(floor: SetOptional<Floor, "_id" | "officeBuildingId">) {
         this.floors.loading(true)
 
         if (floor._id === undefined) {
             this.api
                 .createFloor({
                     ...floor,
-                    officeId: this.route.snapshot.params["id"],
+                    officeBuildingId: this.route.snapshot.params["id"],
                 })
                 .then(() => {
                     this.floors.refresh()

@@ -4,11 +4,11 @@ import { OfficeBuilding } from "types"
 import { ApiService } from "src/app/core/services/api.service"
 
 @Component({
-    selector: "office-building",
-    templateUrl: "./office-building.component.html",
+    selector: "index",
+    templateUrl: "./index.component.html",
     styles: [],
 })
-export class OfficeBuildingComponent {
+export class IndexComponent {
     public officeBuildings: OfficeBuilding[] | undefined
 
     public dataColumns = [

@@ -1,0 +1,42 @@
+<crud-layout [title]="title">
+    <crud-card (save)="onSubmit()" [saveText]="'speichern'">
+        <loading-state [loading]="form === undefined">
+            <ng-template>
+                <mat-form-field *ngIf="form !== undefined" appearance="fill" class="w-full">
+                    <mat-label>Stockwerk name</mat-label>
+                    <input
+                        type="text"
+                        matInput
+                        [(ngModel)]="form.data.name"
+                        placeholder="1. OG"
+                        required
+                        [disabled]="form.processing"
+                    />
+                    <mat-hint>Der Name des Stockwerkes</mat-hint>
+                </mat-form-field>
+            </ng-template>
+        </loading-state>
+    </crud-card>
+    <card>
+        <h2 class="text-lg font-medium">Buchbare Objekte</h2>
+        <loading-state [loading]="bookableEntities.loading()" class="flex h-96">
+            <ng-template>
+                <bookable-entity-list
+                    class="grow"
+                    [bookableEntities]="bookableEntities.data"
+                    (edit)="onEditBookableEntity($event)"
+                    (create)="onCreateBookableEntity()"
+                >
+                </bookable-entity-list>
+                <div *ngIf="editingBookableEntity !== undefined" class="border-l-2 border-gray-300 mx-4 my-8"></div>
+                <create-or-update-bookable-entity
+                    class="min-w-56"
+                    *ngIf="editingBookableEntity !== undefined"
+                    [bookableEntity]="editingBookableEntity"
+                    (submitBookableEntity)="onSubmitBookableEntity($event)"
+                >
+                </create-or-update-bookable-entity>
+            </ng-template>
+        </loading-state>
+    </card>
+</crud-layout>

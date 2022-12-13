@@ -8,10 +8,10 @@ import { Floor } from "types"
     styles: [],
 })
 export class CreateOrUpdateFloorComponent implements OnChanges {
-    @Input() floor!: SetOptional<Floor, "officeId" | "_id">
-    floorToEdit: SetOptional<Floor, "officeId" | "_id"> = { name: "" }
+    @Input() floor!: SetOptional<Floor, "officeBuildingId" | "_id">
+    floorToEdit: SetOptional<Floor, "officeBuildingId" | "_id"> = { name: "" }
 
-    @Output() submitFloor = new EventEmitter<SetOptional<Floor, "officeId" | "_id">>()
+    @Output() submitFloor = new EventEmitter<SetOptional<Floor, "officeBuildingId" | "_id">>()
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["floor"] === undefined) return

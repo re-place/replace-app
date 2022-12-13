@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { firstValueFrom } from "rxjs"
-import { Floor, OfficeBuilding } from "types"
+import { BookableEntity, Floor, OfficeBuilding } from "types"
 
 @Injectable({
     providedIn: "root",
@@ -43,5 +43,25 @@ export class ApiService {
 
     public async updateFloor(floor: Floor) {
         return await firstValueFrom(this.http.put<Floor>("/api/floor/update", floor))
+    }
+
+    public async getBookableEntities(floorId?: string) {
+        if (floorId === undefined) {
+            return await firstValueFrom(this.http.get<BookableEntity[]>("/api/bookable-entity"))
+        }
+
+        return await firstValueFrom(this.http.get<BookableEntity[]>(`/api/floor/${floorId}/bookable-entity`))
+    }
+
+    public async getBookableEntity(id: string) {
+        return await firstValueFrom(this.http.get<BookableEntity>(`/api/bookable-entity/${id}`))
+    }
+
+    public async createBookableEntity(entity: Omit<BookableEntity, "_id">) {
+        return await firstValueFrom(this.http.post<BookableEntity>("/api/bookable-entity", entity))
+    }
+
+    public async updateBookableEntity(entity: BookableEntity) {
+        return await firstValueFrom(this.http.put<BookableEntity>("/api/bookable-entity/update", entity))
     }
 }

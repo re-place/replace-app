@@ -12,7 +12,6 @@ const buttonStyles: Record<Colors, string> = {
     styles: [],
 })
 export class TextButtonComponent {
-    @Input() element: "a" | "button" | "routerLink" = "button"
     @Input() href: string | undefined
     @Input() target: string | undefined
 
@@ -20,7 +19,7 @@ export class TextButtonComponent {
 
     @Input() disabled = false
 
-    @Input() type: "button" | "submit" | "reset" = "button"
+    @Input() type: "a" | "routerLink" | "button" | "submit" | "reset" = "button"
 
     @ContentChild(TemplateRef) content: TemplateRef<unknown> | undefined
 

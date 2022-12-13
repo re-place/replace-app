@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="element">
+<ng-container [ngSwitch]="type">
     <button *ngSwitchCase="'button'" class="rounded-full w-8 h-8 flex justify-center items-center" [ngClass]="colorStyle">
         <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
     </button>
@@ -11,12 +11,20 @@
     >
         <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
     </a>
-    <div
-        *ngSwitchCase="'a'"
+    <a
+        *ngSwitchCase="'routerLink'"
         [routerLink]="href"
         class="rounded-full w-8 h-8 flex justify-center items-center"
         [ngClass]="colorStyle"
     >
         <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
-    </div>
+    </a>
+    <button
+        *ngSwitchDefault
+        class="rounded-full w-8 h-8 flex justify-center items-center"
+        [ngClass]="colorStyle"
+        [attr.type]="type"
+    >
+        <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
+    </button>
 </ng-container>

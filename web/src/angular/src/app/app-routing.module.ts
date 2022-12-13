@@ -33,6 +33,12 @@ const routes: Routes = [
                 loadChildren: () =>
                     import("./features/office-building/office-building.module").then((m) => m.OfficeBuildingModule),
             },
+            { path: "floor", loadChildren: () => import("./features/floor/floor.module").then((m) => m.FloorModule) },
+            {
+                path: "bookable-entity",
+                loadChildren: () =>
+                    import("./features/bookable-entity/bookable-entity.module").then((m) => m.BookableEntityModule),
+            },
         ],
         canActivate: [AuthGuard],
     },
