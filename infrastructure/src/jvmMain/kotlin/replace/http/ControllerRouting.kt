@@ -5,6 +5,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.routing
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.http.controller.registerBookableEntityRoutes
+import replace.http.controller.registerBookableEntityTypeRoutes
 import replace.http.controller.registerBookingRoutes
 import replace.http.controller.registerFloorRoutes
 import replace.http.controller.registerSiteRoutes
@@ -16,6 +17,7 @@ fun Application.routeControllers(
     routing {
         authenticate {
             registerBookableEntityRoutes(db)
+            registerBookableEntityTypeRoutes(db)
             registerBookingRoutes(db)
             registerFloorRoutes(db)
             registerSiteRoutes(db)
