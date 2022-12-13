@@ -10,6 +10,7 @@ import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.resources.Resources
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -43,6 +44,8 @@ fun Application.applicationModule() {
             }
         )
     }
+    // install type-safe routing
+    install(Resources)
 
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)
