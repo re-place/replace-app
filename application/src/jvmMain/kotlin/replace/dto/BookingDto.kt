@@ -10,6 +10,6 @@ data class BookingDto(
 ) : Dto
 
 fun Booking.toDto() = BookingDto(
-    id = _id?.toHexString(),
+    id = id?.toHexString(),
     bookedEntities = bookedEntities.map { it.toHexString() },
 )

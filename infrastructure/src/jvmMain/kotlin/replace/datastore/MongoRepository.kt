@@ -10,7 +10,7 @@ open class MongoRepository<T : ObjectWithId>(protected val collection: Coroutine
 
     // TODO: Should not replace but merge document with existing in DB
     override suspend fun updateOne(item: T): T? =
-        item._id?.let { id -> if (collection.replaceOneById(id, item).modifiedCount > 0) item else null }
+        item.id?.let { id -> if (collection.replaceOneById(id, item).modifiedCount > 0) item else null }
 
     override suspend fun findOneById(id: ObjectId): T? =
         collection.findOneById(id)

@@ -12,8 +12,8 @@ data class BookableEntityDto(
 ) : Dto
 
 fun BookableEntity.toDto() = BookableEntityDto(
-    id = _id?.toHexString(),
+    id = id?.toHexString(),
     name = name,
     parentId = parentId?.toHexString(),
-    typeId = type?._id?.toHexString(),
+    typeId = type.id?.toHexString(),
 )

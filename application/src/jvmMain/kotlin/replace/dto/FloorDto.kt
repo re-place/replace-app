@@ -11,7 +11,7 @@ class FloorDto(
 ) : Dto
 
 fun Floor.toDto() = FloorDto(
-    id = _id?.toHexString(),
+    id = id?.toHexString(),
     name = name,
     locationId = locationId.toHexString(),
 )

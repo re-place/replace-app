@@ -20,7 +20,7 @@ object UpdateBookableEntityUseCase {
         checkNotNull(type) { "BookableEntityType ID not found" }
 
         val bookableEntity = BookableEntity(name, type, parentId)
-        bookableEntity._id = id
+        bookableEntity.id = id
         val updatedBookableEntity = bookableEntityRepository.updateOne(bookableEntity)
         checkNotNull(updatedBookableEntity)
         return updatedBookableEntity.toDto()

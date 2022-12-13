@@ -13,7 +13,7 @@ import replace.usecase.site.CreateSiteUseCase
 fun Route.registerSiteRoutes(db: CoroutineDatabase) {
     val siteRepository = MongoRepository<Site>(db.getCollection())
 
-    route("/api/office") {
+    route("/api/site") {
         routeRepository(siteRepository)
         post<SiteDto> {
             executeUseCase {

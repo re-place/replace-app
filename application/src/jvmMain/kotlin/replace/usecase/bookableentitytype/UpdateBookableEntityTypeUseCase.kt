@@ -15,7 +15,7 @@ object UpdateBookableEntityTypeUseCase {
         val id = ObjectId(bookableEntityTypeDto.id)
 
         val bookableEntityType = BookableEntityType(name)
-        bookableEntityType._id = id
+        bookableEntityType.id = id
 
         val updatedBookableEntityType = bookableEntityTypeRepository.updateOne(bookableEntityType)
         checkNotNull(updatedBookableEntityType) { "Could not update BookableEntityType" }
