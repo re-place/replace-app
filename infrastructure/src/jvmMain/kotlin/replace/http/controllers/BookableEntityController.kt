@@ -13,7 +13,6 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.MongoRepository
 import replace.http.routeRepository
 import replace.model.BookableEntity
-import replace.model.Floor
 
 fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
     val repository = MongoRepository<BookableEntity>(db.getCollection())
