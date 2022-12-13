@@ -1,5 +1,5 @@
 package replace.model
 
-data class Location(
+data class Site(
     val name: String,
 ) : ObjectWithId()

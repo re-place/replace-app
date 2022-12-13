@@ -7,7 +7,7 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.http.controller.registerBookableEntityRoutes
 import replace.http.controller.registerBookingRoutes
 import replace.http.controller.registerFloorRoutes
-import replace.http.controller.registerOfficeRoutes
+import replace.http.controller.registerSiteRoutes
 import replace.http.controller.registerUserRoutes
 
 fun Application.routeControllers(
@@ -18,7 +18,7 @@ fun Application.routeControllers(
             registerBookableEntityRoutes(db)
             registerBookingRoutes(db)
             registerFloorRoutes(db)
-            registerOfficeRoutes(db)
+            registerSiteRoutes(db)
             registerUserRoutes(db)
         }
     }

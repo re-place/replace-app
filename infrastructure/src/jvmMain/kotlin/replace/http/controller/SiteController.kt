@@ -4,22 +4,20 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoFloorRepository
 import replace.datastore.MongoRepository
-import replace.dto.FloorDto
+import replace.dto.SiteDto
 import replace.http.routeRepository
 import replace.model.Site
-import replace.usecase.floor.CreateFloorUseCase
+import replace.usecase.site.CreateSiteUseCase
 
-fun Route.registerFloorRoutes(db: CoroutineDatabase) {
-    val floorRepository = MongoFloorRepository(db.getCollection())
+fun Route.registerSiteRoutes(db: CoroutineDatabase) {
     val siteRepository = MongoRepository<Site>(db.getCollection())
 
-    route("/api/floor") {
-        routeRepository(floorRepository)
-        post<FloorDto> {
+    route("/api/office") {
+        routeRepository(siteRepository)
+        post<SiteDto> {
             executeUseCase {
-                CreateFloorUseCase.execute(it, floorRepository, siteRepository)
+                CreateSiteUseCase.execute(it, siteRepository)
             }
         }
     }
