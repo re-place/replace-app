@@ -1,8 +1,7 @@
 package replace.model
 
-import kotlinx.serialization.Serializable
+import org.bson.types.ObjectId
 
-@Serializable
 data class Booking(
-    val bookedEntities: List<BookableEntity>,
+    val bookedEntities: List<ObjectId>,
 ) : ObjectWithId()

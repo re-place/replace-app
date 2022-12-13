@@ -7,6 +7,6 @@ interface Repository<T : ObjectWithId> {
     suspend fun insertOne(item: T): T?
     suspend fun updateOne(item: T): T?
     suspend fun findOneById(id: ObjectId): T?
-    suspend fun deleteOne(id: ObjectId): Boolean
+    suspend fun deleteOneById(id: ObjectId): Boolean
     suspend fun getAll(): List<T>
 }

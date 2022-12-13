@@ -1,4 +1,4 @@
-export default interface Office {
+export default interface Site {
     _id: string
     name: string
 }

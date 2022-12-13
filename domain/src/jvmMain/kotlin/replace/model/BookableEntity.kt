@@ -7,5 +7,6 @@ import org.bson.types.ObjectId
 @Serializable
 data class BookableEntity(
     val name: String,
+    val type: BookableEntityType,
     @Contextual val parentId: ObjectId? = null,
 ) : ObjectWithId()
