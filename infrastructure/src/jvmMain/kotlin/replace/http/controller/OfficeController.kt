@@ -10,13 +10,13 @@ import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.MongoRepository
 import replace.http.routeRepository
-import replace.model.Office
+import replace.model.Location
 
 fun Route.registerOfficeRoutes(db: CoroutineDatabase) {
-    val officeRepository = MongoRepository<Office>(db.getCollection())
+    val locationRepository = MongoRepository<Location>(db.getCollection())
 
     route("/api/office") {
-        routeRepository(officeRepository)
+        routeRepository(locationRepository)
 
         get("/{officeId}/floor") {
             val officeId = call.parameters["officeId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)

@@ -1,5 +1,5 @@
 package replace.model
 
-data class Office(
+data class Location(
     val name: String,
 ) : ObjectWithId()

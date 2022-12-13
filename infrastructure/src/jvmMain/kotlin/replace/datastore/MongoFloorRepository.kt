@@ -8,5 +8,5 @@ import replace.model.Floor
 class MongoFloorRepository(collection: CoroutineCollection<Floor>) :
     MongoRepository<Floor>(collection), FloorRepository {
     override suspend fun findByOfficeId(officeId: ObjectId): List<Floor> =
-        collection.find(Floor::officeId eq officeId).toList()
+        collection.find(Floor::locationId eq officeId).toList()
 }

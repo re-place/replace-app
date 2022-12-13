@@ -4,5 +4,5 @@ import org.bson.types.ObjectId
 
 data class Floor(
     val name: String,
-    val officeId: ObjectId,
+    val locationId: ObjectId,
 ) : ObjectWithId()
