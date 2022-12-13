@@ -14,10 +14,10 @@ object CreateFloorUseCase {
         siteRepository: SiteRepository,
     ): FloorDto {
         val name = floorDto.name
-        val locationId = ObjectId(floorDto.locationId)
-        val site = siteRepository.findOneById(locationId)
-        checkNotNull(site) { "Location ID not found" }
-        val floor = Floor(name, locationId)
+        val siteId = ObjectId(floorDto.siteId)
+        val site = siteRepository.findOneById(siteId)
+        checkNotNull(site) { "Site with id $siteId not found" }
+        val floor = Floor(name, siteId)
         val insertedFloor = floorRepository.insertOne(floor)
         checkNotNull(insertedFloor) { "Could not insert BookableEntity" }
         return insertedFloor.toDto()

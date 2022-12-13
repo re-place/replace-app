@@ -7,11 +7,11 @@ import replace.model.Floor
 class FloorDto(
     override val id: String? = null,
     val name: String,
-    val locationId: String,
+    val siteId: String,
 ) : Dto
 
 fun Floor.toDto() = FloorDto(
     id = id?.toHexString(),
     name = name,
-    locationId = locationId.toHexString(),
+    siteId = siteId.toHexString(),
 )

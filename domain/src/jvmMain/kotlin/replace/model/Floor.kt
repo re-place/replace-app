@@ -7,5 +7,5 @@ import org.bson.types.ObjectId
 @Serializable
 data class Floor(
     val name: String,
-    @Contextual val locationId: ObjectId,
+    @Contextual val siteId: ObjectId,
 ) : ObjectWithId()
