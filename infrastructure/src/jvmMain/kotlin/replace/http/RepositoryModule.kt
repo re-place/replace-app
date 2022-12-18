@@ -58,6 +58,12 @@ inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(rep
                 schema<D>()
             }
         }
+        400 response {
+            description = "The id is not a valid ObjectId"
+        }
+        404 response {
+            description = "No ${T::class.simpleName} with the given id exists"
+        }
     }
 
     delete<Routing.ById> { route ->
@@ -72,6 +78,9 @@ inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(rep
             plainText {
                 schema(true)
             }
+        }
+        400 response {
+            description = "The id is not a valid ObjectId"
         }
     }
 }
