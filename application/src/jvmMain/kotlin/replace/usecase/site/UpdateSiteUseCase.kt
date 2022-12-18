@@ -5,6 +5,7 @@ import replace.datastore.SiteRepository
 import replace.dto.SiteDto
 import replace.dto.toDto
 import replace.dto.toModel
+
 object UpdateSiteUseCase {
     suspend fun execute(
         siteDto: SiteDto,
