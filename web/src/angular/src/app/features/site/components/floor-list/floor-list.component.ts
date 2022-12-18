@@ -13,7 +13,7 @@ export class FloorListComponent {
     @Output() create = new EventEmitter<void>()
 
     columns = [
-        { key: "_id", label: "ID" },
+        { key: "id", label: "ID" },
         { key: "name", label: "Name" },
     ]
 
@@ -26,6 +26,6 @@ export class FloorListComponent {
     }
 
     public getFloorEditLink(floor: Floor) {
-        return `/floor/${floor._id}/edit`
+        return `/floor/${floor.id}/edit`
     }
 }

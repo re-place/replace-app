@@ -1,8 +1,8 @@
 <crud-layout [title]="'Büro Gebäude'" [createRoute]="'create'">
     <crud-card>
-        <loading-state [loading]="officeBuildings === undefined">
+        <loading-state [loading]="sites === undefined">
             <ng-template>
-                <data-table [data]="officeBuildings" [columns]="dataColumns">
+                <data-table [data]="sites" [columns]="dataColumns">
                     <ng-template let-item>
                         <div class="flex justify-end">
                             <a
@@ -14,7 +14,7 @@
                         </div>
                     </ng-template>
                 </data-table>
-                <empty-state *ngIf="officeBuildings?.length === 0">
+                <empty-state *ngIf="sites?.length === 0">
                     <ng-template [icon]>
                         <mat-icon class="scale-[3] text-gray-400"> location_city </mat-icon>
                     </ng-template>

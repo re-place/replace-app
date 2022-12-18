@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { OfficeBuilding } from "types"
+import { Site } from "types"
 
 import { ApiService } from "src/app/core/services/api.service"
 
@@ -9,18 +9,18 @@ import { ApiService } from "src/app/core/services/api.service"
     styles: [],
 })
 export class IndexComponent {
-    public officeBuildings: OfficeBuilding[] | undefined
+    public sites: Site[] | undefined
 
     public dataColumns = [
-        { key: "_id", label: "ID" },
+        { key: "id", label: "ID" },
         { key: "name", label: "Name" },
     ]
 
     public constructor(private readonly api: ApiService) {
-        api.getOfficeBuildings().then((officeBuildings) => (this.officeBuildings = officeBuildings))
+        api.getSites().then((sites) => (this.sites = sites))
     }
 
-    public getEditRoute(officeBuilding: OfficeBuilding) {
-        return `./${officeBuilding._id}/edit`
+    public getEditRoute(site: Site) {
+        return `./${site.id}/edit`
     }
 }

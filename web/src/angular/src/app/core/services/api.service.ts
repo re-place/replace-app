@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { firstValueFrom } from "rxjs"
-import { BookableEntity, Floor, OfficeBuilding } from "types"
+import { BookableEntity, Floor, Site } from "types"
 
 @Injectable({
     providedIn: "root",
@@ -9,40 +9,40 @@ import { BookableEntity, Floor, OfficeBuilding } from "types"
 export class ApiService {
     constructor(private readonly http: HttpClient) {}
 
-    public async getOfficeBuildings() {
-        return await firstValueFrom(this.http.get<OfficeBuilding[]>("/api/office-building"))
+    public async getSites() {
+        return await firstValueFrom(this.http.get<Site[]>("/api/site"))
     }
 
-    public async getOfficeBuilding(id: string) {
-        return await firstValueFrom(this.http.get<OfficeBuilding>(`/api/office-building/${id}`))
+    public async getSite(id: string) {
+        return await firstValueFrom(this.http.get<Site>(`/api/site/${id}`))
     }
 
-    public async createOfficeBuilding(office: Omit<OfficeBuilding, "_id">) {
-        return await firstValueFrom(this.http.post<OfficeBuilding>("/api/office-building", office))
+    public async createSite(site: Omit<Site, "id">) {
+        return await firstValueFrom(this.http.post<Site>("/api/site", site))
     }
 
-    public async updateOfficeBuilding(office: OfficeBuilding) {
-        return await firstValueFrom(this.http.put<OfficeBuilding>("/api/office-building/update", office))
+    public async updateSite(site: Site) {
+        return await firstValueFrom(this.http.put<Site>("/api/site", site))
     }
 
-    public async getFloors(officeBuildingId?: string) {
-        if (officeBuildingId === undefined) {
+    public async getFloors(siteId?: string) {
+        if (siteId === undefined) {
             return await firstValueFrom(this.http.get<Floor[]>("/api/floor"))
         }
 
-        return await firstValueFrom(this.http.get<Floor[]>(`/api/office-building/${officeBuildingId}/floor`))
+        return await firstValueFrom(this.http.get<Floor[]>(`/api/site/${siteId}/floor`))
     }
 
     public async getFloor(id: string) {
         return await firstValueFrom(this.http.get<Floor>(`/api/floor/${id}`))
     }
 
-    public async createFloor(floor: Omit<Floor, "_id">) {
+    public async createFloor(floor: Omit<Floor, "id">) {
         return await firstValueFrom(this.http.post<Floor>("/api/floor", floor))
     }
 
     public async updateFloor(floor: Floor) {
-        return await firstValueFrom(this.http.put<Floor>("/api/floor/update", floor))
+        return await firstValueFrom(this.http.put<Floor>("/api/floor", floor))
     }
 
     public async getBookableEntities(floorId?: string) {
@@ -57,11 +57,11 @@ export class ApiService {
         return await firstValueFrom(this.http.get<BookableEntity>(`/api/bookable-entity/${id}`))
     }
 
-    public async createBookableEntity(entity: Omit<BookableEntity, "_id">) {
+    public async createBookableEntity(entity: Omit<BookableEntity, "id">) {
         return await firstValueFrom(this.http.post<BookableEntity>("/api/bookable-entity", entity))
     }
 
     public async updateBookableEntity(entity: BookableEntity) {
-        return await firstValueFrom(this.http.put<BookableEntity>("/api/bookable-entity/update", entity))
+        return await firstValueFrom(this.http.put<BookableEntity>("/api/bookable-entity", entity))
     }
 }

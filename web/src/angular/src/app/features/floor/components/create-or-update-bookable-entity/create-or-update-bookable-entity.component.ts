@@ -8,10 +8,10 @@ import { BookableEntity } from "types"
     styles: [],
 })
 export class CreateOrUpdateBookableEntityComponent implements OnChanges {
-    @Input() bookableEntity!: SetOptional<BookableEntity, "floorId" | "parentId" | "_id">
-    bookableEntityToEdit: SetOptional<BookableEntity, "floorId" | "parentId" | "_id"> = { name: "" }
+    @Input() bookableEntity!: SetOptional<BookableEntity, "floorId" | "parentId" | "id">
+    bookableEntityToEdit: SetOptional<BookableEntity, "floorId" | "parentId" | "id"> = { name: "", type: null }
 
-    @Output() submitBookableEntity = new EventEmitter<SetOptional<BookableEntity, "floorId" | "parentId" | "_id">>()
+    @Output() submitBookableEntity = new EventEmitter<SetOptional<BookableEntity, "floorId" | "parentId" | "id">>()
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["bookableEntity"] === undefined) return
@@ -20,7 +20,7 @@ export class CreateOrUpdateBookableEntityComponent implements OnChanges {
     }
 
     get saveText() {
-        return this.bookableEntity._id === undefined ? "Hinzufügen" : "Speichern"
+        return this.bookableEntity.id === undefined ? "Hinzufügen" : "Speichern"
     }
 
     public onSubmit(event: SubmitEvent) {

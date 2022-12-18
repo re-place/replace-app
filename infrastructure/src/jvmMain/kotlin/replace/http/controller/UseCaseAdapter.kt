@@ -7,6 +7,7 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.util.pipeline.PipelineContext
+import java.lang.IllegalArgumentException
 
 suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.executeUseCase(useCase: () -> T) {
     try {
@@ -18,6 +19,12 @@ suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.exec
             status = HttpStatusCode.BadRequest
         )
     } catch (e: BadRequestException) {
+        call.respondText(
+            "Invalid request: ${e.cause?.message ?: e.message} \n" +
+                " ${e.stackTrace.joinToString("\n")}",
+            status = HttpStatusCode.BadRequest
+        )
+    } catch (e: IllegalArgumentException) {
         call.respondText(
             "Invalid request: ${e.cause?.message ?: e.message} \n" +
                 " ${e.stackTrace.joinToString("\n")}",

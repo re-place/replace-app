@@ -3,7 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 import { SetOptional } from "type-fest"
-import { Floor, OfficeBuilding } from "types"
+import { Floor, Site } from "types"
 
 import { ApiService } from "src/app/core/services/api.service"
 import { DataLoader, Form } from "src/app/util"
@@ -15,9 +15,9 @@ import { DataLoader, Form } from "src/app/util"
 })
 export class EditComponent implements OnDestroy {
     title = ""
-    form: Form<OfficeBuilding> | undefined = undefined
+    form: Form<Site> | undefined = undefined
     floors = new DataLoader<Floor[]>()
-    editingFloor: SetOptional<Floor, "_id" | "officeBuildingId"> | undefined = undefined
+    editingFloor: SetOptional<Floor, "id" | "siteId"> | undefined = undefined
 
     private readonly routeSub: Subscription
 
@@ -27,7 +27,7 @@ export class EditComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
     ) {
         this.routeSub = route.params.subscribe(async (params) => {
-            this.form = new Form(await api.getOfficeBuilding(params["id"]))
+            this.form = new Form(await api.getSite(params["id"]))
             this.form.useSnackbar(snackBar)
             this.title = `Gebäude ${this.form.data.name} bearbeiten`
 
@@ -36,7 +36,7 @@ export class EditComponent implements OnDestroy {
     }
 
     public async onSubmit() {
-        this.form?.submit((data) => this.api.updateOfficeBuilding(data))
+        this.form?.submit((data) => this.api.updateSite(data))
     }
 
     ngOnDestroy(): void {
@@ -47,14 +47,14 @@ export class EditComponent implements OnDestroy {
         this.editingFloor = { name: "" }
     }
 
-    public onSubmitFloor(floor: SetOptional<Floor, "_id" | "officeBuildingId">) {
+    public onSubmitFloor(floor: SetOptional<Floor, "id" | "siteId">) {
         this.floors.loading(true)
 
-        if (floor._id === undefined) {
+        if (floor.id === undefined) {
             this.api
                 .createFloor({
                     ...floor,
-                    officeBuildingId: this.route.snapshot.params["id"],
+                    siteId: this.route.snapshot.params["id"],
                 })
                 .then(() => {
                     this.floors.refresh()
@@ -64,7 +64,7 @@ export class EditComponent implements OnDestroy {
             return
         }
 
-        if (floor._id !== undefined) {
+        if (floor.id !== undefined) {
             this.api.updateFloor(floor as Floor).then(() => {
                 this.floors.refresh()
                 this.editingFloor = undefined

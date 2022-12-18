@@ -10,13 +10,14 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import org.bson.types.ObjectId
 import replace.datastore.Repository
+import replace.dto.Dto
 import replace.http.controller.Routing
 import replace.model.ObjectWithId
 
-inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Repository<T>) {
+inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(repository: Repository<T>, crossinline toDto: (T) -> D) {
     get {
         try {
-            call.respond(repository.getAll().toTypedArray())
+            call.respond(repository.getAll().map(toDto))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -29,7 +30,7 @@ inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Reposito
         if (dbResult == null) {
             call.respondText("No document with id ${route.id}", status = HttpStatusCode.NotFound)
         } else {
-            call.respond(dbResult)
+            call.respond(toDto(dbResult))
         }
     }
     delete<Routing.ById> { route ->

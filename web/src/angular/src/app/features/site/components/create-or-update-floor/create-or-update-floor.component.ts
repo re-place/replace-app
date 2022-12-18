@@ -8,10 +8,10 @@ import { Floor } from "types"
     styles: [],
 })
 export class CreateOrUpdateFloorComponent implements OnChanges {
-    @Input() floor!: SetOptional<Floor, "officeBuildingId" | "_id">
-    floorToEdit: SetOptional<Floor, "officeBuildingId" | "_id"> = { name: "" }
+    @Input() floor!: SetOptional<Floor, "siteId" | "id">
+    floorToEdit: SetOptional<Floor, "siteId" | "id"> = { name: "" }
 
-    @Output() submitFloor = new EventEmitter<SetOptional<Floor, "officeBuildingId" | "_id">>()
+    @Output() submitFloor = new EventEmitter<SetOptional<Floor, "siteId" | "id">>()
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["floor"] === undefined) return
@@ -20,7 +20,7 @@ export class CreateOrUpdateFloorComponent implements OnChanges {
     }
 
     get saveText() {
-        return this.floor._id === undefined ? "Hinzufügen" : "Speichern"
+        return this.floor.id === undefined ? "Hinzufügen" : "Speichern"
     }
 
     public onSubmit(event: SubmitEvent) {

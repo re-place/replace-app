@@ -13,7 +13,7 @@ export class BookableEntityListComponent {
     @Output() create = new EventEmitter<void>()
 
     columns = [
-        { key: "_id", label: "ID" },
+        { key: "id", label: "ID" },
         { key: "name", label: "Name" },
     ]
 

@@ -17,7 +17,7 @@ export class EditComponent implements OnDestroy {
     title = ""
     form: Form<Floor> | undefined = undefined
     bookableEntities = new DataLoader<BookableEntity[]>()
-    editingBookableEntity: SetOptional<BookableEntity, "_id" | "parentId" | "floorId"> | undefined = undefined
+    editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
 
     private readonly routeSub: Subscription
 
@@ -48,13 +48,13 @@ export class EditComponent implements OnDestroy {
     }
 
     public onCreateBookableEntity() {
-        this.editingBookableEntity = { name: "" }
+        this.editingBookableEntity = { name: "", type: null }
     }
 
-    public onSubmitBookableEntity(bookableEntity: SetOptional<BookableEntity, "_id" | "floorId" | "parentId">) {
+    public onSubmitBookableEntity(bookableEntity: SetOptional<BookableEntity, "id" | "floorId" | "parentId">) {
         this.bookableEntities.loading(true)
 
-        if (bookableEntity._id === undefined) {
+        if (bookableEntity.id === undefined) {
             this.api
                 .createBookableEntity({
                     ...bookableEntity,
@@ -69,7 +69,7 @@ export class EditComponent implements OnDestroy {
             return
         }
 
-        if (bookableEntity._id !== undefined) {
+        if (bookableEntity.id !== undefined) {
             this.api.updateBookableEntity(bookableEntity as BookableEntity).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined

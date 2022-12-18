@@ -25,12 +25,12 @@ export class CreateComponent {
     }
 
     public async submit() {
-        const officeBuilding = await this.form.submit((data) => this.api.createOfficeBuilding(data))
+        const site = await this.form.submit((data) => this.api.createSite(data))
 
-        if (officeBuilding === undefined) {
+        if (site === undefined) {
             return
         }
 
-        this.router.navigate(["./../", officeBuilding._id, "edit"], { relativeTo: this.route })
+        this.router.navigate(["./../", site.id, "edit"], { relativeTo: this.route })
     }
 }

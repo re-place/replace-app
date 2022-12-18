@@ -29,9 +29,8 @@ const routes: Routes = [
                 loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),
             },
             {
-                path: "office-building",
-                loadChildren: () =>
-                    import("./features/office-building/office-building.module").then((m) => m.OfficeBuildingModule),
+                path: "site",
+                loadChildren: () => import("./features/site/site.module").then((m) => m.SiteModule),
             },
             { path: "floor", loadChildren: () => import("./features/floor/floor.module").then((m) => m.FloorModule) },
             {

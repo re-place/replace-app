@@ -13,3 +13,5 @@ fun Site.toDto() = SiteDto(
     id = id?.toHexString(),
     name = name,
 )
+
+fun SiteDto.toModel() = Site(name)
