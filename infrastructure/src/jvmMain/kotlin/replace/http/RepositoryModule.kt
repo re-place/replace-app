@@ -73,6 +73,10 @@ inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(rep
         call.respond(repository.deleteOneById(ObjectId(route.id)))
     } describe {
         description = "Deletes a ${T::class.simpleName} by id"
+        "id" pathParameter {
+            description = "The id of the ${T::class.simpleName}"
+            schema(ObjectId().toString())
+        }
         200 response {
             description = "The deleted ${T::class.simpleName} with the given id"
             plainText {
