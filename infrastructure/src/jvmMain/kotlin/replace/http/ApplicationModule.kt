@@ -55,6 +55,7 @@ fun Application.applicationModule() {
     install(TegralOpenApiKtor) {
         title = "Replace API"
         description = "API for the Replace application"
+        version = "2022.1-SNAPSHOT"
     }
 
     install(TegralSwaggerUiKtor)

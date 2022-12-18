@@ -10,6 +10,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import io.ktor.server.routing.param
 import org.bson.types.ObjectId
 import replace.datastore.Repository
 import replace.dto.Dto
@@ -48,6 +49,9 @@ inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(rep
         }
     } describe {
         description = "Gets a ${T::class.simpleName} by id"
+        param("id") {
+            description = "The id of the ${T::class.simpleName}"
+        }
         200 response {
             description = "The ${T::class.simpleName} with the given id"
             json {
