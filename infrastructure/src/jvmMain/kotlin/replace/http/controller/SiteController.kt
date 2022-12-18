@@ -8,7 +8,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.param
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
@@ -72,7 +71,7 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             call.respond(floors)
         } describe {
             description = "Gets all floors for a site"
-            param("siteId") {
+            "siteId" pathParameter {
                 description = "The id of the site"
             }
             200 response {

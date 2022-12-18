@@ -8,7 +8,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.param
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
@@ -59,7 +58,7 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase) {
 
             call.respond(bookableEntities)
         } describe {
-            param("floorId") {
+            "floorId" pathParameter {
                 description = "The id of the floor"
             }
             description = "Gets all bookable entities for a floor"
