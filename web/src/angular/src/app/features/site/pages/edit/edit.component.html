@@ -1,0 +1,36 @@
+<crud-layout [title]="title">
+    <crud-card (save)="onSubmit()" [saveText]="'speichern'">
+        <loading-state [loading]="form === undefined">
+            <ng-template>
+                <mat-form-field *ngIf="form !== undefined" appearance="fill" class="w-full">
+                    <mat-label>Name</mat-label>
+                    <input
+                        type="text"
+                        matInput
+                        [(ngModel)]="form.data.name"
+                        placeholder="Standort 1"
+                        required
+                        [disabled]="form.processing"
+                    />
+                    <mat-hint>Der Name des Standortes</mat-hint>
+                </mat-form-field>
+            </ng-template>
+        </loading-state>
+    </crud-card>
+    <card>
+        <h2 class="text-lg font-medium">Stockwerke</h2>
+        <loading-state [loading]="floors.loading()" class="flex h-96">
+            <ng-template>
+                <floor-list class="grow" [floors]="floors.data" (create)="onCreateFloor()"> </floor-list>
+                <div *ngIf="editingFloor !== undefined" class="border-l-2 border-gray-300 mx-4 my-8"></div>
+                <create-or-update-floor
+                    class="min-w-56"
+                    *ngIf="editingFloor !== undefined"
+                    [floor]="editingFloor"
+                    (submitFloor)="onSubmitFloor($event)"
+                >
+                </create-or-update-floor>
+            </ng-template>
+        </loading-state>
+    </card>
+</crud-layout>

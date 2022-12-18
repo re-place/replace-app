@@ -5,7 +5,7 @@ import replace.datastore.FloorRepository
 import replace.datastore.SiteRepository
 import replace.dto.FloorDto
 import replace.dto.toDto
-import replace.model.Floor
+import replace.dto.toModel
 
 object CreateFloorUseCase {
     suspend fun execute(
@@ -13,12 +13,10 @@ object CreateFloorUseCase {
         floorRepository: FloorRepository,
         siteRepository: SiteRepository,
     ): FloorDto {
-        val name = floorDto.name
         val siteId = ObjectId(floorDto.siteId)
         val site = siteRepository.findOneById(siteId)
         checkNotNull(site) { "Site with id $siteId not found" }
-        val floor = Floor(name, siteId)
-        val insertedFloor = floorRepository.insertOne(floor)
+        val insertedFloor = floorRepository.insertOne(floorDto.toModel())
         checkNotNull(insertedFloor) { "Could not insert BookableEntity" }
         return insertedFloor.toDto()
     }

@@ -1,6 +1,7 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
+import org.bson.types.ObjectId
 import replace.model.Booking
 
 @Serializable
@@ -13,3 +14,5 @@ fun Booking.toDto() = BookingDto(
     id = id?.toHexString(),
     bookedEntities = bookedEntities.map { it.toHexString() },
 )
+
+fun BookingDto.toModel() = Booking(bookedEntities.map { ObjectId(it) })

@@ -1,0 +1,35 @@
+<div class="h-full flex flex-col overflow-y-auto">
+    <data-table [data]="bookableEntities" [columns]="columns">
+        <ng-template let-item>
+            <div class="flex justify-end">
+                <text-button type="button" (click)="onEdit(item)">
+                    <ng-template>
+                        <mat-icon>edit</mat-icon>
+                    </ng-template>
+                </text-button>
+            </div>
+        </ng-template>
+    </data-table>
+    <div *ngIf="bookableEntities?.length === 0" class="grow flex items-center justify-center">
+        <empty-state>
+            <ng-template [icon]>
+                <mat-icon class="scale-[3] text-gray-400"> co_present </mat-icon>
+            </ng-template>
+            <ng-template [actions]>
+                <button
+                    class="flex justify-center items-center text-green-500 hover:text-green-700 font-normal h-12"
+                    (click)="onCreate()"
+                >
+                    Buchbares Objekt hinzufügen
+                </button>
+            </ng-template>
+        </empty-state>
+    </div>
+    <button
+        *ngIf="bookableEntities?.length !== 0"
+        class="flex justify-center items-center text-green-500 hover:text-green-700 hover:bg-black/5 font-light text-sm h-12"
+        (click)="onCreate()"
+    >
+        Buchbares Objekt hinzufügen
+    </button>
+</div>

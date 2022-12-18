@@ -5,3 +5,6 @@ database: {
     port: "27017"
     database: "replace-app"
 }
+ktor {
+    development = false
+}

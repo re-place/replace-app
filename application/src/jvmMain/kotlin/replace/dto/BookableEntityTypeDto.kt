@@ -13,3 +13,5 @@ fun BookableEntityType.toDto() = BookableEntityTypeDto(
     id = id?.toHexString(),
     name = name,
 )
+
+fun BookableEntityTypeDto.toModel() = BookableEntityType(name)

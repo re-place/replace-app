@@ -1,0 +1,15 @@
+<crud-layout [title]="'Neuen Standort erstellen'">
+    <crud-card (save)="submit()" [saveText]="'erstellen'">
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Name</mat-label>
+            <input
+                type="text"
+                matInput
+                [(ngModel)]="this.form.data.name"
+                placeholder="Standort 1"
+                [disabled]="this.form.processing"
+            />
+            <mat-hint>Der Name des Standortes</mat-hint>
+        </mat-form-field>
+    </crud-card>
+</crud-layout>

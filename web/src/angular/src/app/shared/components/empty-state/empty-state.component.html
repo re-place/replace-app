@@ -1,0 +1,34 @@
+<button
+    *ngIf="clickable; else elseBlock"
+    class="flex flex-col justify-center items-center p-12 focus:outline-none text-center"
+    [ngClass]="classes"
+>
+    <ng-container *ngIf="icon !== undefined" [ngTemplateOutlet]="icon.templateRef"></ng-container>
+    <h3 *ngIf="title !== undefined" class="mt-2 text-sm font-medium text-gray-900">
+        {{ title }}
+    </h3>
+    <p *ngIf="subtitle !== undefined" class="mt-1 text-sm text-gray-500">
+        {{ subtitle }}
+    </p>
+    <div *ngIf="!clickable && actions !== undefined" class="mt-6 first:mt-0">
+        <ng-container [ngTemplateOutlet]="actions.templateRef"></ng-container>
+    </div>
+</button>
+<ng-template #elseBlock>
+    <div class="flex flex-col justify-center items-center p-12 focus:outline-none text-center" [ngClass]="classes">
+        <ng-container
+            *ngIf="icon !== undefined"
+            [ngTemplateOutlet]="icon.templateRef"
+            class="mx-auto h-12 w-12 text-gray-400"
+        ></ng-container>
+        <h3 *ngIf="title !== undefined" class="mt-2 text-sm font-medium text-gray-900">
+            {{ title }}
+        </h3>
+        <p *ngIf="subtitle !== undefined" class="mt-1 text-sm text-gray-500">
+            {{ subtitle }}
+        </p>
+        <div *ngIf="!clickable && actions !== undefined" class="mt-6 first:mt-0">
+            <ng-container [ngTemplateOutlet]="actions.templateRef"></ng-container>
+        </div>
+    </div>
+</ng-template>

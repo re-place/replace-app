@@ -1,6 +1,7 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
+import org.bson.types.ObjectId
 import replace.model.Floor
 
 @Serializable
@@ -15,3 +16,5 @@ fun Floor.toDto() = FloorDto(
     name = name,
     siteId = siteId.toHexString(),
 )
+
+fun FloorDto.toModel() = Floor(name, ObjectId(siteId))

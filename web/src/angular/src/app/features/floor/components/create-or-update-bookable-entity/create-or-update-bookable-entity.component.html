@@ -1,0 +1,13 @@
+<form class="flex flex-col" (submit)="onSubmit($event)">
+    <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Objekt name</mat-label>
+        <input type="text" matInput [(ngModel)]="bookableEntityToEdit.name" placeholder="1. OG" name="floor_name" />
+        <mat-hint>Name des Objektes</mat-hint>
+    </mat-form-field>
+
+    <div class="flex justify-end mt-8">
+        <button mat-raised-button color="primary" type="submit">
+            {{ saveText }}
+        </button>
+    </div>
+</form>

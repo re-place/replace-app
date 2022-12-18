@@ -6,6 +6,7 @@ import io.ktor.server.routing.route
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.MongoBookableEntityTypeRepository
 import replace.dto.BookableEntityTypeDto
+import replace.dto.toDto
 import replace.http.routeRepository
 import replace.usecase.bookableentitytype.CreateBookableEntityTypeUseCase
 
@@ -13,7 +14,9 @@ fun Route.registerBookableEntityTypeRoutes(db: CoroutineDatabase) {
     val bookableEntityTypeRepository = MongoBookableEntityTypeRepository(db.getCollection())
 
     route("/api/bookable-entity-type") {
-        routeRepository(bookableEntityTypeRepository)
+        routeRepository(bookableEntityTypeRepository) {
+            it.toDto()
+        }
         post<BookableEntityTypeDto> {
             executeUseCase {
                 CreateBookableEntityTypeUseCase.execute(it, bookableEntityTypeRepository)
