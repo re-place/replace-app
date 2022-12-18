@@ -50,6 +50,7 @@ inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(rep
         description = "Gets a ${T::class.simpleName} by id"
         "id" pathParameter {
             description = "The id of the ${T::class.simpleName}"
+            schema(ObjectId().toString())
         }
         200 response {
             description = "The ${T::class.simpleName} with the given id"

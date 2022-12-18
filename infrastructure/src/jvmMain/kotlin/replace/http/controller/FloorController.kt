@@ -60,6 +60,7 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase) {
         } describe {
             "floorId" pathParameter {
                 description = "The id of the floor"
+                schema(ObjectId().toString())
             }
             description = "Gets all bookable entities for a floor"
             200 response {

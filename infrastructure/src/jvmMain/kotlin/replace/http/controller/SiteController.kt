@@ -73,6 +73,7 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             description = "Gets all floors for a site"
             "siteId" pathParameter {
                 description = "The id of the site"
+                schema(ObjectId().toString())
             }
             200 response {
                 description = "The floors for the site"
