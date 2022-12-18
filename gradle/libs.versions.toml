@@ -3,6 +3,7 @@ kmongo = "4.8.0"
 kotlin = "1.8.0-RC"
 ktor = "2.2.1"
 log4j = "2.19.0"
+tegral = "0.0.3"
 
 [libraries]
 kmongo-core = { module = "org.litote.kmongo:kmongo", version.ref = "kmongo" }
@@ -23,6 +24,9 @@ guice = "com.google.inject:guice:5.1.0"
 logging-api = "org.slf4j:slf4j-api:1.7.36"
 logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+tegral-openapi-base = { module ="guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
+tegral-openapi-swagger = { module ="guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
+
 
 [bundles]
 kmongo = [ "kmongo.core", "kmongo.async", "kmongo.coroutine" ]

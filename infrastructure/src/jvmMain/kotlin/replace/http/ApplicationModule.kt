@@ -1,6 +1,10 @@
 package replace.http
 
 import com.typesafe.config.ConfigFactory
+import guru.zoroark.tegral.openapi.ktor.TegralOpenApiKtor
+import guru.zoroark.tegral.openapi.ktor.openApiEndpoint
+import guru.zoroark.tegral.openapi.ktorui.TegralSwaggerUiKtor
+import guru.zoroark.tegral.openapi.ktorui.swaggerUiEndpoint
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -11,6 +15,7 @@ import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.resources.Resources
+import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -47,6 +52,13 @@ fun Application.applicationModule() {
     // install type-safe routing
     install(Resources)
 
+    install(TegralOpenApiKtor) {
+        title = "Replace API"
+        description = "API for the Replace application"
+    }
+
+    install(TegralSwaggerUiKtor)
+
     val config = HoconApplicationConfig(ConfigFactory.load())
     val db = getDB(config)
 
@@ -58,6 +70,11 @@ fun Application.applicationModule() {
     install(SinglePageApplication) {
         folderPath = "static"
         ignoreIfContains = Regex("^/api.*$")
+    }
+
+    routing {
+        openApiEndpoint("/openapi")
+        swaggerUiEndpoint("/swagger", "/openapi")
     }
 
     routeControllers(db)

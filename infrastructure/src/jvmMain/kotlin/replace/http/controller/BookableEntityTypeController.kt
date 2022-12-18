@@ -1,5 +1,7 @@
 package replace.http.controller
 
+import guru.zoroark.tegral.openapi.dsl.schema
+import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -20,6 +22,14 @@ fun Route.registerBookableEntityTypeRoutes(db: CoroutineDatabase) {
         post<BookableEntityTypeDto> {
             executeUseCase {
                 CreateBookableEntityTypeUseCase.execute(it, bookableEntityTypeRepository)
+            }
+        } describe {
+            description = "Creates a new bookable entity type"
+            200 response {
+                description = "The created bookable entity type"
+                json {
+                    schema<BookableEntityTypeDto>()
+                }
             }
         }
     }

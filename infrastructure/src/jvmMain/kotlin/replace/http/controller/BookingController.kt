@@ -1,5 +1,7 @@
 package replace.http.controller
 
+import guru.zoroark.tegral.openapi.dsl.schema
+import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -22,6 +24,14 @@ fun Route.registerBookingRoutes(db: CoroutineDatabase) {
         post<BookingDto> {
             executeUseCase {
                 CreateBookingUseCase.execute(it, bookingRepository)
+            }
+        } describe {
+            description = "Creates a new booking"
+            200 response {
+                description = "The created booking"
+                json {
+                    schema<BookingDto>()
+                }
             }
         }
     }

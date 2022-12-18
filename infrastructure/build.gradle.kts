@@ -17,6 +17,8 @@ dependencies {
     jvmMainImplementation(libs.ktor.server.resources)
     jvmMainImplementation(libs.ktor.server.sessions)
     jvmMainImplementation(libs.ktor.server.status.pages)
+    jvmMainImplementation(libs.tegral.openapi.base)
+    jvmMainImplementation(libs.tegral.openapi.swagger)
     jvmTestImplementation(libs.kotest)
 }
 

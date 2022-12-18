@@ -1,5 +1,7 @@
 package replace.http.controller
 
+import guru.zoroark.tegral.openapi.dsl.schema
+import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -33,11 +35,27 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             executeUseCase {
                 CreateSiteUseCase.execute(it, siteRepository)
             }
+        } describe {
+            description = "Creates a new site"
+            200 response {
+                description = "The created site"
+                json {
+                    schema<SiteDto>()
+                }
+            }
         }
 
         put<SiteDto> {
             executeUseCase {
                 UpdateSiteUseCase.execute(it, siteRepository)
+            }
+        } describe {
+            description = "Updates a site"
+            200 response {
+                description = "The updated site"
+                json {
+                    schema<SiteDto>()
+                }
             }
         }
 
@@ -51,6 +69,14 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             val floors = floorRepository.findBySiteId(ObjectId(siteId)).map() { it.toDto() }
 
             call.respond(floors)
+        } describe {
+            description = "Gets all floors for a site"
+            200 response {
+                description = "The floors for the site"
+                json {
+                    schema<List<SiteDto>>()
+                }
+            }
         }
     }
 }
