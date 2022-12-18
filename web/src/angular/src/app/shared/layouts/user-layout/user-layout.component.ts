@@ -29,7 +29,7 @@ export class UserLayoutComponent implements OnInit {
             icon: "calendar_today",
         },
         {
-            title: "Büros",
+            title: "Standorte",
             route: "/site",
             icon: "location_city",
         },

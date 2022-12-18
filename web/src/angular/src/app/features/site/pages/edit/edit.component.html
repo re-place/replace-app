@@ -3,16 +3,16 @@
         <loading-state [loading]="form === undefined">
             <ng-template>
                 <mat-form-field *ngIf="form !== undefined" appearance="fill" class="w-full">
-                    <mat-label>Büro Gebäude name</mat-label>
+                    <mat-label>Name</mat-label>
                     <input
                         type="text"
                         matInput
                         [(ngModel)]="form.data.name"
-                        placeholder="Büro"
+                        placeholder="Standort 1"
                         required
                         [disabled]="form.processing"
                     />
-                    <mat-hint>Der Name des Büro Gebäudes</mat-hint>
+                    <mat-hint>Der Name des Standortes</mat-hint>
                 </mat-form-field>
             </ng-template>
         </loading-state>
