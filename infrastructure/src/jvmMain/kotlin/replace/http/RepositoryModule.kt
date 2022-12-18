@@ -11,9 +11,9 @@ import io.ktor.server.routing.get
 import org.bson.types.ObjectId
 import replace.datastore.Repository
 import replace.http.controller.Routing
-import replace.model.ObjectWithId
+import replace.model.ObjectWithMaybeId
 
-inline fun <reified T : ObjectWithId> Route.routeRepository(repository: Repository<T>) {
+inline fun <reified T : ObjectWithMaybeId> Route.routeRepository(repository: Repository<T>) {
     get {
         try {
             call.respond(repository.getAll().toTypedArray())

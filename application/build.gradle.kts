@@ -11,4 +11,11 @@ dependencies {
     jvmMainImplementation(libs.logging.impl)
     jvmMainImplementation(libs.logging.core)
     jvmMainImplementation(libs.kotlinx.serialization)
+    jvmTestImplementation(libs.kotest)
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
 }

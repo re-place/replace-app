@@ -1,11 +1,19 @@
 package replace.model
 
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 
-@Serializable
-data class Floor(
-    val name: String,
-    @Contextual val siteId: ObjectId,
-) : ObjectWithId()
+interface Floor : ObjectWithMaybeId {
+    val name: String
+    val siteId: ObjectId
+}
+
+interface FloorWithId : Floor, ObjectWithId
+
+fun Floor.assertId(): FloorWithId = when (this) {
+    is FloorWithId -> this
+    else -> FloorWithIdImpl(this)
+}
+
+private class FloorWithIdImpl(delegate: Floor) : FloorWithId, Floor by delegate {
+    override val id: ObjectId = checkNotNull(delegate.id) { "Floor ID is null" }
+}
