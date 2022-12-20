@@ -4,6 +4,7 @@ database: {
     host: "localhost"
     port: "27017"
     database: "replace-app"
+    uri: null
 }
 ktor {
     development = false
