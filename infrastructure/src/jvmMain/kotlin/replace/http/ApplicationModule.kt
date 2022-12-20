@@ -94,8 +94,8 @@ fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
         credentials += "@"
     }
 
-    val mongoUri = config.tryGetString("database.uri") ?: 
-        "mongodb://$credentials$host:$port"
+    val mongoUri = config.tryGetString("database.uri")
+        ?: "mongodb://$credentials$host:$port"
 
     val client = KMongo.createClient(mongoUri).coroutine
 
