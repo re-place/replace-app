@@ -3,18 +3,54 @@ import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { firstValueFrom } from "rxjs"
 import { User } from "types"
+import { DefaultService } from "../openapi"
 
 @Injectable({
     providedIn: "root",
 })
 export class AuthService {
-    constructor(private readonly http: HttpClient, private readonly router: Router) {}
     currentUser: User | null = null
+    loginError: string | undefined = undefined
+    private readonly intendedUrl: string | null = null
 
-    public async login(username: string, password: string) {
-        this.currentUser = await firstValueFrom(this.http.post<User>("/api/login", { username, password }))
+    constructor(private readonly http: HttpClient, private readonly router: Router, private apiService: DefaultService) {
+        const intendedUrl = this.router.getCurrentNavigation()?.extras.state?.["intendedUrl"]
+        if(typeof intendedUrl === "string") {
+            this.intendedUrl = intendedUrl
+        }
+    }
 
-        return this.currentUser
+    public login(username: string, password: string) {
+        const req = this.http.post<User>("/api/login", {username, password}, {observe: "response"})
+        req.subscribe({
+            next: res => {
+                // Append session token to the headers (not happy about this,
+                // should be a cookie, not a header)
+                this.addSessionTokenHeader(res.headers.get("SESSION_TOKEN"))
+
+                // Save user object
+                this.currentUser = res.body
+
+                let url = "/"
+                if(this.intendedUrl !== null) {
+                    url = this.intendedUrl
+                } 
+                this.router.navigateByUrl(url)
+            },
+            error: err => {
+                console.log(err)
+                this.loginError = err.error
+            },
+        })
+    }
+
+    public getLoginError(): string {
+        return this.loginError?? ""
+    }
+
+    private addSessionTokenHeader(token: string | null) {
+        if(!token) return
+        this.apiService.defaultHeaders = this.apiService.defaultHeaders.append("SESSION_TOKEN", token)
     }
 
     public async isAuthenticated(): Promise<boolean> {
