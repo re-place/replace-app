@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { firstValueFrom } from "rxjs"
+
 import { User } from "types"
-import { DefaultService } from "../openapi"
 
 @Injectable({
     providedIn: "root",
@@ -13,7 +13,7 @@ export class AuthService {
     loginError: string | undefined = undefined
     private readonly intendedUrl: string | null = null
 
-    constructor(private readonly http: HttpClient, private readonly router: Router, private apiService: DefaultService) {
+    constructor(private readonly http: HttpClient, private readonly router: Router) {
         const intendedUrl = this.router.getCurrentNavigation()?.extras.state?.["intendedUrl"]
         if(typeof intendedUrl === "string") {
             this.intendedUrl = intendedUrl
@@ -24,10 +24,6 @@ export class AuthService {
         const req = this.http.post<User>("/api/login", {username, password}, {observe: "response"})
         req.subscribe({
             next: res => {
-                // Append session token to the headers (not happy about this,
-                // should be a cookie, not a header)
-                this.addSessionTokenHeader(res.headers.get("SESSION_TOKEN"))
-
                 // Save user object
                 this.currentUser = res.body
 
@@ -46,11 +42,6 @@ export class AuthService {
 
     public getLoginError(): string {
         return this.loginError?? ""
-    }
-
-    private addSessionTokenHeader(token: string | null) {
-        if(!token) return
-        this.apiService.defaultHeaders = this.apiService.defaultHeaders.append("SESSION_TOKEN", token)
     }
 
     public async isAuthenticated(): Promise<boolean> {
