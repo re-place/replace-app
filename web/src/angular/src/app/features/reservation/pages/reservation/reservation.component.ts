@@ -92,10 +92,10 @@ export class ReservationComponent implements OnInit {
     }
 
     setImgSrc() {
-        console.log('hey')
         if(this.selectedSite?.name == undefined) return
         const site = this.selectedSite??{}
         this.imgSrc = this.images.find(img => img.name == site.name)?.path??""
+        console.log(this.imgSrc)
     }
 
     alphaSort(arr: any[]) {
