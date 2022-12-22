@@ -18,16 +18,24 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
+    images = [
+        { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
+        { name: "Frankfurt am Main", path: "assets/andrena_Frankfurt.png" },
+    ]
+    imgSrc: string = this.images[0].path
+
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) { }
 
     ngOnInit() {
+
         this.apiService.apiSiteGet().subscribe({
             next: response => {
                 this.sites = response
                 this.alphaSort(this.sites)
+                this.setDefaults()
             },
             error: () => {
                 this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
@@ -35,17 +43,26 @@ export class ReservationComponent implements OnInit {
         })
     }
 
-    // TODO:
-    // If floors.length == 1
-    //  pick the only element
-    //  mark corresponding field as read only
-    //  be sure to call getBookEnts manually
+    // Set default to Darmstadt for the first version
+    setDefaults() {
+        this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
+        this.getFloors()
+    }
+
     getFloors() {
+        this.selectedFloor = undefined
+        this.selectedEntity = undefined
         if(this.selectedSite?.id == undefined) return
 
         this.apiService.apiSiteSiteIdFloorGet(this.selectedSite.id).subscribe({
             next: response => {
                 this.floors = response
+                this.setImgSrc()
+                if(this.floors.length == 1) {
+                    this.selectedFloor = this.floors[0]
+                    this.getBookableEntities()
+                    return
+                }
                 this.alphaSort(this.floors)
             },
             error: () => {
@@ -56,6 +73,7 @@ export class ReservationComponent implements OnInit {
     } 
 
     getBookableEntities() {
+        this.selectedEntity = undefined
         if(this.selectedFloor?.id == undefined) return
 
         this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id).subscribe({
@@ -67,6 +85,17 @@ export class ReservationComponent implements OnInit {
                 this.showErrorSnackbar("Buchbare Objekte konnten nicht abgefragt werden")
             },
         })
+    }
+
+    sendBooking() {
+        this.snackBar.open("Arbeitsplatz gebucht!", "ok", { duration: 3000 })
+    }
+
+    setImgSrc() {
+        console.log('hey')
+        if(this.selectedSite?.name == undefined) return
+        const site = this.selectedSite??{}
+        this.imgSrc = this.images.find(img => img.name == site.name)?.path??""
     }
 
     alphaSort(arr: any[]) {

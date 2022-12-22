@@ -5,6 +5,7 @@ import { MatButtonModule } from "@angular/material/button"
 import { MatFormFieldModule } from "@angular/material/form-field"
 import { MatInputModule } from "@angular/material/input"
 import { MatSelectModule } from "@angular/material/select"
+import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
 import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
@@ -22,6 +23,7 @@ import { ReservationRoutingModule } from "./reservation-routing.module"
         MatInputModule,
         FormsModule,
         MatButtonModule,
+        MatSlideToggleModule,
     ],
 })
 export class ReservationModule { }
