@@ -22,6 +22,7 @@ import kotlinx.serialization.modules.contextual
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
+import replace.datastore.LocalStorage
 import replace.datastore.MongoUserRepository
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
@@ -78,7 +79,9 @@ fun Application.applicationModule() {
         swaggerUiEndpoint("/swagger", "/openapi")
     }
 
-    routeControllers(db)
+    val storage = LocalStorage()
+
+    routeControllers(db, storage)
 }
 
 fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
