@@ -24,16 +24,15 @@ import io.swagger.v3.oas.models.media.FileSchema
 import io.swagger.v3.oas.models.media.MapSchema
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoRepository
+import replace.datastore.MongoTemporaryFileUploadRepository
 import replace.datastore.Storage
 import replace.dto.TemporaryFileUploadDto
-import replace.model.TemporaryFileUpload
 import replace.usecase.temporaryfileupload.CreateTemporaryFileUploadUseCase
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.util.UUID
 
 fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Storage) {
-    val temporaryFileUploadRepository = MongoRepository<TemporaryFileUpload>(db.getCollection())
+    val temporaryFileUploadRepository = MongoTemporaryFileUploadRepository(db.getCollection())
 
     route("/api/temporary-file-upload") {
         post {

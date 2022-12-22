@@ -22,7 +22,9 @@ import kotlinx.serialization.modules.contextual
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
+import replace.Job.DeleteOldTemporaryFileUploadsJob
 import replace.datastore.LocalStorage
+import replace.datastore.MongoTemporaryFileUploadRepository
 import replace.datastore.MongoUserRepository
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
@@ -82,6 +84,15 @@ fun Application.applicationModule() {
     val storage = LocalStorage()
 
     routeControllers(db, storage)
+
+    val deleteOldTemporaryFileUploadsJob = DeleteOldTemporaryFileUploadsJob(
+        1000 * 60 * 60 * 12, // 12 hours
+        1000 * 60 * 60 * 24, // 24 hours
+        MongoTemporaryFileUploadRepository(db.getCollection()),
+        storage
+    )
+
+    deleteOldTemporaryFileUploadsJob.dispatch()
 }
 
 fun getDB(config: HoconApplicationConfig): CoroutineDatabase {
