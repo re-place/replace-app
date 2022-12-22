@@ -60,62 +60,62 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Stor
 
                 return@post call.respond(temporaryFileUploadDtos)
             }
-        }
-    } describe {
-        description = "Creates a new temporary file uploads"
-        body {
-            required = true
-            "multipart/form-data" content {
-                schema = MapSchema()
-                    .addPatternProperty("*", FileSchema().description("The File to upload"))
+        } describe {
+            description = "Creates a new temporary file uploads"
+            body {
+                required = true
+                "multipart/form-data" content {
+                    schema = MapSchema()
+                        .addPatternProperty("*", FileSchema().description("The File to upload"))
+                }
+            }
+            200 response {
+                description = "The created temporary file uploads"
+                json {
+                    schema<List<TemporaryFileUploadDto>>()
+                }
             }
         }
-        200 response {
-            description = "The created temporary file uploads"
-            json {
-                schema<List<TemporaryFileUploadDto>>()
+
+        get<Routing.ById> { route ->
+            if (!ObjectId.isValid(route.id)) {
+                return@get call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+            }
+
+            val dbResult = temporaryFileUploadRepository.findOneById(ObjectId(route.id))
+                ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
+
+            val file = storage.getFile(dbResult.path)
+
+            if (!file.exists()) {
+                return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
+            }
+
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                ContentDisposition.Inline.withParameter(
+                    ContentDisposition.Parameters.FileName, "${dbResult.name}.${dbResult.extension}"
+                ).toString()
+            )
+
+            call.respondBytes(ContentType.parse(dbResult.mime)) { file.readBytes() }
+        } describe {
+            description = "Gets a temporary file upload by id"
+            200 response {
+                description = "The temporary file upload"
             }
         }
-    }
 
-    get<Routing.ById> { route ->
-        if (!ObjectId.isValid(route.id)) {
-            return@get call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
-        }
-
-        val dbResult = temporaryFileUploadRepository.findOneById(ObjectId(route.id))
-            ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
-
-        val file = storage.getFile(dbResult.path)
-
-        if (!file.exists()) {
-            return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
-        }
-
-        call.response.header(
-            HttpHeaders.ContentDisposition,
-            ContentDisposition.Inline.withParameter(
-                ContentDisposition.Parameters.FileName, "${dbResult.name}.${dbResult.extension}"
-            ).toString()
-        )
-
-        call.respondBytes(ContentType.parse(dbResult.mime)) { file.readBytes() }
-    } describe {
-        description = "Gets a temporary file upload by id"
-        200 response {
-            description = "The temporary file upload"
-        }
-    }
-
-    delete<Routing.ById> { route ->
-        executeUseCase {
-            DeleteTemporaryFileUploadUseCase.execute(route.id, temporaryFileUploadRepository, storage)
-            return@delete call.respond(HttpStatusCode.NoContent)
-        }
-    } describe {
-        description = "Deletes a temporary file upload by id"
-        204 response {
-            description = "The temporary file upload was deleted"
+        delete<Routing.ById> { route ->
+            executeUseCase {
+                DeleteTemporaryFileUploadUseCase.execute(route.id, temporaryFileUploadRepository, storage)
+                return@delete call.respond(HttpStatusCode.NoContent)
+            }
+        } describe {
+            description = "Deletes a temporary file upload by id"
+            204 response {
+                description = "The temporary file upload was deleted"
+            }
         }
     }
 }
