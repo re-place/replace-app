@@ -3,6 +3,7 @@ package replace.http.controller
 import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.contentType
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -26,6 +27,11 @@ fun Route.registerBookingRoutes(db: CoroutineDatabase) {
                 CreateBookingUseCase.execute(it, bookingRepository)
             }
         } describe {
+            body {
+                json {
+                    schema<BookingDto>()
+                }
+            }
             description = "Creates a new booking"
             200 response {
                 description = "The created booking"
