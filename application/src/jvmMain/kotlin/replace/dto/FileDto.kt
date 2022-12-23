@@ -8,7 +8,7 @@ class FileDto(
     override val id: String? = null,
     val name: String,
     val path: String,
-    val mime: String,
+    val mime: String? = null,
     val extension: String,
     val sizeInBytes: Int,
 ) : Dto
@@ -22,4 +22,10 @@ fun File.toDto() = FileDto(
     sizeInBytes = sizeInBytes,
 )
 
-fun FileDto.toModel() = File(name, path, mime, extension, sizeInBytes)
+fun FileDto.toModel() = File(
+    name = name,
+    path = path,
+    extension = extension,
+    mime = mime,
+    sizeInBytes = sizeInBytes,
+)

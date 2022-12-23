@@ -9,7 +9,7 @@ class TemporaryFileUploadDto(
     override val id: String? = null,
     val name: String,
     val path: String,
-    val mime: String,
+    val mime: String? = null,
     val extension: String,
     val sizeInBytes: Int,
     val createdAt: String,
@@ -25,4 +25,11 @@ fun TemporaryFileUpload.toDto() = TemporaryFileUploadDto(
     createdAt = createdAt.toString()
 )
 
-fun TemporaryFileUploadDto.toModel() = TemporaryFileUpload(name, path, mime, extension, sizeInBytes, LocalDateTime.parse(createdAt))
+fun TemporaryFileUploadDto.toModel() = TemporaryFileUpload(
+    name = name,
+    path = path,
+    extension = extension,
+    mime = mime,
+    sizeInBytes = sizeInBytes,
+    createdAt = LocalDateTime.parse(createdAt)
+)

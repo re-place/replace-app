@@ -25,7 +25,7 @@ object CreateTemporaryFileUploadUseCase {
             TemporaryFileUpload(
                 name = fileName.substringBeforeLast("."),
                 path = temporaryFileUploadPath,
-                mime = URLConnection.guessContentTypeFromName(fileName),
+                mime = URLConnection.guessContentTypeFromName(fileName.lowercase()),
                 extension = fileName.substringAfterLast("."),
                 sizeInBytes = temporaryFileUpload.length().toInt(),
                 createdAt = java.time.LocalDateTime.now(),

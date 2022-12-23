@@ -44,7 +44,9 @@ fun Route.registerFileRoutes(db: CoroutineDatabase, storage: Storage) {
                 ).toString()
             )
 
-            call.respondBytes(ContentType.parse(dbResult.mime)) { file.readBytes() }
+            val mime = dbResult.mime ?: ContentType.Application.OctetStream.toString()
+
+            call.respondBytes(ContentType.parse(mime)) { file.readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
             200 response {

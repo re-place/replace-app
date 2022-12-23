@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 data class TemporaryFileUpload(
     val name: String,
     val path: String,
-    val mime: String,
     val extension: String,
     val sizeInBytes: Int,
+    val mime: String? = null,
     @Contextual val createdAt: LocalDateTime,
 ) : ObjectWithId()

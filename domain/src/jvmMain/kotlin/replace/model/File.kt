@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class File(
     val name: String,
     val path: String,
-    val mime: String,
     val extension: String,
     val sizeInBytes: Int,
+    val mime: String? = null,
 ) : ObjectWithId()
