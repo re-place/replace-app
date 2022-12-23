@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
-import { BookableEntityDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 
 @Component({
     selector: "reservation",
@@ -88,7 +88,30 @@ export class ReservationComponent implements OnInit {
     }
 
     sendBooking() {
-        this.snackBar.open("Arbeitsplatz gebucht!", "ok", { duration: 3000 })
+        if(this.selectedEntity?.id == undefined) {
+            this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
+            return
+        }
+        const bookingDto: BookingDto = {
+            bookedEntities: [
+                this.selectedEntity?.id
+            ]
+        }
+        this.apiService.apiBookingPost(bookingDto).subscribe({
+            next: () => {
+                this.snackBar.open("Arbeitsplatz gebucht!", "ok", { duration: 3000 })
+            },
+            error: error => {
+                switch(error.status) {
+                    case 400:
+                        this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
+                        break
+                    default:
+                        this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
+                        break
+                }
+            }
+        })
     }
 
     setImgSrc() {
