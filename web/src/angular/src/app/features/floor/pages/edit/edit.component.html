@@ -18,6 +18,7 @@
                 <file-upload
                     class="w-full h-44"
                     placeholder="Bild hochladen..."
+                    [mimeTypes]="['image/jpeg', 'image/png']"
                     [initialFiles]="initialFiles"
                     (filesUpdated)="onFilesUploaded($event)"
                 ></file-upload>
