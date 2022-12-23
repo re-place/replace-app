@@ -23,11 +23,11 @@ fun Application.routeControllers(
             registerBookableEntityRoutes(db)
             registerBookableEntityTypeRoutes(db)
             registerBookingRoutes(db)
-            registerFloorRoutes(db)
+            registerFloorRoutes(db, storage)
             registerSiteRoutes(db)
             registerUserRoutes(db)
             registerFileRoutes(db, storage)
+            registerTemporaryFileUploadRoutes(db, storage)
         }
-        registerTemporaryFileUploadRoutes(db, storage)
     }
 }

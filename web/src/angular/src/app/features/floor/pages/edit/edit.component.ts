@@ -21,7 +21,6 @@ export class EditComponent implements OnDestroy {
     editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
 
     private readonly routeSub: Subscription
-    private files: FileUpload[] = []
 
     constructor(
         private readonly api: ApiService,
@@ -37,18 +36,22 @@ export class EditComponent implements OnDestroy {
         })
     }
 
-    public get planFileUrl() {
-        if (this.form === undefined || this.form.data.planFileId === undefined) {
-            return undefined
+    public get files(): FileUpload[] {
+        const planFile = this.form?.data.planFile
+
+        if (planFile === undefined || planFile === null) {
+            return []
         }
 
-        return `/api/floor/${this.form.data.planFileId}/plan`
+        return [planFile]
     }
 
-    public onNewFileSubmit(submitEvent: SubmitEvent) {
-        submitEvent.preventDefault()
+    public set files(newFiles: FileUpload[]) {
+        if (this.form === undefined) {
+            return
+        }
 
-        console.log("onNewFileSubmit", submitEvent)
+        this.form.data.planFile = newFiles.at(0) ?? null
     }
 
     public onSubmit() {
@@ -94,13 +97,13 @@ export class EditComponent implements OnDestroy {
     }
 
     public get initialFiles(): string[] {
-        const planFileId = this.form?.data.planFileId
+        const planFile = this.form?.data.planFile
 
-        if (planFileId === undefined || planFileId === null) {
+        if (planFile === undefined || planFile === null || planFile.temporary) {
             return []
         }
 
-        return [planFileId]
+        return [planFile.id]
     }
 
     public onFilesUploaded(files: FileUpload[]) {

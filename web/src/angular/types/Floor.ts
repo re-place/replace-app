@@ -1,7 +1,7 @@
-import { Model } from "."
+import { FileUpload, Model } from "."
 
 export default interface Floor extends Model {
     name: string
     siteId: string
-    planFileId: string | null
+    planFile: FileUpload | null
 }

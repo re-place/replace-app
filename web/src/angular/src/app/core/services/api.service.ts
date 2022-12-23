@@ -82,7 +82,9 @@ export class ApiService {
     }
 
     public getTemporaryFileUpload(id: string) {
-        const req = new HttpRequest("GET", urlForTemporaryFileUpload(id))
+        const req = new HttpRequest("GET", urlForTemporaryFileUpload(id), {
+            responseType: "blob",
+        })
         return this.http.request<File>(req)
     }
 
@@ -93,7 +95,9 @@ export class ApiService {
     }
 
     public getFile(id: string) {
-        const req = new HttpRequest("GET", urlForFile(id))
+        const req = new HttpRequest("GET", urlForFile(id), {
+            responseType: "blob",
+        })
 
         return this.http.request<File>(req)
     }

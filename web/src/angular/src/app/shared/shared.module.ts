@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
 import * as FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
+import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import { FilePondModule, registerPlugin } from "ngx-filepond"
 
 import { MaterialModule } from "../material/material.module"
@@ -22,6 +23,8 @@ import { HeaderDirective } from "./directives/header.directive"
 import { IconDirective } from "./directives/icon.directive"
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component"
 
+// Register the plugin
+registerPlugin(FilePondPluginImagePreview)
 // import filepond module
 
 registerPlugin(FilePondPluginFileValidateType)

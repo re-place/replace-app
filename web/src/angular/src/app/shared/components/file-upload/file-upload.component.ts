@@ -88,7 +88,7 @@ export class FileUploadComponent {
                 },
 
                 load: (source, load, error, progress, abort, headers) => {
-                    this.apiService.getTemporaryFileUpload(source).subscribe((event) => {
+                    this.apiService.getFile(source).subscribe((event) => {
                         if (event.type === HttpEventType.DownloadProgress) {
                             progress(true, event.loaded, event.total ?? 0)
                         }
@@ -127,8 +127,6 @@ export class FileUploadComponent {
             .map((file) => {
                 return { id: file.serverId, temporary: file.origin !== FileOrigin.LOCAL }
             })
-
-        console.log(files)
 
         this.filesUpdated.emit(files)
     }

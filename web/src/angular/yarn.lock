@@ -3688,6 +3688,7 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     filepond: ^4.30.4
     filepond-plugin-file-validate-type: ^1.2.8
+    filepond-plugin-image-preview: ^4.6.11
     jasmine-core: ~4.5.0
     karma: ~6.4.0
     karma-chrome-launcher: ~3.1.0
@@ -5705,6 +5706,15 @@ __metadata:
   peerDependencies:
     filepond: ">=1.x <5.x"
   checksum: 5a8334323d0f9ef154f4f5788125e8b724ab3e39f23ccb35defad8d4a0f324f3097c280858f9662278576a9e9929065739c455f3bfe7bab1827bd1d9fe32d204
+  languageName: node
+  linkType: hard
+
+"filepond-plugin-image-preview@npm:^4.6.11":
+  version: 4.6.11
+  resolution: "filepond-plugin-image-preview@npm:4.6.11"
+  peerDependencies:
+    filepond: ">=4.x <5.x"
+  checksum: 436ee3396910efe7973bbaf4578eb2a2b19246ea4b94e6d6265361b37919c978d4ceed8fbd6fa5b8f24fe848ae5e6270cae243a4ac5f84744960fa107bb8da4e
   languageName: node
   linkType: hard
 
