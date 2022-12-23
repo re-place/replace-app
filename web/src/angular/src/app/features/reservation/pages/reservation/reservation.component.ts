@@ -103,12 +103,12 @@ export class ReservationComponent implements OnInit {
             },
             error: error => {
                 switch(error.status) {
-                    case 400:
-                        this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
-                        break
-                    default:
-                        this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
-                        break
+                case 400:
+                    this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
+                    break
+                default:
+                    break
+                    this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
                 }
             }
         })
