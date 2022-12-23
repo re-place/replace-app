@@ -22,10 +22,10 @@ import kotlinx.serialization.modules.contextual
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
-import replace.Job.DeleteOldTemporaryFileUploadsJob
 import replace.datastore.LocalStorage
 import replace.datastore.MongoTemporaryFileUploadRepository
 import replace.datastore.MongoUserRepository
+import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
 
