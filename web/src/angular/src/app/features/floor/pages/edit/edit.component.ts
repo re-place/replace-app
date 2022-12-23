@@ -17,6 +17,7 @@ import { DataLoader, Form } from "src/app/util"
 export class EditComponent implements OnDestroy {
     title = ""
     form: Form<Floor> | undefined = undefined
+    floor = new DataLoader<Floor>()
     bookableEntities = new DataLoader<BookableEntity[]>()
     editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
 
@@ -27,11 +28,14 @@ export class EditComponent implements OnDestroy {
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
-        this.routeSub = route.params.subscribe(async (params) => {
-            this.form = new Form(await api.getFloor(params["id"]))
+        this.floor.subscribe((floor) => {
+            this.form = new Form(floor)
             this.form.useSnackbar(snackBar)
             this.title = `Stockwerk ${this.form.data.name} bearbeiten`
+        })
 
+        this.routeSub = route.params.subscribe(async (params) => {
+            this.floor.source(() => api.getFloor(params["id"])).refresh()
             this.bookableEntities.source(() => api.getBookableEntities(params["id"])).refresh()
         })
     }
@@ -54,8 +58,9 @@ export class EditComponent implements OnDestroy {
         this.form.data.planFile = newFiles.at(0) ?? null
     }
 
-    public onSubmit() {
-        this.form?.submit((data) => this.api.updateFloor(data))
+    public async onSubmit() {
+        await this.form?.submit((data) => this.api.updateFloor(data))
+        this.floor.refresh()
     }
 
     ngOnDestroy(): void {
