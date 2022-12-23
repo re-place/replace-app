@@ -9,7 +9,7 @@ import { Floor } from "types"
 })
 export class CreateOrUpdateFloorComponent implements OnChanges {
     @Input() floor!: SetOptional<Floor, "siteId" | "id">
-    floorToEdit: SetOptional<Floor, "siteId" | "id"> = { name: "" }
+    floorToEdit: SetOptional<Floor, "siteId" | "id"> = { name: "", planFileId: null }
 
     @Output() submitFloor = new EventEmitter<SetOptional<Floor, "siteId" | "id">>()
 

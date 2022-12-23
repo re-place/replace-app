@@ -17,6 +17,18 @@
             </ng-template>
         </loading-state>
     </crud-card>
+    <crud-card saveText="speichern" (save)="onNewFileSubmit($event)">
+        <loading-state [loading]="form === undefined">
+            <ng-template>
+                <h2 class="text-lg font-medium">Grundriss</h2>
+                <file-upload
+                    class="w-full h-44"
+                    [initialFiles]="initialFiles"
+                    (filesUpdated)="onFilesUploaded($event)"
+                ></file-upload>
+            </ng-template>
+        </loading-state>
+    </crud-card>
     <card>
         <h2 class="text-lg font-medium">Buchbare Objekte</h2>
         <loading-state [loading]="bookableEntities.loading()" class="flex h-96">

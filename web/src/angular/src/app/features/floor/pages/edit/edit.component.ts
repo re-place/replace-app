@@ -6,6 +6,7 @@ import { SetOptional } from "type-fest"
 import { BookableEntity, Floor } from "types"
 
 import { ApiService } from "src/app/core/services/api.service"
+import { FileUpload } from "src/app/shared/components/file-upload/file-upload.component"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -20,6 +21,7 @@ export class EditComponent implements OnDestroy {
     editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
 
     private readonly routeSub: Subscription
+    private files: FileUpload[] = []
 
     constructor(
         private readonly api: ApiService,
@@ -33,6 +35,20 @@ export class EditComponent implements OnDestroy {
 
             this.bookableEntities.source(() => api.getBookableEntities(params["id"])).refresh()
         })
+    }
+
+    public get planFileUrl() {
+        if (this.form === undefined || this.form.data.planFileId === undefined) {
+            return undefined
+        }
+
+        return `/api/floor/${this.form.data.planFileId}/plan`
+    }
+
+    public onNewFileSubmit(submitEvent: SubmitEvent) {
+        submitEvent.preventDefault()
+
+        console.log("onNewFileSubmit", submitEvent)
     }
 
     public onSubmit() {
@@ -75,5 +91,19 @@ export class EditComponent implements OnDestroy {
                 this.editingBookableEntity = undefined
             })
         }
+    }
+
+    public get initialFiles(): string[] {
+        const planFileId = this.form?.data.planFileId
+
+        if (planFileId === undefined || planFileId === null) {
+            return []
+        }
+
+        return [planFileId]
+    }
+
+    public onFilesUploaded(files: FileUpload[]) {
+        this.files = files
     }
 }

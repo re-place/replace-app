@@ -44,7 +44,7 @@ export class EditComponent implements OnDestroy {
     }
 
     public onCreateFloor() {
-        this.editingFloor = { name: "" }
+        this.editingFloor = { name: "", planFileId: null }
     }
 
     public onSubmitFloor(floor: SetOptional<Floor, "id" | "siteId">) {

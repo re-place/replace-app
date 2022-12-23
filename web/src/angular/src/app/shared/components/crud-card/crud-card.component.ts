@@ -9,11 +9,10 @@ import { HeaderDirective } from "../../directives/header.directive"
     styles: [],
 })
 export class CrudCardComponent {
-    @Input() title: string | undefined
     @Input() saveText: string | undefined
     @Input() deletable = false
 
-    @Output() save = new EventEmitter()
+    @Output() save = new EventEmitter<SubmitEvent>()
     @Output() delete = new EventEmitter()
 
     @ContentChild(HeaderDirective) header: HeaderDirective | undefined
@@ -27,7 +26,7 @@ export class CrudCardComponent {
 
         event.preventDefault()
 
-        this.save.emit()
+        this.save.emit(event)
     }
 
     public emitDelete() {
