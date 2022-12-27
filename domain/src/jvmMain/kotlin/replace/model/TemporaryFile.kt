@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
-data class TemporaryFileUpload(
+data class TemporaryFile(
     val name: String,
     val path: String,
     val extension: String,
-    val sizeInBytes: Int,
+    val sizeInBytes: Long,
     val mime: String? = null,
     @Contextual val createdAt: LocalDateTime,
 ) : ObjectWithId()

@@ -2,9 +2,9 @@ package replace.usecase.floor
 
 import org.bson.types.ObjectId
 import replace.datastore.FileRepository
+import replace.datastore.FileStorage
 import replace.datastore.FloorRepository
-import replace.datastore.Storage
-import replace.datastore.TemporaryFileUploadRepository
+import replace.datastore.TemporaryFileRepository
 import replace.dto.FloorDto
 import replace.dto.toDto
 import replace.dto.toModel
@@ -13,23 +13,23 @@ object UpdateFloorUseCase {
     suspend fun execute(
         dto: FloorDto,
         repository: FloorRepository,
-        temporaryFileUploadRepository: TemporaryFileUploadRepository,
+        temporaryFileRepository: TemporaryFileRepository,
         fileRepository: FileRepository,
-        storage: Storage,
+        fileStorage: FileStorage,
     ): FloorDto {
         val floorId = ObjectId(dto.id)
 
-        val floorDtoWithPlan = SaveFloorPlanFileUserCase.execute(
+        val floorDtoWithPlan = SaveFloorPlanFileUseCase.execute(
             dto,
             repository,
-            temporaryFileUploadRepository,
+            temporaryFileRepository,
             fileRepository,
-            storage,
+            fileStorage,
         )
 
         val updatedModel = repository.updateOne(floorId, floorDtoWithPlan.toModel())
 
-        checkNotNull(updatedModel) { "Could not update Floor" }
+        checkNotNull(updatedModel) { "Could not update Floor with id $floorId\n$floorDtoWithPlan" }
 
         return updatedModel.toDto()
     }

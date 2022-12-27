@@ -2,6 +2,9 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
+import replace.datastore.FileRepository
+import replace.datastore.FileStorage
+import replace.datastore.TemporaryFileRepository
 import replace.model.Floor
 
 @Serializable
@@ -33,16 +36,26 @@ fun Floor.toDto(): FloorDto {
 }
 
 fun FloorDto.toModel(): Floor {
-    if (planFile != null && !planFile.temporary) {
-        return Floor(
-            name = name,
-            siteId = ObjectId(siteId),
-            planFileId = ObjectId(planFile.id),
-        )
-    }
-
     return Floor(
         name = name,
         siteId = ObjectId(siteId),
+        planFileId = planFile?.let { ObjectId(planFile.id) },
+    )
+}
+
+suspend fun FloorDto.saveFiles(
+    temporaryFileRepository: TemporaryFileRepository,
+    fileRepository: FileRepository,
+    fileStorage: FileStorage
+): FloorDto {
+    return FloorDto(
+        id = id,
+        name = name,
+        siteId = siteId,
+        planFile = planFile?.save(
+            temporaryFileRepository = temporaryFileRepository,
+            fileRepository = fileRepository,
+            fileStorage = fileStorage,
+        ),
     )
 }

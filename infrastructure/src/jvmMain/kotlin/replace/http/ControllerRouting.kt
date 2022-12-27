@@ -4,7 +4,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.routing
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.Storage
+import replace.datastore.FileStorage
 import replace.http.controller.registerBookableEntityRoutes
 import replace.http.controller.registerBookableEntityTypeRoutes
 import replace.http.controller.registerBookingRoutes
@@ -16,18 +16,18 @@ import replace.http.controller.registerUserRoutes
 
 fun Application.routeControllers(
     db: CoroutineDatabase,
-    storage: Storage
+    fileStorage: FileStorage
 ) {
     routing {
         authenticate {
             registerBookableEntityRoutes(db)
             registerBookableEntityTypeRoutes(db)
             registerBookingRoutes(db)
-            registerFloorRoutes(db, storage)
+            registerFloorRoutes(db, fileStorage)
             registerSiteRoutes(db)
             registerUserRoutes(db)
-            registerFileRoutes(db, storage)
-            registerTemporaryFileUploadRoutes(db, storage)
+            registerFileRoutes(db, fileStorage)
+            registerTemporaryFileUploadRoutes(db, fileStorage)
         }
     }
 }

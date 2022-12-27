@@ -10,7 +10,7 @@ class FileDto(
     val path: String,
     val mime: String? = null,
     val extension: String,
-    val sizeInBytes: Int,
+    val sizeInBytes: Long,
 ) : Dto
 
 fun File.toDto() = FileDto(

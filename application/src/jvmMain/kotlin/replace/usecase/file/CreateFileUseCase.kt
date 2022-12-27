@@ -2,8 +2,8 @@ package replace.usecase.file
 
 import org.bson.types.ObjectId
 import replace.datastore.FileRepository
-import replace.datastore.Storage
-import replace.datastore.TemporaryFileUploadRepository
+import replace.datastore.FileStorage
+import replace.datastore.TemporaryFileRepository
 import replace.dto.FileDto
 import replace.dto.toDto
 import replace.model.File
@@ -13,27 +13,29 @@ object CreateFileUseCase {
 
     suspend fun execute(
         temporaryFileUploadId: String,
-        temporaryFileUploadRepository: TemporaryFileUploadRepository,
+        temporaryFileRepository: TemporaryFileRepository,
         fileRepository: FileRepository,
-        storage: Storage
+        fileStorage: FileStorage
     ): FileDto {
         if (!ObjectId.isValid(temporaryFileUploadId)) {
             throw IllegalArgumentException("Id $temporaryFileUploadId is not a valid ObjectId")
         }
 
-        val temporaryFileUpload = temporaryFileUploadRepository.findOneById(ObjectId(temporaryFileUploadId))
+        val temporaryFileUpload = temporaryFileRepository.findOneById(ObjectId(temporaryFileUploadId))
             ?: throw IllegalArgumentException("Temporary file upload with id $temporaryFileUploadId not found")
 
         val newFilePath = "uploads/${UUID.randomUUID()}/base.${temporaryFileUpload.extension}"
 
-        val newDiskFile = storage.copyFile(temporaryFileUpload.path, newFilePath)
+        if (!fileStorage.copyFile(temporaryFileUpload.path, newFilePath)) {
+            throw IllegalStateException("Could not copy file from ${temporaryFileUpload.path} to $newFilePath")
+        }
 
         val file = File(
             name = temporaryFileUpload.name,
             path = newFilePath,
             mime = temporaryFileUpload.mime,
             extension = temporaryFileUpload.extension,
-            sizeInBytes = newDiskFile.length().toInt(),
+            sizeInBytes = fileStorage.getFileSize(newFilePath),
         )
 
         val insertedFile = fileRepository.insertOne(file)

@@ -1,8 +1,8 @@
 package replace.usecase.temporaryfileupload
 
 import replace.datastore.FileRepository
-import replace.datastore.Storage
-import replace.datastore.TemporaryFileUploadRepository
+import replace.datastore.FileStorage
+import replace.datastore.TemporaryFileRepository
 import replace.dto.FileDto
 import replace.usecase.file.CreateFileUseCase
 
@@ -10,22 +10,22 @@ object SaveTemporaryFileUploadPersistentUseCase {
 
     suspend fun execute(
         temporaryFileUploadId: String,
-        temporaryFileUploadRepository: TemporaryFileUploadRepository,
+        temporaryFileRepository: TemporaryFileRepository,
         fileRepository: FileRepository,
-        storage: Storage
+        fileStorage: FileStorage
     ): FileDto {
 
         val file = CreateFileUseCase.execute(
             temporaryFileUploadId,
-            temporaryFileUploadRepository,
+            temporaryFileRepository,
             fileRepository,
-            storage,
+            fileStorage,
         )
 
         DeleteTemporaryFileUploadUseCase.execute(
             temporaryFileUploadId,
-            temporaryFileUploadRepository,
-            storage,
+            temporaryFileRepository,
+            fileStorage,
         )
 
         return file

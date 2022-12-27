@@ -13,11 +13,11 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import replace.datastore.FileStorage
 import replace.datastore.MongoBookableEntityRepository
 import replace.datastore.MongoFloorRepository
 import replace.datastore.MongoRepository
-import replace.datastore.MongoTemporaryFileUploadRepository
-import replace.datastore.Storage
+import replace.datastore.MongoTemporaryFileRepository
 import replace.dto.FloorDto
 import replace.dto.toDto
 import replace.http.routeRepository
@@ -26,12 +26,12 @@ import replace.model.Site
 import replace.usecase.floor.CreateFloorUseCase
 import replace.usecase.floor.UpdateFloorUseCase
 
-fun Route.registerFloorRoutes(db: CoroutineDatabase, storage: Storage) {
+fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
     val floorRepository = MongoFloorRepository(db.getCollection())
     val siteRepository = MongoRepository<Site>(db.getCollection())
     val bookableEntityRepository = MongoBookableEntityRepository(db.getCollection())
     val fileRepository = MongoRepository<File>(db.getCollection())
-    val temporaryFileUploadRepository = MongoTemporaryFileUploadRepository(db.getCollection())
+    val temporaryFileUploadRepository = MongoTemporaryFileRepository(db.getCollection())
 
     route("/api/floor") {
         routeRepository(floorRepository) {
@@ -46,7 +46,7 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, storage: Storage) {
                     siteRepository,
                     temporaryFileUploadRepository,
                     fileRepository,
-                    storage,
+                    fileStorage,
                 )
             }
         } describe {
@@ -85,7 +85,7 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, storage: Storage) {
 
         put<FloorDto> {
             executeUseCase {
-                UpdateFloorUseCase.execute(it, floorRepository, temporaryFileUploadRepository, fileRepository, storage)
+                UpdateFloorUseCase.execute(it, floorRepository, temporaryFileUploadRepository, fileRepository, fileStorage)
             }
         } describe {
             description = "Updates a floor"

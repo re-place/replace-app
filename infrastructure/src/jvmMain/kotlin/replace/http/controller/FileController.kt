@@ -11,15 +11,14 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import replace.datastore.FileStorage
 import replace.datastore.MongoRepository
-import replace.datastore.Storage
 import replace.model.File
 
-fun Route.registerFileRoutes(db: CoroutineDatabase, storage: Storage) {
+fun Route.registerFileRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
     val fileRepository = MongoRepository<File>(db.getCollection())
 
     route("/api/file") {
@@ -31,10 +30,8 @@ fun Route.registerFileRoutes(db: CoroutineDatabase, storage: Storage) {
             val dbResult = fileRepository.findOneById(ObjectId(route.id))
                 ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
 
-            val file = storage.getFile(dbResult.path)
-
-            if (!file.exists()) {
-                return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
+            if (!fileStorage.exists(dbResult.path)) {
+                return@get call.respondText("File with id ${route.id} not found", status = HttpStatusCode.NotFound)
             }
 
             call.response.header(
@@ -46,7 +43,7 @@ fun Route.registerFileRoutes(db: CoroutineDatabase, storage: Storage) {
 
             val mime = dbResult.mime ?: ContentType.Application.OctetStream.toString()
 
-            call.respondBytes(ContentType.parse(mime)) { file.readBytes() }
+            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
             200 response {

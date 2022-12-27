@@ -24,15 +24,15 @@ import io.swagger.v3.oas.models.media.FileSchema
 import io.swagger.v3.oas.models.media.MapSchema
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoTemporaryFileUploadRepository
-import replace.datastore.Storage
+import replace.datastore.FileStorage
+import replace.datastore.MongoTemporaryFileRepository
 import replace.dto.TemporaryFileUploadDto
 import replace.usecase.temporaryfileupload.CreateTemporaryFileUploadUseCase
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.util.UUID
 
-fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Storage) {
-    val temporaryFileUploadRepository = MongoTemporaryFileUploadRepository(db.getCollection())
+fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
+    val temporaryFileUploadRepository = MongoTemporaryFileRepository(db.getCollection())
 
     route("/api/temporary-file-upload") {
         post {
@@ -52,7 +52,7 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Stor
                         name,
                         it.streamProvider(),
                         temporaryFileUploadRepository,
-                        storage
+                        fileStorage
                     )
                     temporaryFileUploadDtos.add(newFile)
                 }
@@ -84,9 +84,7 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Stor
             val dbResult = temporaryFileUploadRepository.findOneById(ObjectId(route.id))
                 ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
 
-            val file = storage.getFile(dbResult.path)
-
-            if (!file.exists()) {
+            if (!fileStorage.exists(dbResult.path)) {
                 return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
             }
 
@@ -99,7 +97,7 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Stor
 
             val mime = dbResult.mime ?: ContentType.Application.OctetStream.toString()
 
-            call.respondBytes(ContentType.parse(mime)) { file.readBytes() }
+            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
             200 response {
@@ -109,7 +107,7 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, storage: Stor
 
         delete<Routing.ById> { route ->
             executeUseCase {
-                DeleteTemporaryFileUploadUseCase.execute(route.id, temporaryFileUploadRepository, storage)
+                DeleteTemporaryFileUploadUseCase.execute(route.id, temporaryFileUploadRepository, fileStorage)
                 return@delete call.respond(HttpStatusCode.NoContent)
             }
         } describe {

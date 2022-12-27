@@ -7,6 +7,6 @@ data class File(
     val name: String,
     val path: String,
     val extension: String,
-    val sizeInBytes: Int,
+    val sizeInBytes: Long,
     val mime: String? = null,
 ) : ObjectWithId()

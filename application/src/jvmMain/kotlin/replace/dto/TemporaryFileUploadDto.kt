@@ -1,7 +1,7 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import replace.model.TemporaryFileUpload
+import replace.model.TemporaryFile
 import java.time.LocalDateTime
 
 @Serializable
@@ -11,11 +11,11 @@ class TemporaryFileUploadDto(
     val path: String,
     val mime: String? = null,
     val extension: String,
-    val sizeInBytes: Int,
+    val sizeInBytes: Long,
     val createdAt: String,
 ) : Dto
 
-fun TemporaryFileUpload.toDto() = TemporaryFileUploadDto(
+fun TemporaryFile.toDto() = TemporaryFileUploadDto(
     id = id?.toHexString(),
     name = name,
     path = path,
@@ -25,7 +25,7 @@ fun TemporaryFileUpload.toDto() = TemporaryFileUploadDto(
     createdAt = createdAt.toString()
 )
 
-fun TemporaryFileUploadDto.toModel() = TemporaryFileUpload(
+fun TemporaryFileUploadDto.toModel() = TemporaryFile(
     name = name,
     path = path,
     extension = extension,
