@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
-abstract class Job(
+abstract class SchedulableJob(
     private val interval: Long,
     private val initialDelay: Long? = null,
 ) : CoroutineScope {

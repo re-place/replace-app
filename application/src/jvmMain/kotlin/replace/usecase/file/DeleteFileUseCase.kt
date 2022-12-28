@@ -4,12 +4,12 @@ import org.bson.types.ObjectId
 import replace.datastore.FileRepository
 import replace.datastore.FileStorage
 
-object DeleteFileUserCase {
+object DeleteFileUseCase {
 
     suspend fun execute(
         fileId: String,
         fileRepository: FileRepository,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ) {
         if (!ObjectId.isValid(fileId)) {
             throw IllegalArgumentException("Id $fileId: is not a valid ObjectId")

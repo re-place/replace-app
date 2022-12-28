@@ -11,7 +11,7 @@ class DeleteOldTemporaryFileUploadsJob(
     private val fileMaxAgeInMilliseconds: Long,
     private val temporaryFileRepository: TemporaryFileRepository,
     private val fileStorage: FileStorage,
-) : Job(interval) {
+) : SchedulableJob(interval) {
     override suspend fun run() {
 
         try {

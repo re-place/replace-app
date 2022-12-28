@@ -15,7 +15,7 @@ object CreateFileUseCase {
         temporaryFileUploadId: String,
         temporaryFileRepository: TemporaryFileRepository,
         fileRepository: FileRepository,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ): FileDto {
         if (!ObjectId.isValid(temporaryFileUploadId)) {
             throw IllegalArgumentException("Id $temporaryFileUploadId is not a valid ObjectId")

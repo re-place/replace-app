@@ -9,11 +9,11 @@ object DeleteTemporaryFileUploadUseCase {
     suspend fun execute(
         temporaryFileUploadId: String,
         temporaryFileRepository: TemporaryFileRepository,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ) {
 
         if (!ObjectId.isValid(temporaryFileUploadId)) {
-            throw IllegalArgumentException("Id $temporaryFileUploadId: is not a valid ObjectId")
+            throw IllegalArgumentException("Id $temporaryFileUploadId is not a valid ObjectId")
         }
 
         val temporaryFileUpload = temporaryFileRepository.findOneById(ObjectId(temporaryFileUploadId))

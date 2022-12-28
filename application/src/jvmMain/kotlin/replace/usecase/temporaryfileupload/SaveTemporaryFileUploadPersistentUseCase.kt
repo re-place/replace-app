@@ -12,7 +12,7 @@ object SaveTemporaryFileUploadPersistentUseCase {
         temporaryFileUploadId: String,
         temporaryFileRepository: TemporaryFileRepository,
         fileRepository: FileRepository,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ): FileDto {
 
         val file = CreateFileUseCase.execute(

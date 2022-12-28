@@ -7,6 +7,7 @@ import replace.dto.toDto
 import replace.model.TemporaryFile
 import java.io.InputStream
 import java.net.URLConnection
+import java.util.UUID.randomUUID
 
 object CreateTemporaryFileUploadUseCase {
 
@@ -14,10 +15,10 @@ object CreateTemporaryFileUploadUseCase {
         fileName: String,
         input: InputStream,
         temporaryFileRepository: TemporaryFileRepository,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ): TemporaryFileUploadDto {
 
-        val temporaryFileUploadPath = "temporary_uploads/${java.util.UUID.randomUUID()}"
+        val temporaryFileUploadPath = "temporary_uploads/${randomUUID()}"
 
         fileStorage.saveFile(temporaryFileUploadPath, input)
 

@@ -7,7 +7,7 @@ import replace.datastore.FloorRepository
 import replace.datastore.TemporaryFileRepository
 import replace.dto.FloorDto
 import replace.dto.saveFiles
-import replace.usecase.file.DeleteFileUserCase
+import replace.usecase.file.DeleteFileUseCase
 
 object SaveFloorPlanFileUseCase {
     suspend fun execute(
@@ -26,7 +26,7 @@ object SaveFloorPlanFileUseCase {
         )
 
         if (oldPlanFileId != saved.planFile?.id) {
-            oldPlanFileId?.let { DeleteFileUserCase.execute(it, fileRepository, fileStorage) }
+            oldPlanFileId?.let { DeleteFileUseCase.execute(it, fileRepository, fileStorage) }
         }
 
         return saved
