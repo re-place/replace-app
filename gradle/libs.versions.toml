@@ -1,6 +1,6 @@
 [versions]
 kmongo = "4.8.0"
-kotlin = "1.8.0-RC2"
+kotlin = "1.8.0"
 ktor = "2.2.2"
 log4j = "2.19.0"
 tegral = "0.0.3"
