@@ -3,7 +3,7 @@ WORKDIR /usr/app/
 COPY . . 
 RUN gradle build
 
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk-jammy
 ENV JAR_NAME=replace-app-all.jar
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
