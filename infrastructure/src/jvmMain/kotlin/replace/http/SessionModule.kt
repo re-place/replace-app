@@ -4,9 +4,9 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
 import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.directorySessionStorage
 import io.ktor.server.sessions.get
-import io.ktor.server.sessions.header
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import replace.model.UserSession
@@ -14,7 +14,11 @@ import java.io.File
 
 fun Application.sessionModule() {
     install(Sessions) {
-        header<UserSession>("SESSION_TOKEN", directorySessionStorage(File(".sessions"), cached = false))
+        cookie<UserSession>("X-SESSION-TOKEN", directorySessionStorage(File("sessions"), cached = false)) {
+            cookie.path = "/"
+            cookie.httpOnly = true
+            cookie.extensions["SameSite"] = "strict"
+        }
     }
 
     val sessionTokenPlugin = createApplicationPlugin(name = "SessionTokenPlugin") {

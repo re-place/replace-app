@@ -9,7 +9,7 @@ open class MongoRepository<T : ObjectWithId>(protected val collection: Coroutine
         if (collection.insertOne(item).wasAcknowledged()) item else null
 
     override suspend fun updateOne(id: ObjectId, item: T): T? =
-        if (collection.updateOneById(id, item).modifiedCount > 0) item else null
+        if (collection.updateOneById(id, item).matchedCount > 0) item else null
 
     override suspend fun findOneById(id: ObjectId): T? =
         collection.findOneById(id)

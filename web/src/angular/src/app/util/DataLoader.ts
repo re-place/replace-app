@@ -2,6 +2,7 @@ export default class DataLoader<T> {
     protected _data: undefined | T
     protected _processing = false
     protected _dataSource: (() => Promise<T>) | undefined
+    protected _subscriptions: ((data: T) => void)[] = []
 
     public constructor(dataSource?: () => Promise<T>) {
         this._dataSource = dataSource
@@ -9,6 +10,16 @@ export default class DataLoader<T> {
 
     public static from<T>(dataSource?: () => Promise<T>) {
         return new DataLoader(dataSource)
+    }
+
+    public subscribe(subscription: (data: T) => void): () => void {
+        this._subscriptions.push(subscription)
+        return this.unsubscribe.bind(this, subscription)
+    }
+
+    public unsubscribe(subscription: (data: T) => void) {
+        this._subscriptions = this._subscriptions.filter((s) => s !== subscription)
+        return this
     }
 
     public source(dataSource: () => Promise<T>) {
@@ -30,6 +41,7 @@ export default class DataLoader<T> {
             })
             .finally(() => {
                 this._processing = false
+                this._subscriptions.forEach((s) => s(this._data as T))
             })
 
         return this
