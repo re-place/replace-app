@@ -31,7 +31,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../../build/angular",
+            "outputPath": "dist/replace-web",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -108,6 +108,7 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "packageManager": "yarn"
   }
 }
