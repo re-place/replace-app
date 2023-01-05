@@ -3,8 +3,10 @@
         <h1 class="text-2xl font-semibold text-gray-900">Buchen</h1>
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-        <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 flex flex-row">
-            <div class="flex flex-col w-fit">
+        <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 md:flex md:flex-row">
+
+            <!-- Select fields -->
+            <div class="flex flex-col md:w-3/10">
                 
                 <mat-form-field>
                     <mat-label>Standort</mat-label>
@@ -38,28 +40,63 @@
                     The bookable entities should be marked clearly
                 -->
 
-                <mat-form-field *ngIf="selectedSite && selectedFloor">
-                    <mat-label>Arbeitsplatz</mat-label>
-                    <mat-select [(ngModel)]="selectedEntity">
-                        <mat-option></mat-option>
-                        <mat-option
-                            *ngFor="let entity of bookableEntities"
-                            [value]="entity">
-                            {{ entity.name }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <!-- This block will be shown at the bottom for mobile -->
+                <div *ngIf="true" class="hidden md:flex md:flex-col md:max-w-230">
+                    <mat-form-field *ngIf="selectedSite && selectedFloor">
+                        <mat-label>Arbeitsplatz</mat-label>
+                        <mat-select [(ngModel)]="selectedEntity">
+                            <mat-option></mat-option>
+                            <mat-option
+                                *ngFor="let entity of bookableEntities"
+                                [value]="entity">
+                                {{ entity.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-                <button *ngIf="selectedSite && selectedFloor && selectedEntity"
-                    mat-raised-button color="primary"
-                    (click)="sendBooking()"
-                    class="mt-auto">
-                    Buchung versenden
-                </button>
+                    <div class="">
+                        <mat-checkbox
+                            class="w-1/2"
+                            *ngFor="let entity of bookableEntities"
+                            (change)="updateSelectedEntities(entity, $event.checked)">
+                            {{ entity.name }}
+                        </mat-checkbox>
+                    </div>
+
+
+                    <button *ngIf="selectedSite && selectedFloor && selectedEntities.length > 0"
+                        mat-raised-button color="primary"
+                        (click)="sendBooking()"
+                        class="mt-5">
+                        Buchung versenden
+                    </button>
+                </div>
+
 
             </div>
 
-            <img [src]="imgSrc" class="w-4/5" *ngIf="imgSrc && selectedSite">
+            <div class="w-1/1 md:w-7/10">
+                <img [src]="imgSrc" *ngIf="imgSrc && selectedSite"
+                    class="block w-full h-auto">
+            </div>
+
+            <div class="visible flex flex-col md:hidden">
+                <div>
+                    <mat-checkbox
+                        class="w-1/2"
+                        *ngFor="let entity of bookableEntities"
+                        (change)="updateSelectedEntities(entity, $event.checked)">
+                        {{ entity.name }}
+                    </mat-checkbox>
+                </div>
+
+                <button *ngIf="selectedSite && selectedFloor && selectedEntities.length > 0"
+                    mat-raised-button color="primary"
+                    (click)="sendBooking()"
+                    class="mt-5">
+                    Buchung versenden
+                </button>
+            </div>
 
 
             

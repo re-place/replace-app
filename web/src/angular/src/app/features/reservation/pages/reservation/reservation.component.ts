@@ -18,6 +18,8 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
+    selectedEntities: BookableEntityDto[] = []
+
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
         { name: "Frankfurt am Main", path: "assets/andrena_Frankfurt.png" },
@@ -87,15 +89,23 @@ export class ReservationComponent implements OnInit {
         })
     }
 
+    updateSelectedEntities(entity: BookableEntityDto, checked: boolean) {
+        if(checked) {
+            this.selectedEntities.push(entity)
+        } else {
+            this.selectedEntities = this.selectedEntities.filter(ent => ent != entity)
+        }
+    }
+
     sendBooking() {
-        if(this.selectedEntity?.id == undefined) {
+        const ids: string[] = this.selectedEntities.map(entity => entity.id??"")
+        if(ids == undefined || ids.length < 1) {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
-        }
+        } 
+
         const bookingDto: BookingDto = {
-            bookedEntities: [
-                this.selectedEntity?.id
-            ]
+            bookedEntities: ids,
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
@@ -107,10 +117,10 @@ export class ReservationComponent implements OnInit {
                     this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
                     break
                 default:
-                    break
                     this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
+                    break
                 }
-            }
+            },
         })
     }
 
@@ -118,7 +128,6 @@ export class ReservationComponent implements OnInit {
         if(this.selectedSite?.name == undefined) return
         const site = this.selectedSite??{}
         this.imgSrc = this.images.find(img => img.name == site.name)?.path??""
-        console.log(this.imgSrc)
     }
 
     alphaSort(arr: any[]) {
