@@ -106,7 +106,7 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
             }
             200 response {
                 description = "The temporary file upload"
-                "application/octet-stream" content {
+                "*" content {
                     schema = FileSchema()
                 }
             }

@@ -9,13 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { FileUploadDto } from './fileUploadDto';
 
 
-export interface FloorDto { 
+export interface TemporaryFileUploadDto { 
     id?: string;
     name?: string;
-    siteId?: string;
-    planFile?: FileUploadDto;
+    path?: string;
+    mime?: string;
+    extension?: string;
+    sizeInBytes?: number;
+    createdAt?: string;
 }
 

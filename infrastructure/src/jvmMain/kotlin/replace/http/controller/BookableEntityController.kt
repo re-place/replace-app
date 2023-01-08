@@ -31,6 +31,11 @@ fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Creates a new bookable entity"
+            body {
+                json {
+                    schema<BookableEntityDto>()
+                }
+            }
             200 response {
                 description = "The created bookable entity"
                 json {
@@ -45,6 +50,11 @@ fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Updates a bookable entity"
+            body {
+                json {
+                    schema<BookableEntityDto>()
+                }
+            }
             200 response {
                 description = "The updated bookable entity"
                 json {

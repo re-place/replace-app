@@ -2,7 +2,7 @@ import { Component } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute, Router } from "@angular/router"
 
-import { ApiService } from "src/app/core/services/api.service"
+import { DefaultService } from "src/app/core/openapi"
 import { Form } from "src/app/util"
 
 @Component({
@@ -16,7 +16,7 @@ export class CreateComponent {
     })
 
     constructor(
-        private readonly api: ApiService,
+        private readonly api: DefaultService,
         public readonly router: Router,
         public readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
@@ -24,13 +24,11 @@ export class CreateComponent {
         this.form.useSnackbar(snackBar)
     }
 
-    public async submit() {
-        const site = await this.form.submit((data) => this.api.createSite(data))
-
-        if (site === undefined) {
-            return
-        }
-
-        this.router.navigate(["./../", site.id, "edit"], { relativeTo: this.route })
+    public submit() {
+        this.form.submit((data) => this.api.apiSitePost(data), {
+            onSuccess: (site) => {
+                this.router.navigate(["./../", site.id, "edit"], { relativeTo: this.route })
+            },
+        })
     }
 }

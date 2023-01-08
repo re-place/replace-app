@@ -2,9 +2,8 @@ import { HttpEventType } from "@angular/common/http"
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 // eslint-disable-next-line import/named
 import { FilePondOptions, FilePondFile, FileStatus, FileOrigin, FilePondInitialFile, FilePond } from "filepond"
-import { File } from "types"
 
-import { ApiService } from "src/app/core/services/api.service"
+import { DefaultService, FileUploadDto } from "src/app/core/openapi"
 
 export type FileUpload = {
     id: string
@@ -24,17 +23,18 @@ type UpdateFilesEvent = {
 export class FileUploadComponent {
     @Input() placeholder = "Drop files here..."
     @Input() mimeTypes: string[] = []
-    @Input() initialFiles: (string | File)[] = []
+    @Input() initialFiles: (string | FileUploadDto)[] = []
     @Input() maxFiles: number | undefined = undefined
 
     @Output() filesUpdated = new EventEmitter<FileUpload[]>()
 
-    constructor(private readonly apiService: ApiService) {}
+    constructor(private readonly apiService: DefaultService) {}
 
     protected get initialFileIds(): FilePondInitialFile[] {
         return this.initialFiles.map((file) => {
             return {
-                source: typeof file === "string" ? file : file.id,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                source: typeof file === "string" ? file : file.id!,
                 options: {
                     type: "local",
                 },
@@ -59,56 +59,59 @@ export class FileUploadComponent {
                         return JSON.parse(response).at(0)?.id
                     },
                 },
-                restore: (uniqueFileId, load, error) => {
-                    this.apiService.getTemporaryFileUpload(uniqueFileId).subscribe((event) => {
-                        if (event.type === HttpEventType.ResponseHeader) {
-                            if (event.ok) {
-                                return
-                            }
-
-                            error(`[${event.status}]: ${event.statusText}`)
-                        }
-
-                        if (event.type === HttpEventType.Response && event.ok && event.body !== null) {
-                            load(event.body)
-                        }
+                restore: (uniqueFileId, load, onError) => {
+                    this.apiService.apiTemporaryFileUploadIdGet(uniqueFileId).subscribe({
+                        next: (file) => {
+                            load(new File([file], "", { type: file.type }))
+                            return
+                        },
+                        error: (error) => {
+                            console.error(error)
+                            onError(`[${error.status}]: ${error.statusText}`)
+                        },
                     })
                 },
-                revert: (uniqueFileId, load, error) => {
-                    this.apiService.deleteTemporaryFileUpload(uniqueFileId).subscribe((event) => {
-                        if (event.type === HttpEventType.ResponseHeader) {
-                            if (event.ok) {
-                                load()
-                                return
-                            }
-
-                            error(`[${event.status}]: ${event.statusText}`)
-                        }
+                revert: (uniqueFileId, load, onError) => {
+                    this.apiService.apiTemporaryFileUploadIdDelete(uniqueFileId).subscribe({
+                        next: () => {
+                            load()
+                            return
+                        },
+                        error: (error) => {
+                            console.error(error)
+                            onError(`[${error.status}]: ${error.statusText}`)
+                        },
                     })
                 },
 
-                load: (source, load, error, progress, abort, headers) => {
-                    this.apiService.getFile(source).subscribe((event) => {
-                        if (event.type === HttpEventType.DownloadProgress) {
-                            progress(true, event.loaded, event.total ?? 0)
-                        }
+                load: (source, load, onError, progress) => {
+                    this.apiService.apiFileIdGet(source, "events", true)
+                        .subscribe({
+                            next: (event) => {
 
-                        if (event.type === HttpEventType.ResponseHeader) {
-                            if (event.ok) {
-                                return
-                            }
+                                if (event.type === HttpEventType.DownloadProgress) {
+                                    progress(true, event.loaded, event.total ?? 0)
+                                }
 
-                            error(`[${event.status}]: ${event.statusText}`)
-                        }
+                                if (event.type === HttpEventType.ResponseHeader) {
+                                    if (event.ok) {
+                                        return
+                                    }
+                                }
 
-                        if (event.type === HttpEventType.Response && event.ok && event.body !== null) {
-                            load(event.body)
-                        }
+                                if (event.type === HttpEventType.Response && event.ok && event.body !== null) {
+                                    load(event.body)
+                                }
 
-                        if (event.type === HttpEventType.Response && !event.ok) {
-                            error(`[${event.status}]: ${event.statusText}`)
-                        }
-                    })
+                                if (event.type === HttpEventType.Response && !event.ok) {
+                                    onError(`[${event.status}]: ${event.statusText}`)
+                                }
+                            },
+                            error: (error) => {
+                                console.error(error)
+                                onError(`[${error.status}]: ${error.statusText}`)
+                            },
+                        })
                 },
             },
         }

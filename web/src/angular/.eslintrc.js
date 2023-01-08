@@ -4,6 +4,7 @@ module.exports = {
     "projects/**/*",
     "build/**/*",
     "dist/**/*",
+    "./src/app/core/openapi/**/*",
   ],
   overrides: [
     {
@@ -123,7 +124,7 @@ module.exports = {
           },
         ],
 
-        "no-console": "warn",
+        "no-console": ["warn", { allow: ["warn", "error"] }],
         "no-debugger": "warn",
         "no-var": "error",
         "object-shorthand": ["error", "always", { avoidQuotes: true }],

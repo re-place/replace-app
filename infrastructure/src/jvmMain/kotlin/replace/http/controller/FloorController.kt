@@ -51,6 +51,11 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
             }
         } describe {
             description = "Creates a new floor"
+            body {
+                json {
+                    schema<FloorDto>()
+                }
+            }
             200 response {
                 description = "The created floor"
                 json {
@@ -89,6 +94,11 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
             }
         } describe {
             description = "Updates a floor"
+            body {
+                json {
+                    schema<FloorDto>()
+                }
+            }
             200 response {
                 description = "The updated floor"
                 json {

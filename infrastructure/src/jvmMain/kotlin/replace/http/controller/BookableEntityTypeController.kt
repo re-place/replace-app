@@ -25,6 +25,11 @@ fun Route.registerBookableEntityTypeRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Creates a new bookable entity type"
+            body {
+                json {
+                    schema<BookableEntityTypeDto>()
+                }
+            }
             200 response {
                 description = "The created bookable entity type"
                 json {

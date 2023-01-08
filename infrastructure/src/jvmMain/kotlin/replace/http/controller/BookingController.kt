@@ -27,6 +27,11 @@ fun Route.registerBookingRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Creates a new booking"
+            body {
+                json {
+                    schema<BookingDto>()
+                }
+            }
             200 response {
                 description = "The created booking"
                 json {

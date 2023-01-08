@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
-import { BookableEntity } from "types"
+
+import { BookableEntityDto } from "src/app/core/openapi"
 
 @Component({
     selector: "bookable-entity-list",
@@ -7,9 +8,9 @@ import { BookableEntity } from "types"
     styles: [],
 })
 export class BookableEntityListComponent {
-    @Input() bookableEntities: BookableEntity[] | undefined
+    @Input() bookableEntities: BookableEntityDto[] | undefined
 
-    @Output() edit = new EventEmitter<BookableEntity>()
+    @Output() edit = new EventEmitter<BookableEntityDto>()
     @Output() create = new EventEmitter<void>()
 
     columns = [
@@ -17,7 +18,7 @@ export class BookableEntityListComponent {
         { key: "name", label: "Name" },
     ]
 
-    public onEdit(bookableEntity: BookableEntity) {
+    public onEdit(bookableEntity: BookableEntityDto) {
         this.edit.emit(bookableEntity)
     }
 
