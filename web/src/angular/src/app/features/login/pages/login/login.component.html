@@ -10,8 +10,8 @@
             <input matInput [(ngModel)]="password" type="password" />
         </mat-form-field>
 
-        <div *ngIf="loginError !== undefined" class="text-red-500 font-medium mb-2">
-            {{ loginError }}
+        <div *ngIf="getLoginError()" class="text-red-500 font-medium mb-2">
+            {{ getLoginError() }}
         </div>
 
         <button mat-raised-button color="primary" (click)="login()">Login</button>

@@ -2,19 +2,46 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { firstValueFrom } from "rxjs"
+
 import { User } from "types"
 
 @Injectable({
     providedIn: "root",
 })
 export class AuthService {
-    constructor(private readonly http: HttpClient, private readonly router: Router) {}
     currentUser: User | null = null
+    loginError: string | undefined = undefined
+    private readonly intendedUrl: string | null = null
 
-    public async login(username: string, password: string) {
-        this.currentUser = await firstValueFrom(this.http.post<User>("/api/login", { username, password }))
+    constructor(private readonly http: HttpClient, private readonly router: Router) {
+        const intendedUrl = this.router.getCurrentNavigation()?.extras.state?.["intendedUrl"]
+        if(typeof intendedUrl === "string") {
+            this.intendedUrl = intendedUrl
+        }
+    }
 
-        return this.currentUser
+    public login(username: string, password: string) {
+        const req = this.http.post<User>("/api/login", {username, password}, {observe: "response"})
+        req.subscribe({
+            next: res => {
+                // Save user object
+                this.currentUser = res.body
+
+                let url = "/"
+                if(this.intendedUrl !== null) {
+                    url = this.intendedUrl
+                } 
+                this.router.navigateByUrl(url)
+            },
+            error: err => {
+                console.log(err)
+                this.loginError = err.error
+            },
+        })
+    }
+
+    public getLoginError(): string {
+        return this.loginError?? ""
     }
 
     public async isAuthenticated(): Promise<boolean> {
