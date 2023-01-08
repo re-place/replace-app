@@ -14,6 +14,13 @@
                     />
                     <mat-hint>Der Name des Stockwerkes</mat-hint>
                 </mat-form-field>
+                <h4 class="text-base font-medium mt-4">Grundriss</h4>
+                <file-upload
+                    placeholder="Bild hochladen..."
+                    [mimeTypes]="['image/jpeg', 'image/png']"
+                    [initialFiles]="initialFiles"
+                    (filesUpdated)="onFilesUploaded($event)"
+                ></file-upload>
             </ng-template>
         </loading-state>
     </crud-card>

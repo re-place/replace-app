@@ -8,7 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "generate-api": "openapi-generator-cli generate -g typescript-angular -i http://localhost:8000/openapi -o src/app/core/openapi"
   },
   "private": true,
   "dependencies": {
@@ -23,10 +24,15 @@
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
+    "@openapitools/openapi-generator-cli": "^2.5.2",
     "@tailwindcss/forms": "^0.5.3",
     "@types/lodash": "^4.14.191",
     "@types/uuid": "^9.0.0",
+    "filepond": "^4.30.4",
+    "filepond-plugin-file-validate-type": "^1.2.8",
+    "filepond-plugin-image-preview": "^4.6.11",
     "loadash": "^1.0.0",
+    "ngx-filepond": "^6.0.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "type-fest": "^3.3.0",
