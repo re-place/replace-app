@@ -25,7 +25,6 @@ sequenceOf(
     "application",
     "domain",
     "infrastructure",
-    "web",
 ).forEach {
     val project = ":replace-$it"
     include(project)
