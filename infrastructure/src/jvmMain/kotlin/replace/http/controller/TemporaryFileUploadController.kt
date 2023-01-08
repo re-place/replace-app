@@ -100,8 +100,15 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
             call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
+            "id" pathParameter {
+                description = "The id of the temporary file"
+                schema(ObjectId().toString())
+            }
             200 response {
                 description = "The temporary file upload"
+                "application/octet-stream" content {
+                    schema = FileSchema()
+                }
             }
         }
 
@@ -111,6 +118,10 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
                 return@delete call.respond(HttpStatusCode.NoContent)
             }
         } describe {
+            "id" pathParameter {
+                description = "The id of the temporary file"
+                schema(ObjectId().toString())
+            }
             description = "Deletes a temporary file upload by id"
             204 response {
                 description = "The temporary file upload was deleted"
