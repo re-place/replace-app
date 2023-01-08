@@ -2,9 +2,9 @@
 FROM node:18-alpine3.17 as build
 ENV BASE_PATH=/web/src/angular/
 WORKDIR /replace
-COPY $BASE_PATH/package.json /package.json
-COPY $BASE_PATH/yarn.lock /yarn.lock
-COPY $BASE_PATH/.yarnrc.yml /.yarnrc.yml
+COPY $BASE_PATH/package.json .
+COPY $BASE_PATH/yarn.lock .
+COPY $BASE_PATH/.yarnrc.yml .
 RUN corepack enable
 RUN corepack prepare yarn@stable --activate
 RUN yarn install
