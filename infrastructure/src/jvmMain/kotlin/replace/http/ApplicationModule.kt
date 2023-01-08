@@ -22,16 +22,17 @@ import kotlinx.serialization.modules.contextual
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
+import replace.datastore.LocalFileStorage
+import replace.datastore.MongoTemporaryFileRepository
 import replace.datastore.MongoUserRepository
+import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
 
 fun Application.applicationModule() {
     install(CORS) {
         anyHost() // TODO: Don't do this in production
-        allowHeader("SESSION_TOKEN")
         allowHeader(HttpHeaders.ContentType)
-        exposeHeader("SESSION_TOKEN")
         exposeHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Post)
@@ -78,7 +79,18 @@ fun Application.applicationModule() {
         swaggerUiEndpoint("/swagger", "/openapi")
     }
 
-    routeControllers(db)
+    val storage = LocalFileStorage()
+
+    routeControllers(db, storage)
+
+    val deleteOldTemporaryFileUploadsJob = DeleteOldTemporaryFileUploadsJob(
+        1000 * 60 * 60 * 12, // 12 hours
+        1000 * 60 * 60 * 24, // 24 hours
+        MongoTemporaryFileRepository(db.getCollection()),
+        storage
+    )
+
+    deleteOldTemporaryFileUploadsJob.dispatch()
 }
 
 fun getDB(config: HoconApplicationConfig): CoroutineDatabase {

@@ -6,6 +6,7 @@ import { SetOptional } from "type-fest"
 import { BookableEntity, Floor } from "types"
 
 import { ApiService } from "src/app/core/services/api.service"
+import { FileUpload } from "src/app/shared/components/file-upload/file-upload.component"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -16,6 +17,7 @@ import { DataLoader, Form } from "src/app/util"
 export class EditComponent implements OnDestroy {
     title = ""
     form: Form<Floor> | undefined = undefined
+    floor = new DataLoader<Floor>()
     bookableEntities = new DataLoader<BookableEntity[]>()
     editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
 
@@ -26,17 +28,39 @@ export class EditComponent implements OnDestroy {
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
-        this.routeSub = route.params.subscribe(async (params) => {
-            this.form = new Form(await api.getFloor(params["id"]))
+        this.floor.subscribe((floor) => {
+            this.form = new Form(floor)
             this.form.useSnackbar(snackBar)
             this.title = `Stockwerk ${this.form.data.name} bearbeiten`
+        })
 
+        this.routeSub = route.params.subscribe(async (params) => {
+            this.floor.source(() => api.getFloor(params["id"])).refresh()
             this.bookableEntities.source(() => api.getBookableEntities(params["id"])).refresh()
         })
     }
 
-    public onSubmit() {
-        this.form?.submit((data) => this.api.updateFloor(data))
+    public get files(): FileUpload[] {
+        const planFile = this.form?.data.planFile
+
+        if (planFile === undefined || planFile === null) {
+            return []
+        }
+
+        return [planFile]
+    }
+
+    public set files(newFiles: FileUpload[]) {
+        if (this.form === undefined) {
+            return
+        }
+
+        this.form.data.planFile = newFiles.at(0) ?? null
+    }
+
+    public async onSubmit() {
+        await this.form?.submit((data) => this.api.updateFloor(data))
+        this.floor.refresh()
     }
 
     ngOnDestroy(): void {
@@ -75,5 +99,19 @@ export class EditComponent implements OnDestroy {
                 this.editingBookableEntity = undefined
             })
         }
+    }
+
+    public get initialFiles(): string[] {
+        const planFile = this.form?.data.planFile
+
+        if (planFile === undefined || planFile === null || planFile.temporary) {
+            return []
+        }
+
+        return [planFile.id]
+    }
+
+    public onFilesUploaded(files: FileUpload[]) {
+        this.files = files
     }
 }

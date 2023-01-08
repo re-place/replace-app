@@ -8,4 +8,5 @@ import org.bson.types.ObjectId
 data class Floor(
     val name: String,
     @Contextual val siteId: ObjectId,
+    @Contextual val planFileId: ObjectId? = null,
 ) : ObjectWithId()

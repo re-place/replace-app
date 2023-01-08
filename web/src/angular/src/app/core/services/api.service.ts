@@ -1,7 +1,9 @@
-import { HttpClient } from "@angular/common/http"
+import { HttpClient, HttpRequest } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { firstValueFrom } from "rxjs"
-import { BookableEntity, Floor, Site } from "types"
+import { BookableEntity, Floor, Site, TemporaryFileUpload } from "types"
+
+import { randomString, urlForFile, urlForTemporaryFileUpload } from "src/app/util"
 
 @Injectable({
     providedIn: "root",
@@ -63,5 +65,40 @@ export class ApiService {
 
     public async updateBookableEntity(entity: BookableEntity) {
         return await firstValueFrom(this.http.put<BookableEntity>("/api/bookable-entity", entity))
+    }
+
+    public createTemporaryFileUploads(files: File[]) {
+        const formData = new FormData()
+
+        for (const file of files) {
+            formData.append(randomString(8), file, file.name)
+        }
+
+        const req = new HttpRequest("POST", "/api/temporary-file-upload", formData, {
+            reportProgress: true,
+        })
+
+        return this.http.request<TemporaryFileUpload[]>(req)
+    }
+
+    public getTemporaryFileUpload(id: string) {
+        const req = new HttpRequest("GET", urlForTemporaryFileUpload(id), {
+            responseType: "blob",
+        })
+        return this.http.request<File>(req)
+    }
+
+    public deleteTemporaryFileUpload(id: string) {
+        const req = new HttpRequest("DELETE", urlForTemporaryFileUpload(id))
+
+        return this.http.request(req)
+    }
+
+    public getFile(id: string) {
+        const req = new HttpRequest("GET", urlForFile(id), {
+            responseType: "blob",
+        })
+
+        return this.http.request<File>(req)
     }
 }
