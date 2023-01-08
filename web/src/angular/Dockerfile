@@ -1,9 +1,10 @@
 # Stage 1: Build
 FROM node:18-alpine3.17 as build
+ENV BASE_PATH=/web/src/angular/
 WORKDIR /replace
-COPY /web/src/angular/package.json ./package.json
-COPY /web/src/angular/yarn.lock ./yarn.lock
-COPY /web/src/angular/.yarnrc.yml ./.yarnrc.yml
+COPY $BASE_PATH/package.json /package.json
+COPY $BASE_PATH/yarn.lock /yarn.lock
+COPY $BASE_PATH/.yarnrc.yml /.yarnrc.yml
 RUN corepack enable
 RUN corepack prepare yarn@stable --activate
 RUN yarn install
