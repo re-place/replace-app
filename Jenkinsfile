@@ -5,19 +5,9 @@ pipeline {
         nodejs 'default'
     }
     stages {
-        stage('Frontend Test') {
-            steps {
-                echo 'Not Yet Done'
-            }
-        }
-        stage('Backend Test') {
-            steps {
-                echo 'Not yet done'
-            }
-        }
         stage('Frontend') {
             steps {
-                echo 'Not Yet Done'
+                sh 'docker build -f ./web/src/angular/Dockerfile -t replace-frontend .'
             }
         }
         stage('Backend') {

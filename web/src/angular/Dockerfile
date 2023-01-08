@@ -13,5 +13,6 @@ RUN yarn build
 
 # Stage 2: Run
 FROM nginx:stable-alpine
+ENV BASE_PATH=/web/src/angular/
 COPY $BASE_PATH/nginx.conf /usr/local/etc/nginx/nginx.conf
 COPY --from=build /replace/dist/replace-web /usr/share/nginx/html
