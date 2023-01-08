@@ -1,5 +1,6 @@
 package replace.http.controller
 
+import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
@@ -12,6 +13,7 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
+import io.swagger.v3.oas.models.media.FileSchema
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.FileStorage
@@ -46,8 +48,15 @@ fun Route.registerFileRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
             call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
+            "id" pathParameter {
+                description = "The id of the file"
+                schema(ObjectId().toString())
+            }
             200 response {
                 description = "The temporary file upload"
+                "application/octet-stream" content {
+                    schema = FileSchema()
+                }
             }
         }
     }
