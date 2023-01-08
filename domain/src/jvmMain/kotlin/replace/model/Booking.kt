@@ -8,5 +8,5 @@ import org.bson.types.ObjectId
 @Serializable
 data class Booking(
     val bookedEntities: List<@Contextual ObjectId>,
-    val currentMoment: Instant,
+    val startDateTime: Instant,
 ) : ObjectWithId()

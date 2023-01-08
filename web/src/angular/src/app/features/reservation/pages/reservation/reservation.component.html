@@ -6,15 +6,21 @@
         <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 flex flex-row">
             <div class="flex flex-col w-fit">
 
-                <mat-form-field>
-                    <mat-label>Datum</mat-label>
-                    <input matInput [matDatepicker]="picker" [(ngModel)]="serializedDate">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+                <div>
+                    <mat-form-field class="w-1/2 relative top-2 pr-2">
+                        <mat-label>Datum</mat-label>
+                        <input matInput [min]="minDate" [matDatepicker]="picker" [(ngModel)]="startDate">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="w-1/4">
+                        <input matInput type="time" (change)="test($event)">
+                        <mat-hint>hh:mm</mat-hint>
+                    </mat-form-field>
+                </div>
 
-                <mat-form-field *ngIf="serializedDate">
+                <mat-form-field *ngIf="startDate && startTime">
                     <mat-label>Standort</mat-label>
                     <mat-select
                         [(ngModel)]="selectedSite"
@@ -26,7 +32,7 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field *ngIf="selectedSite && serializedDate">
+                <mat-form-field *ngIf="selectedSite && startDate">
                     <mat-label>Stockwerk</mat-label>
                     <mat-select
                         [(ngModel)]="selectedFloor"
@@ -46,7 +52,7 @@
                     The bookable entities should be marked clearly
                 -->
 
-                <mat-form-field *ngIf="selectedSite && selectedFloor && serializedDate">
+                <mat-form-field *ngIf="selectedSite && selectedFloor && startDate">
                     <mat-label>Arbeitsplatz</mat-label>
                     <mat-select [(ngModel)]="selectedEntity">
                         <mat-option></mat-option>
@@ -60,7 +66,7 @@
 
 
 
-                <button *ngIf="selectedSite && selectedFloor && selectedEntity && serializedDate"
+                <button *ngIf="selectedSite && selectedFloor && selectedEntity && startDate"
                     mat-raised-button color="primary"
                     (click)="sendBooking()"
                     class="mt-auto">

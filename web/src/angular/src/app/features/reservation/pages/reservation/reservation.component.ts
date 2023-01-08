@@ -1,3 +1,4 @@
+import {Time} from "@angular/common"
 import { Component, OnInit } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
@@ -18,19 +19,21 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
-    serializedDate: Date = new Date()
+    startDate: Date = new Date()
+    startTime: Time = {hours:0, minutes:0}
+    minDate: Date = new Date()
 
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
         { name: "Frankfurt am Main", path: "assets/andrena_Frankfurt.png" },
     ]
+
     imgSrc: string = this.images[0].path
 
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) { }
-
     ngOnInit() {
 
         this.apiService.apiSiteGet().subscribe({
@@ -44,14 +47,23 @@ export class ReservationComponent implements OnInit {
             },
         })
     }
-
     // Set default to Darmstadt for the first version
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
-        this.serializedDate.setDate(Date.now())
+        this.startDate.setTime(Date.now())
+        this.minDate.setTime(Date.now())
         this.getFloors()
     }
 
+    test (event: any) {
+        const time = event?.target?.value
+        const timeArr  = time.split(":")
+
+        this.startTime = {
+            hours: timeArr[0],
+            minutes: timeArr[1],
+        }
+    }
     getFloors() {
         this.selectedFloor = undefined
         this.selectedEntity = undefined
@@ -95,11 +107,12 @@ export class ReservationComponent implements OnInit {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
         }
+        this.startDate.setHours(this.startTime.hours,this.startTime.minutes)
         const bookingDto: BookingDto = {
             bookedEntities: [
                 this.selectedEntity?.id,
             ],
-            currentMoment: this.serializedDate.toISOString(),
+            startDateTime: this.startDate.toISOString(),
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {

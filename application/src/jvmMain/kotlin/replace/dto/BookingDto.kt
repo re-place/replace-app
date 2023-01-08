@@ -9,13 +9,13 @@ import replace.model.Booking
 data class BookingDto(
     override val id: String? = null,
     val bookedEntities: List<String>,
-    val currentMoment: String,
+    val startDateTime: String,
 ) : Dto
 
 fun Booking.toDto() = BookingDto(
     id = id?.toHexString(),
     bookedEntities = bookedEntities.map { it.toHexString() },
-    currentMoment = currentMoment.toString(),
+    startDateTime = startDateTime.toString(),
 )
 
-fun BookingDto.toModel() = Booking(bookedEntities.map { ObjectId(it) }, Instant.parse(currentMoment))
+fun BookingDto.toModel() = Booking(bookedEntities.map { ObjectId(it) }, Instant.parse(startDateTime))
