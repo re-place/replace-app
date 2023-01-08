@@ -41,19 +41,7 @@
                 -->
 
                 <!-- This block will be shown at the bottom for mobile -->
-                <div *ngIf="true" class="hidden md:flex md:flex-col md:max-w-230">
-                    <mat-form-field *ngIf="selectedSite && selectedFloor">
-                        <mat-label>Arbeitsplatz</mat-label>
-                        <mat-select [(ngModel)]="selectedEntity">
-                            <mat-option></mat-option>
-                            <mat-option
-                                *ngFor="let entity of bookableEntities"
-                                [value]="entity">
-                                {{ entity.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
+                <div class="hidden md:flex md:flex-col md:max-w-230">
                     <div class="">
                         <mat-checkbox
                             class="w-1/2"

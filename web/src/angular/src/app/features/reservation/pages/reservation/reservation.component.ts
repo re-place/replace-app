@@ -16,8 +16,6 @@ export class ReservationComponent implements OnInit {
     selectedFloor?: FloorDto
 
     bookableEntities: BookableEntityDto[] = []
-    selectedEntity?: BookableEntityDto
-
     selectedEntities: BookableEntityDto[] = []
 
     images = [
@@ -53,7 +51,7 @@ export class ReservationComponent implements OnInit {
 
     getFloors() {
         this.selectedFloor = undefined
-        this.selectedEntity = undefined
+        this.selectedEntities = []
         if(this.selectedSite?.id == undefined) return
 
         this.apiService.apiSiteSiteIdFloorGet(this.selectedSite.id).subscribe({
@@ -75,7 +73,7 @@ export class ReservationComponent implements OnInit {
     } 
 
     getBookableEntities() {
-        this.selectedEntity = undefined
+        this.selectedEntities = []
         if(this.selectedFloor?.id == undefined) return
 
         this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id).subscribe({
