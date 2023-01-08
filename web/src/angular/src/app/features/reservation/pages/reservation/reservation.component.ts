@@ -18,6 +18,8 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
+    serializedDate: Date = new Date()
+
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
         { name: "Frankfurt am Main", path: "assets/andrena_Frankfurt.png" },
@@ -46,6 +48,7 @@ export class ReservationComponent implements OnInit {
     // Set default to Darmstadt for the first version
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
+        this.serializedDate.setDate(Date.now())
         this.getFloors()
     }
 
@@ -70,7 +73,7 @@ export class ReservationComponent implements OnInit {
             },
         })
 
-    } 
+    }
 
     getBookableEntities() {
         this.selectedEntity = undefined
@@ -94,8 +97,9 @@ export class ReservationComponent implements OnInit {
         }
         const bookingDto: BookingDto = {
             bookedEntities: [
-                this.selectedEntity?.id
-            ]
+                this.selectedEntity?.id,
+            ],
+            currentMoment: this.serializedDate.toISOString(),
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
@@ -110,7 +114,7 @@ export class ReservationComponent implements OnInit {
                     break
                     this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
                 }
-            }
+            },
         })
     }
 
