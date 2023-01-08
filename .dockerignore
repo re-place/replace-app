@@ -132,4 +132,4 @@ Thumbs.db
 !.yarn/sdks
 !.yarn/versions
 
-*/web
+node_modules
