@@ -9,6 +9,7 @@ dependencies {
     jvmMainImplementation(project(":replace-domain"))
     jvmMainImplementation(libs.kotlinx.coroutines)
     jvmMainImplementation(libs.kotlinx.serialization)
+    commonMainImplementation(libs.kotlinx.datetime)
     jvmMainImplementation(libs.ktor.serialization)
     jvmMainImplementation(libs.ktor.server.auth)
     jvmMainImplementation(libs.ktor.server.content.negotiation)

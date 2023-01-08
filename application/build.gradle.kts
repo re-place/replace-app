@@ -11,4 +11,5 @@ dependencies {
     jvmMainImplementation(libs.logging.impl)
     jvmMainImplementation(libs.logging.core)
     jvmMainImplementation(libs.kotlinx.serialization)
+    commonMainImplementation(libs.kotlinx.datetime)
 }

@@ -1,5 +1,6 @@
 package replace.usecase.booking
 
+import kotlinx.datetime.Instant
 import org.bson.types.ObjectId
 import replace.datastore.BookableEntityRepository
 import replace.datastore.Repository
@@ -14,6 +15,7 @@ object CreateBookingUseCase {
         bookableEntityRepository: BookableEntityRepository,
     ): BookingDto {
         val bookedEntities = bookingDto.bookedEntities.map { ObjectId(it) }
+        val currentMoment = bookingDto.currentMoment
 
         // ensure that each booked entity exists
         // TODO: Clean up tree if parent + child are booked?
@@ -21,7 +23,7 @@ object CreateBookingUseCase {
         bookedEntities.forEach {
             bookableEntityRepository.findOneById(it) ?: throw IllegalStateException("Entity with id $it does not exist")
         }
-        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities))
+        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities, Instant.parse(currentMoment)))
         checkNotNull(insertedBooking) { "Could not insert booking" }
         return insertedBooking.toDto()
     }
