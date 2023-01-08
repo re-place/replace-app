@@ -42,7 +42,7 @@
 
                 <!-- This block will be shown at the bottom for mobile -->
                 <div class="hidden md:flex md:flex-col md:max-w-230">
-                    <div class="">
+                    <div *ngIf="selectedSite && selectedFloor">
                         <mat-checkbox
                             class="w-1/2"
                             *ngFor="let entity of bookableEntities"
@@ -69,7 +69,7 @@
             </div>
 
             <div class="visible flex flex-col md:hidden">
-                <div>
+                <div *ngIf="selectedSite && selectedFloor">
                     <mat-checkbox
                         class="w-1/2"
                         *ngFor="let entity of bookableEntities"
