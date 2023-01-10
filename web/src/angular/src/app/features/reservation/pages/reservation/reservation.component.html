@@ -7,16 +7,18 @@
             <div class="flex flex-col w-fit">
 
                 <div>
-                    <mat-form-field class="w-1/2 relative top-2 pr-2">
+                    <mat-form-field class="w-3/5 pr-2">
                         <mat-label>Datum</mat-label>
                         <input matInput [min]="minDate" [matDatepicker]="picker" [(ngModel)]="startDate">
                         <mat-hint>MM/DD/YYYY</mat-hint>
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
-                    <mat-form-field class="w-1/4">
-                        <input matInput type="time" (change)="test($event)">
-                        <mat-hint>hh:mm</mat-hint>
+
+                    <mat-form-field class="w-2/5">
+                        <mat-label>Uhrzeit</mat-label>
+                        <input [ngModel]="startTime | date: 'HH:mm'" matInput type="time" (change)="getTime($event)">
+                        <mat-hint>HH:mm</mat-hint>
                     </mat-form-field>
                 </div>
 
@@ -66,7 +68,7 @@
 
 
 
-                <button *ngIf="selectedSite && selectedFloor && selectedEntity && startDate"
+                <button *ngIf="selectedSite && selectedFloor && selectedEntity && startDate && startTime"
                     mat-raised-button color="primary"
                     (click)="sendBooking()"
                     class="mt-auto">

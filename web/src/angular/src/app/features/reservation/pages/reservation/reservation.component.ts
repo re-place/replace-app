@@ -20,7 +20,7 @@ export class ReservationComponent implements OnInit {
     selectedEntity?: BookableEntityDto
 
     startDate: Date = new Date()
-    startTime: Time = {hours:0, minutes:0}
+    startTime: Date = new Date()
     minDate: Date = new Date()
 
     images = [
@@ -50,20 +50,16 @@ export class ReservationComponent implements OnInit {
     // Set default to Darmstadt for the first version
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
-        this.startDate.setTime(Date.now())
-        this.minDate.setTime(Date.now())
         this.getFloors()
     }
 
-    test (event: any) {
+    getTime (event: any) {
         const time = event?.target?.value
-        const timeArr  = time.split(":")
+        const [hour, minutes] = time.split(":")
 
-        this.startTime = {
-            hours: timeArr[0],
-            minutes: timeArr[1],
-        }
+        this.startTime.setHours(hour, minutes)
     }
+
     getFloors() {
         this.selectedFloor = undefined
         this.selectedEntity = undefined
@@ -107,7 +103,7 @@ export class ReservationComponent implements OnInit {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
         }
-        this.startDate.setHours(this.startTime.hours,this.startTime.minutes)
+        this.startDate.setHours(this.startTime.getHours(),this.startTime.getMinutes())
         const bookingDto: BookingDto = {
             bookedEntities: [
                 this.selectedEntity?.id,
