@@ -21,7 +21,7 @@ ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref 
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = "ktor" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 guice = "com.google.inject:guice:5.1.0"
-logging-api = "org.slf4j:slf4j-api:1.7.36"
+logging-api = "org.slf4j:slf4j-api:2.0.6"
 logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 tegral-openapi-base = { module ="guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
