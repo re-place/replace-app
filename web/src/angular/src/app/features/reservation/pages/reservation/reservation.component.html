@@ -5,7 +5,15 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
         <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 flex flex-row">
             <div class="flex flex-col w-fit">
-                <div>
+
+                <mat-form-field>
+                    <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
+                           [formControl]="dateControl">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #picker>
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <!--div>
                     <mat-form-field class="w-3/5 pr-2">
                         <mat-label>Datum</mat-label>
                         <input matInput [matDatepicker]="StartDatePicker"
@@ -45,7 +53,7 @@
                         <input [ngModel]="endTime | date: 'HH:mm'" matInput type="time">
                         <mat-hint>HH:mm</mat-hint>
                     </mat-form-field>
-                </div>
+                </div-->
 
                 <mat-form-field *ngIf="startDate && startTime">
                     <mat-label>Standort</mat-label>

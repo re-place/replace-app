@@ -10,6 +10,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
 import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
+import {MaterialModule} from "../../material/material.module"
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { ReservationRoutingModule } from "./reservation-routing.module"
         MatSlideToggleModule,
         MatDatepickerModule,
         ReactiveFormsModule,
+        MaterialModule,
     ],
 })
 export class ReservationModule { }

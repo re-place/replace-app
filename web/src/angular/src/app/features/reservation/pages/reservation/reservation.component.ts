@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core"
+import {FormControl} from "@angular/forms"
 import {MatDatepickerInputEvent} from "@angular/material/datepicker"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
@@ -172,6 +173,7 @@ export class ReservationComponent implements OnInit {
         (date: Date | null) => {
             return !(!date || date.getDay() == 0 || date.getDay() == 6)
         }
+    dateControl= new FormControl(this.startDate)
 
     saveDate($event: MatDatepickerInputEvent<Date>) {
         if ($event.value == null) {
