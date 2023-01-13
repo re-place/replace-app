@@ -1,8 +1,8 @@
-import {Time} from "@angular/common"
-import { Component, OnInit } from "@angular/core"
-import { MatSnackBar } from "@angular/material/snack-bar"
+import {Component, OnInit} from "@angular/core"
+import {MatDatepickerInputEvent} from "@angular/material/datepicker"
+import {MatSnackBar} from "@angular/material/snack-bar"
 
-import { BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import {BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
 
 @Component({
     selector: "reservation",
@@ -19,9 +19,14 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
-    startDate: Date = new Date()
-    startTime: Date = new Date()
-    minDate: Date = new Date()
+    startDate = new Date()
+    endDate = new Date()
+    startTime = new Date()
+    endTime = new Date()
+
+    earliestBookableDate = new Date()
+    toggle = false
+
 
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
@@ -51,13 +56,21 @@ export class ReservationComponent implements OnInit {
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
+        this.endTime.setHours(this.endTime.getUTCHours()+1)
     }
 
-    getTime (event: any) {
+    getTime(event: any) {
+        if (event.value == undefined) {
+            return
+        }
         const time = event?.target?.value
         const [hour, minutes] = time.split(":")
-
-        this.startTime.setHours(hour, minutes)
+        if (event.targetElement.id == "mat-input-1") {
+            this.startTime.setHours(hour, minutes)
+        }
+        else if (event.targetElement.id == "mat-input-3") {
+            this.endTime.setHours(hour, minutes)
+        }
     }
 
     getFloors() {
@@ -103,10 +116,16 @@ export class ReservationComponent implements OnInit {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
         }
-        this.startDate.setHours(this.startTime.getHours(),this.startTime.getMinutes())
+        this.startDate.setHours(this.startTime.getHours(), this.startTime.getMinutes())
+        if (!this.toggle) {
+            this.endDate.setHours(this.endTime.getHours(), this.endTime.getMinutes())
+        } else {
+            this.endDate.setTime(this.startDate.getTime())
+            this.endDate.setHours(this.endTime.getHours(), this.endTime.getMinutes())
+        }
         const bookingDto: BookingDto = {
             bookedEntities: [
-                this.selectedEntity?.id,
+                this.selectedEntity.id,
             ],
             startDateTime: this.startDate.toISOString(),
         }
@@ -145,4 +164,30 @@ export class ReservationComponent implements OnInit {
         this.snackBar.open(message, "error", { duration: 3000 })
     }
 
+    toggleRange() {
+        this.toggle = !this.toggle
+    }
+
+    dateFilter: (date: Date | null) => boolean =
+        (date: Date | null) => {
+            return !(!date || date.getDay() == 0 || date.getDay() == 6)
+        }
+
+    saveDate($event: MatDatepickerInputEvent<Date>) {
+        if ($event.value == null) {
+            return
+        }
+        else if ($event.targetElement.id == "mat-input-0") {
+            this.startDate.setTime($event.value.getTime())
+            this.startDate.setSeconds(0,0)
+        }
+        else if (this.toggle && $event.targetElement.id == "mat-input-2") {
+            this.endDate.setTime($event.value.getTime())
+            this.endDate.setSeconds(0,0)
+        }
+    }
+
+    saveStartTime(date: Event) {
+        console.log((<Date><unknown>date).toString())
+    }
 }
