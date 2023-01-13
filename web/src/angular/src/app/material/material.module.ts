@@ -43,6 +43,9 @@ import { MatTooltipModule } from "@angular/material/tooltip"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { MatTableModule } from "@angular/material/table"
+// https://github.com/h2qutc/angular-material-components
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NgxMatNativeDateModule} from "@angular-material-components/datetime-picker"
+
 
 @NgModule({
     declarations: [],
@@ -83,6 +86,9 @@ import { MatTableModule } from "@angular/material/table"
         MatPaginatorModule,
         MatSortModule,
         MatTableModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
     ],
     exports: [
         MatAutocompleteModule,
@@ -120,6 +126,9 @@ import { MatTableModule } from "@angular/material/table"
         MatPaginatorModule,
         MatSortModule,
         MatTableModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
     ],
 })
 export class MaterialModule { }

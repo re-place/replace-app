@@ -7,10 +7,17 @@
             <div class="flex flex-col w-fit">
 
                 <mat-form-field>
-                    <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
-                           [formControl]="dateControl">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <ngx-mat-datetime-picker #picker>
+                    <input matInput [ngxMatDatetimePicker]="startDateTimePicker" placeholder="Choose a date"
+                           [formControl]="startDateControl">
+                    <mat-datepicker-toggle matSuffix [for]="$any(startDateTimePicker)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #startDateTimePicker>
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput [ngxMatDatetimePicker]="endDateTimePicker" placeholder="Choose a date"
+                           [formControl]="endDateControl">
+                    <mat-datepicker-toggle matSuffix [for]="$any(endDateTimePicker)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #endDateTimePicker>
                     </ngx-mat-datetime-picker>
                 </mat-form-field>
                 <!--div>
@@ -55,7 +62,7 @@
                     </mat-form-field>
                 </div-->
 
-                <mat-form-field *ngIf="startDate && startTime">
+                <mat-form-field>
                     <mat-label>Standort</mat-label>
                     <mat-select
                         [(ngModel)]="selectedSite"
@@ -67,7 +74,7 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field *ngIf="selectedSite && startDate">
+                <mat-form-field *ngIf="selectedSite">
                     <mat-label>Stockwerk</mat-label>
                     <mat-select
                         [(ngModel)]="selectedFloor"
@@ -87,7 +94,7 @@
                     The bookable entities should be marked clearly
                 -->
 
-                <mat-form-field *ngIf="selectedSite && selectedFloor && startDate">
+                <mat-form-field *ngIf="selectedSite && selectedFloor">
                     <mat-label>Arbeitsplatz</mat-label>
                     <mat-select [(ngModel)]="selectedEntity">
                         <mat-option></mat-option>
@@ -101,7 +108,7 @@
 
 
 
-                <button *ngIf="selectedSite && selectedFloor && selectedEntity && startDate && startTime"
+                <button *ngIf="selectedSite && selectedFloor && selectedEntity"
                     mat-raised-button color="primary"
                     (click)="sendBooking()"
                     class="mt-auto">

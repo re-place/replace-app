@@ -20,14 +20,8 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
-    startDate = new Date()
-    endDate = new Date()
-    startTime = new Date()
-    endTime = new Date()
-
-    earliestBookableDate = new Date()
-    toggle = false
-
+    startDateControl= new FormControl(new Date())
+    endDateControl= new FormControl(new Date())
 
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
@@ -35,11 +29,34 @@ export class ReservationComponent implements OnInit {
     ]
 
     imgSrc: string = this.images[0].path
-
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
-    ) { }
+    ) {
+        this.startDateControl.value?.setHours(this.startDateControl.value?.getHours() + 1)
+        if (this.startDateControl.value !== null) {
+            this.endDateControl.value?.setHours(this.startDateControl.value?.getHours() + 1)
+        }
+        this.startDateControl.valueChanges.subscribe((startDate)=>{
+            console.log(startDate)
+            if (startDate === null) {
+                return
+            }
+            const oldStartDate = this.startDateControl.value
+            if (oldStartDate === null) {
+                return
+            }
+            console.log(oldStartDate, this.endDateControl)
+            if (oldStartDate.getFullYear() === this.endDateControl.value?.getFullYear() &&
+                oldStartDate.getMonth() === this.endDateControl.value.getMonth() &&
+                oldStartDate.getDate() === this.endDateControl.value.getDate()) {
+                console.log(startDate)
+                this.endDateControl.value.setFullYear(startDate.getFullYear())
+                this.endDateControl.value.setMonth(startDate.getMonth())
+                this.endDateControl.value.setDate(startDate.getDate())
+            }
+        })
+    }
     ngOnInit() {
 
         this.apiService.apiSiteGet().subscribe({
@@ -54,24 +71,10 @@ export class ReservationComponent implements OnInit {
         })
     }
     // Set default to Darmstadt for the first version
+
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
-        this.endTime.setHours(this.endTime.getUTCHours()+1)
-    }
-
-    getTime(event: any) {
-        if (event.value == undefined) {
-            return
-        }
-        const time = event?.target?.value
-        const [hour, minutes] = time.split(":")
-        if (event.targetElement.id == "mat-input-1") {
-            this.startTime.setHours(hour, minutes)
-        }
-        else if (event.targetElement.id == "mat-input-3") {
-            this.endTime.setHours(hour, minutes)
-        }
     }
 
     getFloors() {
@@ -113,22 +116,15 @@ export class ReservationComponent implements OnInit {
     }
 
     sendBooking() {
-        if(this.selectedEntity?.id == undefined) {
+        if(this.selectedEntity?.id === undefined) {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
-        }
-        this.startDate.setHours(this.startTime.getHours(), this.startTime.getMinutes())
-        if (!this.toggle) {
-            this.endDate.setHours(this.endTime.getHours(), this.endTime.getMinutes())
-        } else {
-            this.endDate.setTime(this.startDate.getTime())
-            this.endDate.setHours(this.endTime.getHours(), this.endTime.getMinutes())
         }
         const bookingDto: BookingDto = {
             bookedEntities: [
                 this.selectedEntity.id,
             ],
-            startDateTime: this.startDate.toISOString(),
+            startDateTime: new Date().toISOString(),
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
@@ -165,31 +161,8 @@ export class ReservationComponent implements OnInit {
         this.snackBar.open(message, "error", { duration: 3000 })
     }
 
-    toggleRange() {
-        this.toggle = !this.toggle
-    }
-
     dateFilter: (date: Date | null) => boolean =
         (date: Date | null) => {
             return !(!date || date.getDay() == 0 || date.getDay() == 6)
         }
-    dateControl= new FormControl(this.startDate)
-
-    saveDate($event: MatDatepickerInputEvent<Date>) {
-        if ($event.value == null) {
-            return
-        }
-        else if ($event.targetElement.id == "mat-input-0") {
-            this.startDate.setTime($event.value.getTime())
-            this.startDate.setSeconds(0,0)
-        }
-        else if (this.toggle && $event.targetElement.id == "mat-input-2") {
-            this.endDate.setTime($event.value.getTime())
-            this.endDate.setSeconds(0,0)
-        }
-    }
-
-    saveStartTime(date: Event) {
-        console.log((<Date><unknown>date).toString())
-    }
 }
