@@ -82,5 +82,3 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 kotlin-js-store/
-
-node_modules
