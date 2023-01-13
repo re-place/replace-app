@@ -8,9 +8,9 @@ import { MatInputModule } from "@angular/material/input"
 import { MatSelectModule } from "@angular/material/select"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
+import { MaterialModule } from "../../material/material.module"
 import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
-import {MaterialModule} from "../../material/material.module"
 
 
 @NgModule({

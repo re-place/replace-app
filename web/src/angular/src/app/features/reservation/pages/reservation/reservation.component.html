@@ -5,21 +5,22 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
         <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 flex flex-row">
             <div class="flex flex-col w-fit">
-
-                <mat-form-field>
-                    <input matInput [ngxMatDatetimePicker]="startDateTimePicker" placeholder="Choose a date"
-                           [formControl]="startDateControl">
-                    <mat-datepicker-toggle matSuffix [for]="$any(startDateTimePicker)"></mat-datepicker-toggle>
-                    <ngx-mat-datetime-picker #startDateTimePicker>
-                    </ngx-mat-datetime-picker>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput [ngxMatDatetimePicker]="endDateTimePicker" placeholder="Choose a date"
-                           [formControl]="endDateControl">
-                    <mat-datepicker-toggle matSuffix [for]="$any(endDateTimePicker)"></mat-datepicker-toggle>
-                    <ngx-mat-datetime-picker #endDateTimePicker>
-                    </ngx-mat-datetime-picker>
-                </mat-form-field>
+                <form  [formGroup]="timeFormControl">
+                    <mat-form-field>
+                        <input matInput [ngxMatDatetimePicker]="startDateTimePicker" placeholder="Choose a date"
+                        formControlName="startDate">
+                        <mat-datepicker-toggle matSuffix [for]="$any(startDateTimePicker)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #startDateTimePicker>
+                        </ngx-mat-datetime-picker>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput [ngxMatDatetimePicker]="endDateTimePicker" placeholder="Choose a date"
+                        formControlName="endDate">
+                        <mat-datepicker-toggle matSuffix [for]="$any(endDateTimePicker)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #endDateTimePicker>
+                        </ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </form>
                 <!--div>
                     <mat-form-field class="w-3/5 pr-2">
                         <mat-label>Datum</mat-label>

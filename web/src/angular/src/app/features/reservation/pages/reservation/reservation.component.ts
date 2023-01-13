@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core"
-import {FormControl} from "@angular/forms"
-import {MatDatepickerInputEvent} from "@angular/material/datepicker"
+import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
 import {BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
@@ -20,8 +19,10 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
-    startDateControl= new FormControl(new Date())
-    endDateControl= new FormControl(new Date())
+    timeFormControl = new FormGroup({
+        startDate: new FormControl(new Date()),
+        endDate: new FormControl(new Date()),
+    })
 
     images = [
         { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
@@ -33,28 +34,38 @@ export class ReservationComponent implements OnInit {
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) {
-        this.startDateControl.value?.setHours(this.startDateControl.value?.getHours() + 1)
-        if (this.startDateControl.value !== null) {
-            this.endDateControl.value?.setHours(this.startDateControl.value?.getHours() + 1)
-        }
-        this.startDateControl.valueChanges.subscribe((startDate)=>{
-            console.log(startDate)
+
+        this.timeFormControl.get("startDate")?.valueChanges.subscribe((startDate) => {
             if (startDate === null) {
                 return
             }
-            const oldStartDate = this.startDateControl.value
-            if (oldStartDate === null) {
+
+            const oldStartDate = this.timeFormControl.value.startDate
+
+            if (oldStartDate === null || oldStartDate === undefined) {
                 return
             }
-            console.log(oldStartDate, this.endDateControl)
-            if (oldStartDate.getFullYear() === this.endDateControl.value?.getFullYear() &&
-                oldStartDate.getMonth() === this.endDateControl.value.getMonth() &&
-                oldStartDate.getDate() === this.endDateControl.value.getDate()) {
-                console.log(startDate)
-                this.endDateControl.value.setFullYear(startDate.getFullYear())
-                this.endDateControl.value.setMonth(startDate.getMonth())
-                this.endDateControl.value.setDate(startDate.getDate())
+
+            const endDateControl = this.timeFormControl.get("endDate")
+
+            if (endDateControl === null) {
+                return
             }
+
+            if (
+                oldStartDate.getFullYear() === endDateControl.value?.getFullYear() &&
+                oldStartDate.getMonth() === endDateControl.value.getMonth() &&
+                oldStartDate.getDate() === endDateControl.value.getDate()
+            ) {
+                const endDate = endDateControl.value
+
+                endDate.setFullYear(startDate.getFullYear())
+                endDate.setMonth(startDate.getMonth())
+                endDate.setDate(startDate.getDate())
+
+                endDateControl.setValue(endDate)
+            }
+
         })
     }
     ngOnInit() {
@@ -75,6 +86,21 @@ export class ReservationComponent implements OnInit {
     setDefaults() {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
+
+        const startDate = new Date()
+        startDate.setHours(startDate.getHours() + 1)
+
+        const oldStartDate = this.timeFormControl.value.startDate
+        oldStartDate?.setHours(startDate.getHours())
+
+        const endDate = new Date()
+        endDate.setHours(startDate.getHours() + 1)
+
+        const oldEndDate = this.timeFormControl.value.endDate
+        oldEndDate?.setHours(endDate.getHours())
+
+        this.timeFormControl.get("startDate")?.setValue(startDate)
+        this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
     getFloors() {
