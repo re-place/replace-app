@@ -16,6 +16,7 @@ object CreateBookingUseCase {
     ): BookingDto {
         val bookedEntities = bookingDto.bookedEntities.map { ObjectId(it) }
         val startDateTime = bookingDto.startDateTime
+        val endDateTime = bookingDto.endDateTime
 
         // ensure that each booked entity exists
         // TODO: Clean up tree if parent + child are booked?
@@ -23,7 +24,7 @@ object CreateBookingUseCase {
         bookedEntities.forEach {
             bookableEntityRepository.findOneById(it) ?: throw IllegalStateException("Entity with id $it does not exist")
         }
-        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities, Instant.parse(startDateTime)))
+        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities, Instant.parse(startDateTime), Instant.parse(endDateTime)))
         checkNotNull(insertedBooking) { "Could not insert booking" }
         return insertedBooking.toDto()
     }

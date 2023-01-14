@@ -9,4 +9,5 @@ import org.bson.types.ObjectId
 data class Booking(
     val bookedEntities: List<@Contextual ObjectId>,
     val startDateTime: Instant,
+    val endDateTime: Instant,
 ) : ObjectWithId()

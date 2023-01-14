@@ -174,7 +174,8 @@ export class ReservationComponent implements OnInit {
             bookedEntities: [
                 this.selectedEntity.id,
             ],
-            startDateTime: new Date().toISOString(),
+            startDateTime: this.timeFormControl.value.startDate?.toISOString(),
+            endDateTime: this.timeFormControl.value.endDate?.toISOString(),
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {

@@ -15,5 +15,6 @@ export interface BookingDto {
     id?: string;
     bookedEntities?: Array<string>;
     startDateTime?: string;
+    endDateTime?: string;
 }
 
