@@ -7,7 +7,9 @@
             <div class="flex flex-col w-fit">
                 <form  [formGroup]="timeFormControl">
                     <mat-form-field>
-                        <input matInput [ngxMatDatetimePicker]="startDateTimePicker" placeholder="Choose a date"
+                        <input matInput [ngxMatDatetimePicker]="startDateTimePicker"
+                               [min]="minDate"
+                               placeholder="Choose a date"
                         formControlName="startDate">
                         <mat-datepicker-toggle matSuffix [for]="$any(startDateTimePicker)"></mat-datepicker-toggle>
                         <ngx-mat-datetime-picker #startDateTimePicker>

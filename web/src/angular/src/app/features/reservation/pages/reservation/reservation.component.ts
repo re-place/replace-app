@@ -19,6 +19,7 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntity?: BookableEntityDto
 
+    minDate = new Date()
     timeFormControl = new FormGroup({
         startDate: new FormControl(new Date()),
         endDate: new FormControl(new Date()),
@@ -63,6 +64,7 @@ export class ReservationComponent implements OnInit {
                 endDate.setMonth(startDate.getMonth())
                 endDate.setDate(startDate.getDate())
 
+                endDateControl.reset()
                 endDateControl.setValue(endDate)
             }
 
