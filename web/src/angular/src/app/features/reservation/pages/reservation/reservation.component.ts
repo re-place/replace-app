@@ -41,12 +41,6 @@ export class ReservationComponent implements OnInit {
                 return
             }
 
-            const oldStartDate = this.timeFormControl.value.startDate
-
-            if (oldStartDate === null || oldStartDate === undefined) {
-                return
-            }
-
             const endDateControl = this.timeFormControl.get("endDate")
 
             if (endDateControl === null || endDateControl === undefined) {
@@ -62,12 +56,38 @@ export class ReservationComponent implements OnInit {
             if (
                 startDate > endDate
             ) {
-                endDate.setFullYear(startDate.getFullYear())
-                endDate.setMonth(startDate.getMonth())
-                endDate.setDate(startDate.getDate())
+                endDate.setFullYear(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
 
                 endDateControl.reset()
                 endDateControl.setValue(endDate)
+            }
+
+        })
+
+        this.timeFormControl.get("endDate")?.valueChanges.subscribe((endDate) => {
+            if (endDate === null) {
+                return
+            }
+
+            const startDateControl = this.timeFormControl.get("startDate")
+
+            if (startDateControl === null || startDateControl === undefined) {
+                return
+            }
+
+            const startDate = startDateControl.value
+
+            if (startDate === null || startDate === undefined) {
+                return
+            }
+
+            if (
+                startDate > endDate
+            ) {
+                startDate.setFullYear(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
+
+                startDateControl.reset()
+                startDateControl.setValue(startDate)
             }
 
         })
