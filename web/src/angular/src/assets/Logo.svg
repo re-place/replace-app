@@ -2,14 +2,15 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="17.208616mm"
-   height="3.0051599mm"
-   viewBox="0 0 17.208616 3.0051599"
+   width="20.999985mm"
+   height="4.1724682mm"
+   viewBox="0 0 20.999984 4.1724682"
    version="1.1"
    id="svg72"
    inkscape:export-filename="Rastergrafik.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
+   sodipodi:docname="Logo.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -26,15 +27,35 @@
      inkscape:document-units="mm"
      showgrid="false" />
   <defs
-     id="defs69" />
+     id="defs69">
+    <marker
+       style="overflow:visible"
+       id="TriangleStart"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="TriangleStart"
+       markerWidth="5.3244081"
+       markerHeight="6.155385"
+       viewBox="0 0 5.3244081 6.1553851"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+  </defs>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-6.4498555,-6.5395597)">
+     transform="translate(-6.0870728,-6.5395599)">
     <g
        aria-label="re:Place"
-       transform="translate(-0.49530829,-0.19136911)"
+       transform="translate(1.0375946,-0.19136911)"
        id="text130"
        style="font-size:3.88056px;white-space:pre;inline-size:57.3147;stroke-width:0.264583">
       <path
@@ -70,5 +91,11 @@
          style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold';fill:#68ac30"
          id="path3690" />
     </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.265776px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#TriangleStart)"
+       d="M 26.143269,9.8944846 6.0871949,9.8760606"
+       id="path8635"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
