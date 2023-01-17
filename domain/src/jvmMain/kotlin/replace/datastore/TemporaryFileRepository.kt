@@ -1,8 +1,8 @@
 package replace.datastore
 
-import replace.model.TemporaryFile
+import replace.model.TemporaryFiles
 import java.time.LocalDateTime
 
-interface TemporaryFileRepository : Repository<TemporaryFile> {
-    suspend fun findOlderThan(datetime: LocalDateTime): List<TemporaryFile>
+interface TemporaryFileRepository : Repository<TemporaryFiles> {
+    suspend fun findOlderThan(datetime: LocalDateTime): List<TemporaryFiles>
 }

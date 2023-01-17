@@ -18,12 +18,12 @@ import replace.datastore.MongoRepository
 import replace.dto.SiteDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.Site
+import replace.model.Sites
 import replace.usecase.site.CreateSiteUseCase
 import replace.usecase.site.UpdateSiteUseCase
 
 fun Route.registerSiteRoutes(db: CoroutineDatabase) {
-    val siteRepository = MongoRepository<Site>(db.getCollection())
+    val siteRepository = MongoRepository<Sites>(db.getCollection())
     val floorRepository = MongoFloorRepository(db.getCollection())
 
     route("/api/site") {

@@ -1,9 +1,9 @@
 package replace.datastore
 
 import org.bson.types.ObjectId
-import replace.model.ObjectWithId
+import replace.model.Model
 
-interface Repository<T : ObjectWithId> {
+interface Repository<T : Model> {
     suspend fun insertOne(item: T): T?
     suspend fun updateOne(id: ObjectId, item: T): T?
     suspend fun findOneById(id: ObjectId): T?

@@ -11,14 +11,14 @@ import replace.datastore.MongoRepository
 import replace.dto.BookableEntityDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.BookableEntity
-import replace.model.BookableEntityType
+import replace.model.BookableEntities
+import replace.model.BookableEntityTypes
 import replace.usecase.bookableentity.CreateBookableEntityUseCase
 import replace.usecase.bookableentity.UpdateBookableEntityUseCase
 
 fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
-    val bookableEntityRepository = MongoRepository<BookableEntity>(db.getCollection())
-    val bookableEntityTypeRepository = MongoRepository<BookableEntityType>(db.getCollection())
+    val bookableEntityRepository = MongoRepository<BookableEntities>(db.getCollection())
+    val bookableEntityTypeRepository = MongoRepository<BookableEntityTypes>(db.getCollection())
 
     route("/api/bookable-entity") {
         routeRepository(bookableEntityRepository) {

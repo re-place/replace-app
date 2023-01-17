@@ -65,7 +65,8 @@ val migrationStub = File("infrastructure/src/jvmMain/resources/db/changelog-stub
 
 tasks {
     register("make-migration") {
-        val migrationName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"))
+        val migrationPrefix = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"))
+        val migrationName = "${migrationPrefix}_${project.findProperty("id") ?: ""}"
         val migrationFile = File("${migrationDir.path}/$migrationName.json")
 
         migrationStub.copyTo(migrationFile)
@@ -73,9 +74,15 @@ tasks {
         doLast {
             println("Created migration file: ${migrationFile.path}")
 
-            migrationStub.readText().replace("{{id}}", migrationName).also {
-                migrationFile.writeText(it)
-            }
+            val newText = migrationStub.readText().replace("{{id}}", migrationName)
+            migrationFile.writeText(newText)
         }
+    }
+}
+
+tasks {
+    register("fresh", ) {
+        dependsOn("dropAll")
+        dependsOn("update")
     }
 }

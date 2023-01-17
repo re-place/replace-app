@@ -14,10 +14,10 @@ import org.bson.types.ObjectId
 import replace.datastore.Repository
 import replace.dto.Dto
 import replace.http.controller.Routing
-import replace.model.ObjectWithId
+import replace.model.Model
 import kotlin.reflect.typeOf
 
-inline fun <reified T : ObjectWithId, reified D : Dto> Route.routeRepository(repository: Repository<T>, crossinline toDto: (T) -> D) {
+inline fun <reified T : Model, reified D : Dto> Route.routeRepository(repository: Repository<T>, crossinline toDto: (T) -> D) {
     val listType = typeOf<List<D>>()
 
     get {

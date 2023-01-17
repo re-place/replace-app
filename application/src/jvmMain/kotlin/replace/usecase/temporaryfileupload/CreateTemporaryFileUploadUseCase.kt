@@ -4,7 +4,6 @@ import replace.datastore.FileStorage
 import replace.datastore.TemporaryFileRepository
 import replace.dto.TemporaryFileUploadDto
 import replace.dto.toDto
-import replace.model.TemporaryFile
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID.randomUUID

@@ -1,7 +1,7 @@
 package replace.datastore
 
-import replace.model.BookableEntityType
+import replace.model.BookableEntityTypes
 
-interface BookableEntityTypeRepository : Repository<BookableEntityType> {
-    suspend fun findByName(name: String): BookableEntityType?
+interface BookableEntityTypeRepository : Repository<BookableEntityTypes> {
+    suspend fun findByName(name: String): BookableEntityTypes?
 }

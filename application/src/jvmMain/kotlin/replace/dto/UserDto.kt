@@ -2,6 +2,7 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import replace.model.User
+import replace.model.Users
 
 @Serializable
 class UserDto(
@@ -12,8 +13,8 @@ class UserDto(
 ) : Dto
 
 fun User.toDto() = UserDto(
-    id?.toHexString(),
-    username,
-    firstName,
-    lastName,
+    id = id.value,
+    username = username,
+    firstName = firstName,
+    lastName = lastName,
 )

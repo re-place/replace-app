@@ -6,7 +6,6 @@ import replace.datastore.FileStorage
 import replace.datastore.TemporaryFileRepository
 import replace.dto.FileDto
 import replace.dto.toDto
-import replace.model.File
 import java.util.UUID
 
 object CreateFileUseCase {

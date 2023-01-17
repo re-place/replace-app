@@ -2,9 +2,9 @@ package replace.datastore
 
 import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineCollection
-import replace.model.ObjectWithId
+import replace.model.Model
 
-open class MongoRepository<T : ObjectWithId>(protected val collection: CoroutineCollection<T>) : Repository<T> {
+open class MongoRepository<T : Model>(protected val collection: CoroutineCollection<T>) : Repository<T> {
     override suspend fun insertOne(item: T): T? =
         if (collection.insertOne(item).wasAcknowledged()) item else null
 

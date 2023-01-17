@@ -1,8 +1,7 @@
 package replace.datastore
 
-import org.bson.types.ObjectId
-import replace.model.Floor
+import replace.model.Floors
 
-interface FloorRepository : Repository<Floor> {
-    suspend fun findBySiteId(siteId: ObjectId): List<Floor>
+interface FloorRepository : Repository<Floors> {
+    suspend fun findBySiteId(siteId: String): List<Floors>
 }

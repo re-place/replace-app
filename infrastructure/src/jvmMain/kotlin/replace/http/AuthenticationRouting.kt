@@ -33,7 +33,7 @@ import io.ktor.server.sessions.set
 import org.bson.types.ObjectId
 import replace.datastore.UserRepository
 import replace.dto.LoginRequest
-import replace.model.User
+import replace.model.Users
 import replace.model.UserSession
 import replace.model.createSession
 
@@ -44,7 +44,7 @@ fun Route.routeAuthentication(userRepository: UserRepository) {
             call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
             return@get
         }
-        val user: User = try {
+        val user: Users = try {
             userRepository.findOneById(ObjectId(session.userId))
                 ?: error("User with id ${session.userId} not found in database")
         } catch (e: Exception) {

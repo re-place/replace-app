@@ -10,8 +10,6 @@ class SiteDto(
 ) : Dto
 
 fun Site.toDto() = SiteDto(
-    id = id?.toHexString(),
+    id = id.value,
     name = name,
 )
-
-fun SiteDto.toModel() = Site(name)

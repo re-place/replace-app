@@ -18,10 +18,10 @@ import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.FileStorage
 import replace.datastore.MongoRepository
-import replace.model.File
+import replace.model.Files
 
 fun Route.registerFileRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
-    val fileRepository = MongoRepository<File>(db.getCollection())
+    val fileRepository = MongoRepository<Files>(db.getCollection())
 
     route("/api/file") {
         get<Routing.ById> { route ->

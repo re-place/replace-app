@@ -5,14 +5,14 @@ import replace.datastore.Repository
 import replace.dto.BookableEntityDto
 import replace.dto.toDto
 import replace.dto.toModel
-import replace.model.BookableEntity
-import replace.model.BookableEntityType
+import replace.model.BookableEntities
+import replace.model.BookableEntityTypes
 
 object CreateBookableEntityUseCase {
     suspend fun execute(
         bookableEntityDto: BookableEntityDto,
-        bookableEntityRepository: Repository<BookableEntity>,
-        bookableEntityTypeRepository: Repository<BookableEntityType>,
+        bookableEntityRepository: Repository<BookableEntities>,
+        bookableEntityTypeRepository: Repository<BookableEntityTypes>,
     ): BookableEntityDto {
 
         val bookableEntityTypeId = bookableEntityDto.type?.id

@@ -1,7 +1,6 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import org.bson.types.ObjectId
 import replace.datastore.FileRepository
 import replace.datastore.FileStorage
 import replace.datastore.TemporaryFileRepository
@@ -17,29 +16,18 @@ class FloorDto(
 
 fun Floor.toDto(): FloorDto {
 
-    val fileId = planFileId?.toHexString()
-        ?: return FloorDto(
-            id = id?.toHexString(),
-            name = name,
-            siteId = siteId.toHexString(),
+    val planFile = planFileId?.let {
+        FileUploadDto(
+            id = it.value,
+            temporary = false,
         )
+    }
 
     return FloorDto(
-        id = id?.toHexString(),
+        id = id.value,
         name = name,
-        siteId = siteId.toHexString(),
-        planFile = FileUploadDto(
-            id = fileId,
-            temporary = false,
-        ),
-    )
-}
-
-fun FloorDto.toModel(): Floor {
-    return Floor(
-        name = name,
-        siteId = ObjectId(siteId),
-        planFileId = planFile?.let { ObjectId(planFile.id) },
+        siteId = siteId.value,
+        planFile = planFile,
     )
 }
 

@@ -14,15 +14,7 @@ class FileDto(
 ) : Dto
 
 fun File.toDto() = FileDto(
-    id = id?.toHexString(),
-    name = name,
-    path = path,
-    extension = extension,
-    sizeInBytes = sizeInBytes,
-    mime = mime,
-)
-
-fun FileDto.toModel() = File(
+    id = id.value,
     name = name,
     path = path,
     extension = extension,

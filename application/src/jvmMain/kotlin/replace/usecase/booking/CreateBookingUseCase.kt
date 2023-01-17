@@ -4,12 +4,12 @@ import org.bson.types.ObjectId
 import replace.datastore.Repository
 import replace.dto.BookingDto
 import replace.dto.toDto
-import replace.model.Booking
+import replace.model.Bookings
 
 object CreateBookingUseCase {
     suspend fun execute(
         bookingDto: BookingDto,
-        bookingRepository: Repository<Booking>,
+        bookingRepository: Repository<Bookings>,
     ): BookingDto {
         val bookedEntities = bookingDto.bookedEntities.map { ObjectId(it) }
 

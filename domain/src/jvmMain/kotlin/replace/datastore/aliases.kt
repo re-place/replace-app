@@ -1,11 +1,11 @@
 package replace.datastore
 
-import replace.model.Booking
-import replace.model.File
-import replace.model.Site
+import replace.model.Bookings
+import replace.model.Files
+import replace.model.Sites
 
 // repositories that don't have any special methods
 
-typealias BookingRepository = Repository<Booking>
-typealias SiteRepository = Repository<Site>
-typealias FileRepository = Repository<File>
+typealias BookingRepository = Repository<Bookings>
+typealias SiteRepository = Repository<Sites>
+typealias FileRepository = Repository<Files>

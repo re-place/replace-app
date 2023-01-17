@@ -3,7 +3,6 @@ package replace.usecase.site
 import replace.datastore.SiteRepository
 import replace.dto.SiteDto
 import replace.dto.toDto
-import replace.model.Site
 
 object CreateSiteUseCase {
     suspend fun execute(

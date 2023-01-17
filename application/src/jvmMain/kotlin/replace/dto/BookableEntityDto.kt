@@ -1,30 +1,24 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import org.bson.types.ObjectId
 import replace.model.BookableEntity
 
 @Serializable
 data class BookableEntityDto(
     override val id: String? = null,
     val name: String,
+
     val floorId: String,
+
     val parentId: String? = null,
-    val type: BookableEntityTypeDto? = null
+
+    val typeId: String? = null,
 ) : Dto
 
-fun BookableEntity.toDto() = BookableEntityDto(
-    id = id?.toHexString(),
+fun BookableEntity.toDto(): BookableEntityDto = BookableEntityDto(
+    id = id.value,
     name = name,
-    floorId = floorId.toHexString(),
-    parentId = parentId?.toHexString(),
-    type = type?.toDto()
+    floorId = floorId.value,
+    parentId = parentId?.value,
+    typeId = typeId?.value,
 )
-
-fun BookableEntityDto.toModel() =
-    BookableEntity(
-        name,
-        type?.toModel(),
-        ObjectId(floorId),
-        if (parentId != null) ObjectId(parentId) else null
-    )

@@ -1,7 +1,7 @@
 package replace.datastore
 
-import replace.model.User
+import replace.model.Users
 
-interface UserRepository : Repository<User> {
-    suspend fun findByUsername(username: String): User?
+interface UserRepository : Repository<Users> {
+    suspend fun findByUsername(username: String): Users?
 }

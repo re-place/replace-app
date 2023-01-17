@@ -10,8 +10,6 @@ data class BookableEntityTypeDto(
 ) : Dto
 
 fun BookableEntityType.toDto() = BookableEntityTypeDto(
-    id = id?.toHexString(),
+    id = id.value,
     name = name,
 )
-
-fun BookableEntityTypeDto.toModel() = BookableEntityType(name)

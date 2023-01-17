@@ -21,16 +21,16 @@ import replace.datastore.MongoTemporaryFileRepository
 import replace.dto.FloorDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.File
-import replace.model.Site
+import replace.model.Files
+import replace.model.Sites
 import replace.usecase.floor.CreateFloorUseCase
 import replace.usecase.floor.UpdateFloorUseCase
 
 fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
     val floorRepository = MongoFloorRepository(db.getCollection())
-    val siteRepository = MongoRepository<Site>(db.getCollection())
+    val siteRepository = MongoRepository<Sites>(db.getCollection())
     val bookableEntityRepository = MongoBookableEntityRepository(db.getCollection())
-    val fileRepository = MongoRepository<File>(db.getCollection())
+    val fileRepository = MongoRepository<Files>(db.getCollection())
     val temporaryFileUploadRepository = MongoTemporaryFileRepository(db.getCollection())
 
     route("/api/floor") {

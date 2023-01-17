@@ -5,6 +5,7 @@ ktor = "2.2.2"
 log4j = "2.19.0"
 tegral = "0.0.3"
 liquibase = "2.1.1"
+exposed = "0.40.1"
 
 [libraries]
 kmongo-core = { module = "org.litote.kmongo:kmongo", version.ref = "kmongo" }
@@ -27,6 +28,10 @@ logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.r
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 tegral-openapi-base = { module ="guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
 tegral-openapi-swagger = { module ="guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 
 [bundles]
 kmongo = [ "kmongo.core", "kmongo.async", "kmongo.coroutine" ]
