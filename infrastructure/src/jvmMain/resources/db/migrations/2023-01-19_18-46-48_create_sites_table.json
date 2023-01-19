@@ -1,0 +1,40 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_18-46-48_create_sites_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(255)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_sites_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "name",
+                  "type": "varchar(255)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "sites"
+          }
+        }
+      }
+    }
+  ]
+}

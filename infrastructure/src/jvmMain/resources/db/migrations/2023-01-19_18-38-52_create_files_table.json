@@ -1,0 +1,73 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_18-38-52_create_files_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(255)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_files_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "name",
+                  "type": "varchar(255)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "path",
+                  "type": "varchar(65535)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "extension",
+                  "type": "varchar(255)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "size_in_bytes",
+                  "type": "bigint",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "mime",
+                  "type": "varchar(255)"
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "files"
+          }
+        }
+      }
+    }
+  ]
+}

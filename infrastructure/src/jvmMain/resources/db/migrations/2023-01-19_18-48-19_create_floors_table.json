@@ -1,0 +1,61 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_18-48-19_create_floors_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(255)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_floors_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "name",
+                  "type": "varchar(255)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "site_id",
+                  "type": "uuid",
+                  "constraints": {
+                    "nullable": false,
+                    "foreignKeyName": "fk_floors_sites",
+                    "references": "sites(id)"
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "plan_file_id",
+                  "type": "uuid",
+                  "constraints": {
+                    "foreignKeyName": "fk_floors_files",
+                    "references": "files(id)"
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "floors"
+          }
+        }
+      }
+    }
+  ]
+}
