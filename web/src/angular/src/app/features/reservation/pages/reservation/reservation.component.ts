@@ -17,7 +17,9 @@ export class ReservationComponent implements OnInit {
     selectedFloor?: FloorDto
 
     bookableEntities: BookableEntityDto[] = []
-    selectedEntity?: BookableEntityDto
+    selectedEntities: BookableEntityDto[] = []
+
+    bookings: BookingDto[] = []
 
     minDate = new Date()
     timeFormControl = new FormGroup({
@@ -104,6 +106,7 @@ export class ReservationComponent implements OnInit {
                 this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
             },
         })
+        this.getBookings()
     }
     // Set default to Darmstadt for the first version
 
@@ -127,9 +130,20 @@ export class ReservationComponent implements OnInit {
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
+    getBookings() {
+        this.apiService.apiBookingGet().subscribe({
+            next: response => {
+                this.bookings = response
+            },
+            error: () => {
+                this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
+            },
+        })
+    }
+
     getFloors() {
         this.selectedFloor = undefined
-        this.selectedEntity = undefined
+        this.selectedEntities = []
         if(this.selectedSite?.id == undefined) return
 
         this.apiService.apiSiteSiteIdFloorGet(this.selectedSite.id).subscribe({
@@ -151,7 +165,7 @@ export class ReservationComponent implements OnInit {
     }
 
     getBookableEntities() {
-        this.selectedEntity = undefined
+        this.selectedEntities = []
         if(this.selectedFloor?.id == undefined) return
 
         this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id).subscribe({
@@ -165,17 +179,25 @@ export class ReservationComponent implements OnInit {
         })
     }
 
+    updateSelectedEntities(entity: BookableEntityDto, checked: boolean) {
+        if(checked) {
+            this.selectedEntities.push(entity)
+        } else {
+            this.selectedEntities = this.selectedEntities.filter(ent => ent != entity)
+        }
+    }
+
     sendBooking() {
-        if(this.selectedEntity?.id === undefined) {
+        const ids: string[] = this.selectedEntities.map(entity => entity.id??"")
+        if(ids == undefined || ids.length < 1) {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
-        }
+        } 
+
         const bookingDto: BookingDto = {
-            bookedEntities: [
-                this.selectedEntity.id,
-            ],
             startDateTime: this.timeFormControl.value.startDate?.toISOString(),
             endDateTime: this.timeFormControl.value.endDate?.toISOString(),
+            bookedEntities: ids,
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
@@ -187,18 +209,22 @@ export class ReservationComponent implements OnInit {
                     this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
                     break
                 default:
-                    break
                     this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
+                    break
                 }
             },
         })
+    }
+
+    isBooked(id?: string) {
+        if(!id) return true
+        return this.bookings.some(booking => booking.bookedEntities?.some(eid => eid == id))
     }
 
     setImgSrc() {
         if(this.selectedSite?.name == undefined) return
         const site = this.selectedSite??{}
         this.imgSrc = this.images.find(img => img.name == site.name)?.path??""
-        console.log(this.imgSrc)
     }
 
     alphaSort(arr: any[]) {

@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core"
 import {FormsModule, ReactiveFormsModule} from "@angular/forms"
 import { MatButtonModule } from "@angular/material/button"
 import { MatDatepickerModule } from "@angular/material/datepicker"
+import { MatCheckboxModule } from "@angular/material/checkbox"
 import { MatFormFieldModule } from "@angular/material/form-field"
 import { MatInputModule } from "@angular/material/input"
 import { MatSelectModule } from "@angular/material/select"
@@ -29,6 +30,7 @@ import { ReservationRoutingModule } from "./reservation-routing.module"
         MatDatepickerModule,
         ReactiveFormsModule,
         MaterialModule,
+        MatCheckboxModule,
     ],
 })
 export class ReservationModule { }
