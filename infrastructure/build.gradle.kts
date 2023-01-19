@@ -51,15 +51,21 @@ tasks {
 
 val migrationDir = File("infrastructure/src/jvmMain/resources/db/migrations")
 val migrationRoot = File("infrastructure/src/jvmMain/resources/db/changelog-root.json")
+val configFile = File("infrastructure/src/jvmMain/resources/application.conf")
 
-val config = ConfigFactory.parseString(File("infrastructure/src/jvmMain/resources/application.conf").readText())
 liquibase {
     activities {
         register("main") {
 
-            val dbUrl = config.getString("ktor.database.url")
-            val dbUser = config.getString("ktor.database.user")
-            val dbPass = config.getString("ktor.database.password")
+            if (!configFile.exists()) {
+                throw IllegalArgumentException("Config file does not exist")
+            }
+
+            val config = ConfigFactory.parseString(File("infrastructure/src/jvmMain/resources/application.conf").readText())
+
+            val dbUrl = config.getString("ktor.db.url") ?: throw IllegalArgumentException("Database URL not set")
+            val dbUser = config.getString("ktor.db.user") ?: ""
+            val dbPass = config.getString("ktor.db.password") ?: ""
 
             this.arguments = mapOf(
                 "logLevel" to "info",
