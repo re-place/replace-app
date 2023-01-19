@@ -1,7 +1,6 @@
 ktor {
-    development = true
+    development = false
     deployment {
-        url = "http://localhost"
         port = 8000
     }
     db {
