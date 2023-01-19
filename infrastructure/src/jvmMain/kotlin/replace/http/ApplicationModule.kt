@@ -9,7 +9,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
@@ -56,7 +55,8 @@ fun Application.applicationModule() {
 
     install(TegralSwaggerUiKtor)
 
-    Database.connect(environment.config.tryGetString("ktor.db.url") ?: "",
+    Database.connect(
+        environment.config.tryGetString("ktor.db.url") ?: "",
         driver = "org.postgresql.Driver",
         user = environment.config.tryGetString("ktor.database.user") ?: "",
         password = environment.config.tryGetString("ktor.database.password") ?: ""

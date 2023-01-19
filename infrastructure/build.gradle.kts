@@ -83,7 +83,7 @@ tasks {
             migrationFile.writeText(newText)
         }
     }
-    register("fresh", ) {
+    register("fresh",) {
         dependsOn("dropAll")
         dependsOn("update")
     }

@@ -11,11 +11,11 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import org.bson.types.ObjectId
+import org.jetbrains.exposed.dao.EntityClass
 import replace.dto.ModelDto
 import replace.http.controller.Routing
-import kotlin.reflect.typeOf
-import org.jetbrains.exposed.dao.EntityClass
 import replace.model.Model
+import kotlin.reflect.typeOf
 
 inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repository: EntityClass<String, T>, crossinline toDto: (T) -> D) {
     val listType = typeOf<List<D>>()

@@ -1,8 +1,8 @@
 package replace.dto
 
-import kotlin.reflect.KProperty1
 import kotlinx.serialization.Serializable
 import replace.model.User
+import kotlin.reflect.KProperty1
 
 @Serializable
 class UserDto(
@@ -12,7 +12,7 @@ class UserDto(
     val password: String,
     val lastName: String,
     val bookings: List<BookingDto>? = null,
-): ModelDto
+) : ModelDto
 
 fun User.toDto(with: List<KProperty1<User, *>> = emptyList()): UserDto {
     val bookings = if (with.contains(User::bookings)) {

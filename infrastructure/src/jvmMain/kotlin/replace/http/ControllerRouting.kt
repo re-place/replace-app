@@ -3,7 +3,6 @@ package replace.http
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.routing
-import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.FileStorage
 import replace.http.controller.registerBookableEntityRoutes
 import replace.http.controller.registerBookableEntityTypeRoutes

@@ -2,8 +2,6 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import replace.datastore.FileStorage
-import replace.model.File
-import replace.model.TemporaryFile
 import replace.usecase.temporaryfileupload.SaveTemporaryFileUploadPersistentUseCase
 
 @Serializable

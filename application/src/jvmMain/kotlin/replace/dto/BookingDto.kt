@@ -1,10 +1,10 @@
 package replace.dto
 
-import java.time.LocalDateTime
-import kotlin.reflect.KProperty1
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import replace.model.Booking
+import java.time.LocalDateTime
+import kotlin.reflect.KProperty1
 
 @Serializable
 data class BookingDto(

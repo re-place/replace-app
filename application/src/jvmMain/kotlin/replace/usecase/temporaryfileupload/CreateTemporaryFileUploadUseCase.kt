@@ -3,10 +3,10 @@ package replace.usecase.temporaryfileupload
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
 import replace.dto.toDto
+import replace.model.TemporaryFile
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID.randomUUID
-import replace.model.TemporaryFile
 
 object CreateTemporaryFileUploadUseCase {
 

@@ -32,8 +32,8 @@ import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import replace.dto.LoginRequest
 import replace.model.User
-import replace.model.Users
 import replace.model.UserSession
+import replace.model.Users
 import replace.model.createSession
 
 fun Route.routeAuthentication() {

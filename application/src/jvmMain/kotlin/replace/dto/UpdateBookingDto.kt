@@ -1,8 +1,8 @@
 package replace.dto
 
-import java.time.LocalDateTime
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 @Serializable
 data class UpdateBookingDto(

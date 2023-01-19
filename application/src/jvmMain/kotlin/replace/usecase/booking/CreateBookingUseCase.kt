@@ -1,13 +1,11 @@
 package replace.usecase.booking
 
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.SizedIterable
 import replace.dto.BookingDto
 import replace.dto.CreateBookingDto
 import replace.dto.toDto
 import replace.model.BookableEntities
 import replace.model.BookableEntity
-import replace.model.BookedEntity
 import replace.model.Booking
 import replace.model.Users
 

@@ -12,7 +12,7 @@ data class FileDto(
     val sizeInBytes: Long,
     val mime: String? = null,
     val url: String,
-): ModelDto
+) : ModelDto
 
 fun File.toDto() = FileDto(
     id = id.value,

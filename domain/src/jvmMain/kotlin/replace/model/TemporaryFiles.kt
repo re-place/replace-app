@@ -1,10 +1,9 @@
 package replace.model
 
-import java.time.LocalDateTime
-import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.javatime.datetime
+import java.time.LocalDateTime
 
 object TemporaryFiles : Models() {
     val name = varchar("name", 255)

@@ -25,10 +25,10 @@ import io.swagger.v3.oas.models.media.MapSchema
 import org.bson.types.ObjectId
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
+import replace.model.TemporaryFile
 import replace.usecase.temporaryfileupload.CreateTemporaryFileUploadUseCase
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.util.UUID
-import replace.model.TemporaryFile
 
 fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
     route("/api/temporary-file-upload") {

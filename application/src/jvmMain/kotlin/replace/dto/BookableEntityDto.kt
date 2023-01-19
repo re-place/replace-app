@@ -1,13 +1,13 @@
 package replace.dto
 
-import kotlin.reflect.KProperty1
 import kotlinx.serialization.Serializable
 import replace.model.BookableEntity
+import kotlin.reflect.KProperty1
 
 @Serializable
 data class BookableEntityDto(
     override val id: String,
-    
+
     val name: String,
 
     val floorId: String,

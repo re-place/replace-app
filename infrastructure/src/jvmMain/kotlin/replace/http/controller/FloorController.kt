@@ -13,7 +13,6 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import org.bson.types.ObjectId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.litote.kmongo.coroutine.CoroutineDatabase
 import replace.datastore.FileStorage
 import replace.dto.CreateFloorDto
 import replace.dto.FloorDto

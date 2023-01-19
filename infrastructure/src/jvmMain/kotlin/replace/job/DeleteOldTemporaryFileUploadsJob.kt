@@ -1,13 +1,13 @@
 package replace.job
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
+import replace.model.TemporaryFile
+import replace.model.TemporaryFiles
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
-import org.jetbrains.exposed.sql.transactions.transaction
-import replace.model.TemporaryFile
-import replace.model.TemporaryFiles
 
 class DeleteOldTemporaryFileUploadsJob(
     interval: Long,
@@ -18,7 +18,7 @@ class DeleteOldTemporaryFileUploadsJob(
 
         try {
             val oldTemporaryFiles = transaction {
-                TemporaryFile.find( TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
+                TemporaryFile.find(TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
             }
             println("Found ${oldTemporaryFiles.count()} old temporary files")
             oldTemporaryFiles.forEach { temporaryFile ->
