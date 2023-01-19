@@ -21,8 +21,8 @@ export class ReservationComponent implements OnInit {
 
     minDate = new Date()
     timeFormControl = new FormGroup({
-        startDate: new FormControl(),
-        endDate: new FormControl(),
+        startDate: new FormControl(new Date()),
+        endDate: new FormControl(new Date()),
     })
 
     images = [
