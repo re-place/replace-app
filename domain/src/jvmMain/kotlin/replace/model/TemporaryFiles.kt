@@ -2,8 +2,8 @@ package replace.model
 
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.javatime.datetime
-import java.time.LocalDateTime
+import org.jetbrains.exposed.sql.javatime.timestamp
+import java.time.Instant
 
 object TemporaryFiles : Models() {
     val name = varchar("name", 255)
@@ -11,7 +11,7 @@ object TemporaryFiles : Models() {
     val extension = varchar("extension", 255)
     val sizeInBytes = long("size_in_bytes")
     val mime = varchar("mime", 255).nullable()
-    val createdAt = datetime("created_at").default(LocalDateTime.now())
+    val createdAt = timestamp("created_at").default(Instant.now())
 }
 
 class TemporaryFile(id: EntityID<String>) : Model(id) {

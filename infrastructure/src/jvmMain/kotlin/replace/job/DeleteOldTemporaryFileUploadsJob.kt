@@ -7,6 +7,7 @@ import replace.model.TemporaryFile
 import replace.model.TemporaryFiles
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 class DeleteOldTemporaryFileUploadsJob(
@@ -18,8 +19,13 @@ class DeleteOldTemporaryFileUploadsJob(
 
         try {
             val oldTemporaryFiles = transaction {
-                TemporaryFile.find(TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
+                TemporaryFile.find(
+                    TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS).toInstant(
+                        ZoneOffset.UTC
+                    )
+                )
             }
+
             println("Found ${oldTemporaryFiles.count()} old temporary files")
             oldTemporaryFiles.forEach { temporaryFile ->
                 DeleteTemporaryFileUploadUseCase.execute(temporaryFile, this.fileStorage)

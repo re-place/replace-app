@@ -1,5 +1,12 @@
+import com.typesafe.config.ConfigFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+buildscript {
+    dependencies {
+        classpath("com.typesafe:config:1.4.2")
+    }
+}
 
 @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
@@ -45,13 +52,14 @@ tasks {
 val migrationDir = File("infrastructure/src/jvmMain/resources/db/migrations")
 val migrationRoot = File("infrastructure/src/jvmMain/resources/db/changelog-root.json")
 
+val config = ConfigFactory.parseString(File("infrastructure/src/jvmMain/resources/application.conf").readText())
 liquibase {
     activities {
         register("main") {
 
-            val dbUrl = "jdbc:postgresql://localhost:5432/replace-app" // by project.extra.properties
-            val dbUser = "postgres" // by project.extra.properties
-            val dbPass = "postgres" // by project.extra.properties
+            val dbUrl = config.getString("ktor.database.url")
+            val dbUser = config.getString("ktor.database.user")
+            val dbPass = config.getString("ktor.database.password")
 
             this.arguments = mapOf(
                 "logLevel" to "info",

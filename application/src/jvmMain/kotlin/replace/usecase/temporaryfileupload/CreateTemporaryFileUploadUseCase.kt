@@ -6,6 +6,7 @@ import replace.dto.toDto
 import replace.model.TemporaryFile
 import java.io.InputStream
 import java.net.URLConnection
+import java.time.Instant
 import java.util.UUID.randomUUID
 
 object CreateTemporaryFileUploadUseCase {
@@ -28,7 +29,7 @@ object CreateTemporaryFileUploadUseCase {
             mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
             extension = fileName.substringAfterLast(".")
             sizeInBytes = fileSize
-            createdAt = java.time.LocalDateTime.now()
+            createdAt = Instant.now()
         }
 
         return temporaryFile.toDto()

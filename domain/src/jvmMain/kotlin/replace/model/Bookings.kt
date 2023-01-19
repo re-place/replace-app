@@ -2,11 +2,12 @@ package replace.model
 
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.javatime.timestamp
+import java.time.Instant
 
 object Bookings : Models() {
-    val start = datetime("start")
-    val end = datetime("end")
+    val start = timestamp("start").default(Instant.now())
+    val end = timestamp("end").default(Instant.now())
     val user_id = reference("user_id", Users)
 }
 
