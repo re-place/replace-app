@@ -23,47 +23,6 @@
                         </ngx-mat-datetime-picker>
                     </mat-form-field>
                 </form>
-                <!--div>
-                    <mat-form-field class="w-3/5 pr-2">
-                        <mat-label>Datum</mat-label>
-                        <input matInput [matDatepicker]="StartDatePicker"
-                               [matDatepickerFilter]="dateFilter"
-                               [ngModel]="startDate"
-                               (dateInput)="saveDate($event)"
-                               (dateChange)="saveDate($event)"
-                               [min]="earliestBookableDate">
-                        <mat-hint>MM/DD/YYYY</mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="StartDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #StartDatePicker></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field class="w-2/5">
-                        <mat-label>Von</mat-label>
-                        <input [ngModel]="startTime | date: 'HH:mm'" (input)="saveStartTime($event)" matInput type="time">
-                        <mat-hint>HH:mm</mat-hint>
-                    </mat-form-field>
-                </div>
-                <mat-slide-toggle (click)="toggleRange()">Über mehrere Tage buchen</mat-slide-toggle>
-                <div>
-                    <mat-form-field class="w-3/5 pr-2">
-                        <mat-label>Datum</mat-label>
-                        <input matInput [matDatepicker]="EndDatePicker"
-                               [matDatepickerFilter]="dateFilter"
-                               (dateInput)="saveDate($event)"
-                               (dateChange)="saveDate($event)"
-                               [disabled]="!toggle"
-                               [min]="earliestBookableDate">
-                        <mat-hint>MM/DD/YYYY</mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="EndDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #EndDatePicker></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field class="w-2/5">
-                        <mat-label>Bis</mat-label>
-                        <input [ngModel]="endTime | date: 'HH:mm'" matInput type="time">
-                        <mat-hint>HH:mm</mat-hint>
-                    </mat-form-field>
-                </div-->
 
                 <mat-form-field>
                     <mat-label>Standort</mat-label>

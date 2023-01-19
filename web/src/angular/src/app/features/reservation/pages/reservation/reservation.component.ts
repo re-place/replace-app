@@ -53,9 +53,7 @@ export class ReservationComponent implements OnInit {
                 return
             }
 
-            if (
-                startDate > endDate
-            ) {
+            if (startDate > endDate) {
                 endDate.setFullYear(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
 
                 endDateControl.reset()
@@ -81,9 +79,7 @@ export class ReservationComponent implements OnInit {
                 return
             }
 
-            if (
-                startDate > endDate
-            ) {
+            if (startDate > endDate) {
                 startDate.setFullYear(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
 
                 startDateControl.reset()
@@ -114,14 +110,8 @@ export class ReservationComponent implements OnInit {
         const startDate = new Date()
         startDate.setHours(startDate.getHours() + 1)
 
-        const oldStartDate = this.timeFormControl.value.startDate
-        oldStartDate?.setHours(startDate.getHours())
-
         const endDate = new Date()
         endDate.setHours(startDate.getHours() + 1)
-
-        const oldEndDate = this.timeFormControl.value.endDate
-        oldEndDate?.setHours(endDate.getHours())
 
         this.timeFormControl.get("startDate")?.setValue(startDate)
         this.timeFormControl.get("endDate")?.setValue(endDate)
