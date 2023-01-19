@@ -11,7 +11,6 @@
  */
 import { FileUploadDto } from './fileUploadDto';
 
-
 export interface FloorDto { 
     id?: string;
     name?: string;
