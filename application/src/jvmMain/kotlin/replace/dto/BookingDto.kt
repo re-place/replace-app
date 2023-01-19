@@ -17,7 +17,7 @@ fun Booking.toDto() = BookingDto(
     id = id?.toHexString(),
     bookedEntities = bookedEntities.map { it.toHexString() },
     startDateTime = startDateTime.toString(),
-    endDateTime = startDateTime.toString(),
+    endDateTime = endDateTime.toString(),
 )
 
 fun BookingDto.toModel() = Booking(bookedEntities.map { ObjectId(it) }, Instant.parse(startDateTime), Instant.parse(endDateTime))

@@ -19,6 +19,7 @@ export class ReservationComponent implements OnInit {
     bookableEntities: BookableEntityDto[] = []
     selectedEntities: BookableEntityDto[] = []
 
+    allBookings: BookingDto[] = []
     bookings: BookingDto[] = []
 
     minDate = new Date()
@@ -63,6 +64,7 @@ export class ReservationComponent implements OnInit {
                 endDateControl.reset()
                 endDateControl.setValue(endDate)
             }
+            this.getCurrentBookings()
 
         })
 
@@ -91,6 +93,7 @@ export class ReservationComponent implements OnInit {
                 startDateControl.reset()
                 startDateControl.setValue(startDate)
             }
+            this.getCurrentBookings()
 
         })
     }
@@ -130,10 +133,23 @@ export class ReservationComponent implements OnInit {
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
+    getCurrentBookings() {
+        const start = this.timeFormControl.get("startDate")?.value?.getTime()??0
+        const end = this.timeFormControl.get("endDate")?.value?.getTime()??0
+
+        this.bookings = this.allBookings.filter(i => {
+            if(i.startDateTime == undefined || i.endDateTime == undefined) return false
+                const startTime = new Date(i.startDateTime).getTime()
+            const endTime = new Date(i.endDateTime).getTime()
+            return !(startTime > end || endTime < start)
+        })
+    }
+
     getBookings() {
         this.apiService.apiBookingGet().subscribe({
             next: response => {
-                this.bookings = response
+                this.allBookings = response
+                this.getCurrentBookings()
             },
             error: () => {
                 this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
@@ -202,6 +218,10 @@ export class ReservationComponent implements OnInit {
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
                 this.snackBar.open("Arbeitsplatz gebucht!", "ok", { duration: 3000 })
+                this.selectedSite = undefined
+                this.selectedFloor = undefined
+                this.selectedEntities = []
+                this.getBookings()
             },
             error: error => {
                 switch(error.status) {

@@ -10,17 +10,17 @@
             <div class="flex flex-col md:w-3/10">
 
                 <form [formGroup]="timeFormControl">
-                    <mat-form-field class="w-1/2 p-2 md:w-full md:p-0">
+                    <mat-form-field class="w-full">
                         <mat-label>Anfang</mat-label>
                         <input matInput [ngxMatDatetimePicker]="startDateTimePicker"
                                [min]="minDate"
                                placeholder="Choose a date"
-                        formControlName="startDate">
+                               formControlName="startDate">
                         <mat-datepicker-toggle matSuffix [for]="$any(startDateTimePicker)"></mat-datepicker-toggle>
                         <ngx-mat-datetime-picker #startDateTimePicker>
                         </ngx-mat-datetime-picker>
                     </mat-form-field>
-                    <mat-form-field class="w-1/2 p-2 md:w-full md:p-0">
+                    <mat-form-field class="w-full">
                         <mat-label>Ende</mat-label>
                         <input matInput [ngxMatDatetimePicker]="endDateTimePicker" placeholder="Choose a date"
                         formControlName="endDate">
