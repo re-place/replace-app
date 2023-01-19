@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core"
 
-import { FloorDto } from "src/app/core/openapi"
+import { CreateFloorDto, UpdateFloorDto } from "src/app/core/openapi"
 
 @Component({
     selector: "create-or-update-floor [floor]",
@@ -8,10 +8,10 @@ import { FloorDto } from "src/app/core/openapi"
     styles: [],
 })
 export class CreateOrUpdateFloorComponent implements OnChanges {
-    @Input() floor!: FloorDto
-    floorToEdit: FloorDto = { name: "", planFile: undefined }
+    @Input() floor!: CreateFloorDto | UpdateFloorDto
+    floorToEdit: CreateFloorDto | UpdateFloorDto = { name: "", planFile: undefined }
 
-    @Output() submitFloor = new EventEmitter<FloorDto>()
+    @Output() submitFloor = new EventEmitter<CreateFloorDto | UpdateFloorDto>()
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["floor"] === undefined) return
@@ -20,7 +20,7 @@ export class CreateOrUpdateFloorComponent implements OnChanges {
     }
 
     get saveText() {
-        return this.floor.id === undefined ? "Hinzufügen" : "Speichern"
+        return (this.floorToEdit as UpdateFloorDto).id === undefined ? "Hinzufügen" : "Speichern"
     }
 
     public onSubmit(event: SubmitEvent) {

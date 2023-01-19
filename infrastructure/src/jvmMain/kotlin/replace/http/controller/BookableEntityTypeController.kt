@@ -26,7 +26,7 @@ fun Route.registerBookableEntityTypeRoutes() {
             description = "Creates a new bookable entity type"
             body {
                 json {
-                    schema<BookableEntityTypeDto>()
+                    schema<CreateBookableEntityTypeDto>()
                 }
             }
             200 response {

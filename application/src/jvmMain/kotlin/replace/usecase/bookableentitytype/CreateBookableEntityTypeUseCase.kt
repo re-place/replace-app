@@ -1,5 +1,6 @@
 package replace.usecase.bookableentitytype
 
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityTypeDto
 import replace.dto.CreateBookableEntityTypeDto
 import replace.dto.toDto
@@ -11,10 +12,13 @@ object CreateBookableEntityTypeUseCase {
         createBookableEntityTypeDto: CreateBookableEntityTypeDto,
     ): BookableEntityTypeDto {
 
-        val bookableEntityType = BookableEntityType.new {
-            name = createBookableEntityTypeDto.name
-        }
+        return transaction {
 
-        return bookableEntityType.toDto()
+            val bookableEntityType = BookableEntityType.new {
+                name = createBookableEntityTypeDto.name
+            }
+
+            bookableEntityType.toDto()
+        }
     }
 }

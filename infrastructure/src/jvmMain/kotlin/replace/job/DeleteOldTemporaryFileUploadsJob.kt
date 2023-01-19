@@ -1,7 +1,7 @@
 package replace.job
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.model.TemporaryFile
 import replace.model.TemporaryFiles
@@ -16,19 +16,19 @@ class DeleteOldTemporaryFileUploadsJob(
     private val fileStorage: FileStorage,
 ) : SchedulableJob(interval) {
     override suspend fun run() {
+        val fileStorage = fileStorage
 
         try {
-            val oldTemporaryFiles = transaction {
-                TemporaryFile.find(
+            newSuspendedTransaction {
+                val oldTemporaryFiles = TemporaryFile.find(
                     TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS).toInstant(
                         ZoneOffset.UTC
                     )
                 )
-            }
 
-            println("Found ${oldTemporaryFiles.count()} old temporary files")
-            oldTemporaryFiles.forEach { temporaryFile ->
-                DeleteTemporaryFileUploadUseCase.execute(temporaryFile, this.fileStorage)
+                oldTemporaryFiles.forEach { temporaryFile ->
+                    DeleteTemporaryFileUploadUseCase.execute(temporaryFile, fileStorage)
+                }
             }
         } catch (e: Exception) {
             println("Error while deleting old temporary file uploads: ${e.message}")

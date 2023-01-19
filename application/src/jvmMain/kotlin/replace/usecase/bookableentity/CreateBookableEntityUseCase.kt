@@ -1,6 +1,7 @@
 package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.CreateBookableEntityDto
 import replace.dto.toDto
@@ -13,13 +14,16 @@ object CreateBookableEntityUseCase {
     fun execute(
         bookableEntityDto: CreateBookableEntityDto,
     ): BookableEntityDto {
-        val bookableEntity = BookableEntity.new {
-            name = bookableEntityDto.name
-            floorId = EntityID(bookableEntityDto.floorId, Floors)
-            parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
-            typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntityTypes) }
-        }
 
-        return bookableEntity.toDto()
+        return transaction {
+            val bookableEntity = BookableEntity.new {
+                name = bookableEntityDto.name
+                floorId = EntityID(bookableEntityDto.floorId, Floors)
+                parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
+                typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntityTypes) }
+            }
+
+            bookableEntity.toDto()
+        }
     }
 }

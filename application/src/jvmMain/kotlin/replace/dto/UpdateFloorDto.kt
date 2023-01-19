@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class UpdateFloorDto(
     val id: String,
     val name: String,
+    val siteId: String,
     val planFile: FileUploadDto? = null,
 )

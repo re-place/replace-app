@@ -11,14 +11,7 @@
  */
 
 
-export interface TemporaryFileUploadDto { 
-    id?: string;
+export interface CreateBookableEntityTypeDto { 
     name?: string;
-    path?: string;
-    mime?: string;
-    extension?: string;
-    sizeInBytes?: number;
-    createdAt?: string;
-    url?: string;
 }
 

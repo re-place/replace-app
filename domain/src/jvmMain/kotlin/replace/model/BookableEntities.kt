@@ -3,7 +3,7 @@ package replace.model
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-object BookableEntities : Models() {
+object BookableEntities : Models("bookable_entities") {
     val name = varchar("name", 255)
     val floor_id = reference("floor_id", Floors)
     val type_id = reference("type_id", BookableEntityTypes).nullable()

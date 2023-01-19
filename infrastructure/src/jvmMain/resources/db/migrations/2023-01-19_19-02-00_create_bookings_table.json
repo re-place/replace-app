@@ -10,7 +10,7 @@
               {
                 "column": {
                   "name": "id",
-                  "type": "varchar(255)",
+                  "type": "varchar(36)",
                   "defaultValueComputed": "gen_random_uuid()",
                   "constraints": {
                     "nullable": false,
@@ -41,10 +41,10 @@
               {
                 "column": {
                   "name": "user_id",
-                  "type": "uuid",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_bookings_user",
-                    "references": "user(id)"
+                    "references": "users(id)"
                   }
                 }
               }

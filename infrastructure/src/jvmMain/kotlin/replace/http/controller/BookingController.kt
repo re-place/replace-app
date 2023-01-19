@@ -26,7 +26,7 @@ fun Route.registerBookingRoutes() {
             description = "Creates a new booking"
             body {
                 json {
-                    schema<BookingDto>()
+                    schema<CreateBookingDto>()
                 }
             }
             200 response {

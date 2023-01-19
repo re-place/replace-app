@@ -1,6 +1,7 @@
 package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
@@ -12,17 +13,18 @@ object UpdateBookableEntityUseCase {
     suspend fun execute(
         bookableEntityDto: UpdateBookableEntityDto,
     ): BookableEntityDto {
-        val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
-        checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }
+        return transaction {
+            val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
-        bookableEntity.name = bookableEntityDto.name
-        bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
-        bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
-        bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
+            checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }
+            println(bookableEntityDto.name)
+            bookableEntity.name = bookableEntityDto.name
+            bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
+            bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
+            bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
 
-        bookableEntity.refresh()
-
-        return bookableEntity.toDto()
+            bookableEntity.toDto()
+        }
     }
 }

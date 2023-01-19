@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core"
 import { SetOptional } from "type-fest"
 
-import { BookableEntityDto } from "src/app/core/openapi"
+import { BookableEntityDto, CreateBookableEntityDto, UpdateBookableEntityDto } from "src/app/core/openapi"
 
 @Component({
     selector: "create-or-update-bookable-entity [bookableEntity]",
@@ -9,8 +9,8 @@ import { BookableEntityDto } from "src/app/core/openapi"
     styles: [],
 })
 export class CreateOrUpdateBookableEntityComponent implements OnChanges {
-    @Input() bookableEntity!: SetOptional<BookableEntityDto, "floorId" | "parentId" | "id">
-    bookableEntityToEdit: SetOptional<BookableEntityDto, "floorId" | "parentId" | "id"> = { name: "", type: undefined }
+    @Input() bookableEntity!: CreateBookableEntityDto | UpdateBookableEntityDto
+    bookableEntityToEdit: CreateBookableEntityDto | UpdateBookableEntityDto = { name: "", typeId: undefined }
 
     @Output() submitBookableEntity = new EventEmitter<SetOptional<BookableEntityDto, "floorId" | "parentId" | "id">>()
 
@@ -21,7 +21,7 @@ export class CreateOrUpdateBookableEntityComponent implements OnChanges {
     }
 
     get saveText() {
-        return this.bookableEntity.id === undefined ? "Hinzufügen" : "Speichern"
+        return (this.bookableEntity as UpdateBookableEntityDto).id === undefined ? "Hinzufügen" : "Speichern"
     }
 
     public onSubmit(event: SubmitEvent) {

@@ -30,7 +30,7 @@ fun Route.registerBookableEntityRoutes() {
             description = "Creates a new bookable entity"
             body {
                 json {
-                    schema<BookableEntityDto>()
+                    schema<CreateBookableEntityDto>()
                 }
             }
             200 response {
@@ -49,7 +49,7 @@ fun Route.registerBookableEntityRoutes() {
             description = "Updates a bookable entity"
             body {
                 json {
-                    schema<BookableEntityDto>()
+                    schema<UpdateBookableEntityDto>()
                 }
             }
             200 response {

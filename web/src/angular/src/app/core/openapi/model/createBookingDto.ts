@@ -11,14 +11,10 @@
  */
 
 
-export interface TemporaryFileUploadDto { 
-    id?: string;
-    name?: string;
-    path?: string;
-    mime?: string;
-    extension?: string;
-    sizeInBytes?: number;
-    createdAt?: string;
-    url?: string;
+export interface CreateBookingDto { 
+    userId?: string;
+    bookedEntityIds?: Array<string>;
+    start?: string;
+    end?: string;
 }
 

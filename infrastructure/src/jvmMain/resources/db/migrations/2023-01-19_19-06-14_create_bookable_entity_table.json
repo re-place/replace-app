@@ -10,7 +10,7 @@
               {
                 "column": {
                   "name": "id",
-                  "type": "varchar(255)",
+                  "type": "varchar(36)",
                   "defaultValueComputed": "gen_random_uuid()",
                   "constraints": {
                     "nullable": false,
@@ -32,17 +32,17 @@
               {
                 "column": {
                   "name": "floor_id",
-                  "type": "uuid",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_bookable_entities_floor",
-                    "references": "floor(id)"
+                    "references": "floors(id)"
                   }
                 }
               },
               {
                 "column": {
-                  "name": "types_id",
-                  "type": "uuid",
+                  "name": "type_id",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_bookable_entities_entity_types",
                     "references": "bookable_entity_types(id)"
@@ -52,7 +52,7 @@
               {
                 "column": {
                   "name": "parent_id",
-                  "type": "uuid",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_bookable_entities_bookable_entities",
                     "references": "bookable_entities(id)"

@@ -30,7 +30,9 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.LoginRequest
+import replace.dto.toDto
 import replace.model.User
 import replace.model.UserSession
 import replace.model.Users
@@ -45,14 +47,14 @@ fun Route.routeAuthentication() {
             return@get
         }
 
-        val user = User.findById(userId)
+        val user = transaction { User.findById(userId) }
 
         if (user === null) {
             call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
             return@get
         }
 
-        call.respond(user)
+        call.respond(user.toDto())
     }
     post("/api/logout") {
         call.sessions.clear<UserSession>()
@@ -74,7 +76,9 @@ fun Route.routeAuthentication() {
         }
         // TODO: Replace with OAuth
 
-        val userFromDb = User.find { Users.username eq user.username }.firstOrNull()
+        val userFromDb = transaction {
+            User.find { Users.username eq user.username }.firstOrNull()
+        }
 
         if (userFromDb === null) {
             call.respondText("Could not sign in: User not found", status = HttpStatusCode.BadRequest)
@@ -82,6 +86,6 @@ fun Route.routeAuthentication() {
         }
         call.sessions.clear("X-SESSION-TOKEN")
         call.sessions.set(userFromDb.createSession())
-        call.respond(userFromDb)
+        call.respond(userFromDb.toDto())
     }
 }

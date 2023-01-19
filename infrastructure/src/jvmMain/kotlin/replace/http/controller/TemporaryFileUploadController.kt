@@ -22,7 +22,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.swagger.v3.oas.models.media.FileSchema
 import io.swagger.v3.oas.models.media.MapSchema
-import org.bson.types.ObjectId
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
 import replace.model.TemporaryFile
@@ -74,7 +74,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
 
         get<Routing.ById> { route ->
 
-            val file = TemporaryFile.findById(route.id)
+            val file = transaction { TemporaryFile.findById(route.id) }
 
             if (file === null) {
                 call.respondText("No File with id ${route.id} found", status = HttpStatusCode.NotFound)
@@ -95,7 +95,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
             description = "Gets a temporary file upload by id"
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(ObjectId().toString())
+                schema(String)
             }
             200 response {
                 description = "The temporary file upload"
@@ -113,7 +113,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
         } describe {
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(ObjectId().toString())
+                schema(String)
             }
             description = "Deletes a temporary file upload by id"
             204 response {

@@ -12,7 +12,7 @@
 
 
 export interface FileUploadDto { 
-    id?: string;
+    fileId?: string;
     temporary?: boolean;
 }
 

@@ -3,7 +3,7 @@ package replace.model
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-object Sites : Models() {
+object Sites : Models("sites") {
     val name = varchar("name", 255)
 }
 

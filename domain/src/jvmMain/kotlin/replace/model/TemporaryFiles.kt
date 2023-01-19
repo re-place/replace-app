@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.time.Instant
 
-object TemporaryFiles : Models() {
+object TemporaryFiles : Models("temporary_files") {
     val name = varchar("name", 255)
     val path = varchar("path", 65535)
     val extension = varchar("extension", 255)

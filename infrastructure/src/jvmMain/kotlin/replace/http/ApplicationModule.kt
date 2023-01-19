@@ -18,8 +18,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DatabaseConfig
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
+import replace.model.User
+import replace.model.Users
 import replace.plugin.SinglePageApplication
 import replace.serializer.ObjectIdSerializer
 
@@ -55,12 +59,21 @@ fun Application.applicationModule() {
 
     install(TegralSwaggerUiKtor)
 
+    val databaseConfig = DatabaseConfig {
+        keepLoadedReferencesOutOfTransaction = true
+    }
+
     Database.connect(
         environment.config.tryGetString("ktor.db.url") ?: "",
         driver = "org.postgresql.Driver",
-        user = environment.config.tryGetString("ktor.database.user") ?: "",
-        password = environment.config.tryGetString("ktor.database.password") ?: ""
+        user = environment.config.tryGetString("ktor.db.user") ?: "",
+        password = environment.config.tryGetString("ktor.db.password") ?: "",
+        databaseConfig = databaseConfig
     )
+
+    if (environment.developmentMode) {
+        devSeeder()
+    }
 
     sessionModule()
     authenticationModule()
@@ -86,4 +99,25 @@ fun Application.applicationModule() {
     )
 
     deleteOldTemporaryFileUploadsJob.dispatch()
+}
+
+fun devSeeder() {
+    transaction {
+        val message = "Seeding Dev User! (This should only happen in dev). Username: user, Password: password"
+        println()
+        println("-".repeat(message.length))
+        println(message)
+        println("-".repeat(message.length))
+        println()
+        val devUser = User.find { Users.username eq "user" }.firstOrNull()
+
+        if (devUser == null) {
+            User.new {
+                username = "user"
+                password = "password"
+                firstname = "John"
+                lastname = "Doe"
+            }
+        }
+    }
 }

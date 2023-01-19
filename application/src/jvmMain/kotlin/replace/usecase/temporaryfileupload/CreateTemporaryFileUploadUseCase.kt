@@ -1,5 +1,6 @@
 package replace.usecase.temporaryfileupload
 
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
 import replace.dto.toDto
@@ -16,22 +17,23 @@ object CreateTemporaryFileUploadUseCase {
         input: InputStream,
         fileStorage: FileStorage,
     ): TemporaryFileUploadDto {
+        return newSuspendedTransaction {
+            val temporaryFileUploadPath = "temporary_uploads/${randomUUID()}"
 
-        val temporaryFileUploadPath = "temporary_uploads/${randomUUID()}"
+            fileStorage.saveFile(temporaryFileUploadPath, input)
 
-        fileStorage.saveFile(temporaryFileUploadPath, input)
+            val fileSize = fileStorage.getFileSize(temporaryFileUploadPath)
 
-        val fileSize = fileStorage.getFileSize(temporaryFileUploadPath)
+            val temporaryFile = TemporaryFile.new {
+                name = fileName.substringBeforeLast(".")
+                path = temporaryFileUploadPath
+                mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
+                extension = fileName.substringAfterLast(".")
+                sizeInBytes = fileSize
+                createdAt = Instant.now()
+            }
 
-        val temporaryFile = TemporaryFile.new {
-            name = fileName.substringBeforeLast(".")
-            path = temporaryFileUploadPath
-            mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
-            extension = fileName.substringAfterLast(".")
-            sizeInBytes = fileSize
-            createdAt = Instant.now()
+            temporaryFile.toDto()
         }
-
-        return temporaryFile.toDto()
     }
 }

@@ -10,8 +10,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import org.bson.types.ObjectId
 import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.ModelDto
 import replace.http.controller.Routing
 import replace.model.Model
@@ -21,7 +21,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
     val listType = typeOf<List<D>>()
 
     get {
-        call.respond(repository.all().map(toDto))
+        call.respond(transaction { repository.all().map(toDto) })
     } describe {
         description = "Gets all ${T::class.simpleName}s"
         200 response {
@@ -33,7 +33,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
     }
 
     get<Routing.ById> { route ->
-        val model = repository.findById(route.id)
+        val model = transaction { repository.findById(route.id) }
 
         if (model === null) {
             call.respondText("No Model with id ${route.id} found", status = HttpStatusCode.NotFound)
@@ -45,7 +45,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
         description = "Gets a ${T::class.simpleName} by id"
         "id" pathParameter {
             description = "The id of the ${T::class.simpleName}"
-            schema(ObjectId().toString())
+            schema(String)
         }
         200 response {
             description = "The ${T::class.simpleName} with the given id"
@@ -59,7 +59,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
     }
 
     delete<Routing.ById> { route ->
-        val model = repository.findById(route.id)
+        val model = transaction { repository.findById(route.id) }
 
         if (model === null) {
             return@delete
@@ -72,7 +72,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
         description = "Deletes a ${T::class.simpleName} by id"
         "id" pathParameter {
             description = "The id of the ${T::class.simpleName}"
-            schema(ObjectId().toString())
+            schema(String)
         }
         200 response {
             description = "The deleted ${T::class.simpleName} with the given id"

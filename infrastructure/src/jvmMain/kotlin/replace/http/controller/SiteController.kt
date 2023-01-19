@@ -11,8 +11,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.bson.types.ObjectId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
 import replace.dto.UpdateSiteDto
@@ -38,7 +38,7 @@ fun Route.registerSiteRoutes() {
             description = "Creates a new site"
             body {
                 json {
-                    schema<SiteDto>()
+                    schema<CreateSiteDto>()
                 }
             }
             200 response {
@@ -57,7 +57,7 @@ fun Route.registerSiteRoutes() {
             description = "Updates a site"
             body {
                 json {
-                    schema<SiteDto>()
+                    schema<UpdateSiteDto>()
                 }
             }
             200 response {
@@ -71,14 +71,14 @@ fun Route.registerSiteRoutes() {
         get("/{siteId}/floor") {
             val siteId = call.parameters["siteId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            val floors = Floor.find { Floors.site_id eq siteId }.toList()
+            val floors = transaction { Floor.find { Floors.site_id eq siteId }.toList().map { it.toDto() } }
 
             call.respond(floors)
         } describe {
             description = "Gets all floors for a site"
             "siteId" pathParameter {
                 description = "The id of the site"
-                schema(ObjectId().toString())
+                schema(String)
             }
             200 response {
                 description = "The floors for the site"

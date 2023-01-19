@@ -27,10 +27,12 @@ object DeleteTemporaryFileUploadUseCase {
         temporaryFile: TemporaryFile,
         fileStorage: FileStorage,
     ) {
-        if (fileStorage.deleteFile(temporaryFile.path)) {
-            temporaryFile.delete()
-        } else {
-            throw IllegalStateException("Could not delete temporary file upload with id ${temporaryFile.id}")
+        newSuspendedTransaction {
+            if (fileStorage.deleteFile(temporaryFile.path)) {
+                temporaryFile.delete()
+            } else {
+                throw IllegalStateException("Could not delete temporary file upload with id $temporaryFile.id")
+            }
         }
     }
 }

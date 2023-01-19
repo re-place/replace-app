@@ -10,7 +10,7 @@
               {
                 "column": {
                   "name": "id",
-                  "type": "varchar(255)",
+                  "type": "varchar(36)",
                   "defaultValueComputed": "gen_random_uuid()",
                   "constraints": {
                     "nullable": false,
@@ -23,7 +23,7 @@
               {
                 "column": {
                   "name": "bookable_entity_id",
-                  "type": "uuid",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_booked_entities_bookable_entities",
                     "references": "bookable_entities(id)"
@@ -33,7 +33,7 @@
               {
                 "column": {
                   "name": "booking_id",
-                  "type": "uuid",
+                  "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_booked_entities_bookings",
                     "references": "bookings(id)"
@@ -42,7 +42,7 @@
               }
             ],
             "schemaName": "public",
-            "tableName": "bookable_entities"
+            "tableName": "booked_entities"
           }
         }
       }

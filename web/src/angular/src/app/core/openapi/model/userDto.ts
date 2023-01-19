@@ -9,12 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { BookingDto } from './bookingDto';
 
 
 export interface UserDto { 
     id?: string;
     username?: string;
-    firstName?: string;
-    lastName?: string;
+    firstname?: string;
+    password?: string;
+    lastname?: string;
+    bookings?: Array<BookingDto>;
 }
 

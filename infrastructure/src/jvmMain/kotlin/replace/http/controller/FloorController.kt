@@ -11,8 +11,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.bson.types.ObjectId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.dto.CreateFloorDto
 import replace.dto.FloorDto
@@ -43,7 +43,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
             description = "Creates a new floor"
             body {
                 json {
-                    schema<FloorDto>()
+                    schema<CreateFloorDto>()
                 }
             }
             200 response {
@@ -57,13 +57,13 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
         get("/{floorId}/bookable-entity") {
             val floorId = call.parameters["floorId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            val bookableEntities = BookableEntity.find(BookableEntities.floor_id eq floorId)
+            val bookableEntityDtos = transaction { BookableEntity.find(BookableEntities.floor_id eq floorId).map { it.toDto() } }
 
-            call.respond(bookableEntities.map { it.toDto() })
+            call.respond(bookableEntityDtos)
         } describe {
             "floorId" pathParameter {
                 description = "The id of the floor"
-                schema(ObjectId().toString())
+                schema(String)
             }
             description = "Gets all bookable entities for a floor"
             200 response {
@@ -82,7 +82,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
             description = "Updates a floor"
             body {
                 json {
-                    schema<FloorDto>()
+                    schema<UpdateFloorDto>()
                 }
             }
             200 response {

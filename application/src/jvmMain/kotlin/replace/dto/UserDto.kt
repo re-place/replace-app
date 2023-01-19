@@ -8,9 +8,9 @@ import kotlin.reflect.KProperty1
 class UserDto(
     override val id: String,
     val username: String,
-    val firstName: String,
+    val firstname: String,
     val password: String,
-    val lastName: String,
+    val lastname: String,
     val bookings: List<BookingDto>? = null,
 ) : ModelDto
 
@@ -25,8 +25,8 @@ fun User.toDto(with: List<KProperty1<User, *>> = emptyList()): UserDto {
         id = id.value,
         username = username,
         password = password,
-        firstName = firstName,
-        lastName = lastName,
+        firstname = firstname,
+        lastname = lastname,
         bookings = bookings,
     )
 }
