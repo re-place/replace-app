@@ -64,6 +64,7 @@ export class DefaultService {
             httpParams = this.addToHttpParamsRecursive(httpParams, value, key)
         }
         return httpParams
+
     }
 
     private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
@@ -152,6 +153,7 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
+
     public apiBookableEntityIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
     public apiBookableEntityIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
     public apiBookableEntityIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;

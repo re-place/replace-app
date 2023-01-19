@@ -8,4 +8,5 @@ dependencies {
     jvmMainApi(libs.bundles.kmongo)
     jvmTestImplementation(libs.kotest)
     jvmMainImplementation(libs.ktor.server.auth)
+    commonMainImplementation(libs.kotlinx.datetime)
 }
