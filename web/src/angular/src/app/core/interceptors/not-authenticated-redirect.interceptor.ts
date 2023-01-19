@@ -1,24 +1,15 @@
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpEventType, HttpErrorResponse } from "@angular/common/http"
 import { Injectable } from "@angular/core"
+import { Router } from "@angular/router"
 import { Observable, tap } from "rxjs"
 
-import { SessionService } from "../services/session.service"
+import { AuthService } from "../services/auth.service"
 
 @Injectable()
-export class SessionInterceptor implements HttpInterceptor {
-    constructor(private readonly sessionService: SessionService) {}
+export class NotAuthenticatedRedirect implements HttpInterceptor {
+    constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        const sessionToken = this.sessionService.sessionToken
-
-        if (sessionToken !== null) {
-            request = request.clone({
-                setHeaders: {
-                    SESSION_TOKEN: sessionToken,
-                },
-            })
-        }
-
         return next.handle(request).pipe(
             tap({
                 next: (event: HttpEvent<unknown>) => {
@@ -26,11 +17,13 @@ export class SessionInterceptor implements HttpInterceptor {
                         return event
                     }
 
-                    if (!event.headers.has("SESSION_TOKEN")) {
+                    if (event.status !== 401) {
                         return event
                     }
 
-                    this.sessionService.sessionToken = event.headers.get("SESSION_TOKEN")
+                    this.authService.currentUser = null
+                    this.router.navigateByUrl("/login")
+
                     return event
                 },
                 error: (error) => {
@@ -38,7 +31,12 @@ export class SessionInterceptor implements HttpInterceptor {
                         return
                     }
 
-                    this.sessionService.sessionToken = error.headers.get("SESSION_TOKEN")
+                    if (error.status !== 401) {
+                        return
+                    }
+
+                    this.authService.currentUser = null
+                    this.router.navigateByUrl("/login")
                 },
             }),
         )

@@ -3,9 +3,8 @@ import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 import { SetOptional } from "type-fest"
-import { BookableEntity, Floor } from "types"
 
-import { ApiService } from "src/app/core/services/api.service"
+import { BookableEntityDto, DefaultService, FileUploadDto, FloorDto } from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -15,65 +14,105 @@ import { DataLoader, Form } from "src/app/util"
 })
 export class EditComponent implements OnDestroy {
     title = ""
-    form: Form<Floor> | undefined = undefined
-    bookableEntities = new DataLoader<BookableEntity[]>()
-    editingBookableEntity: SetOptional<BookableEntity, "id" | "parentId" | "floorId"> | undefined = undefined
+    form: Form<FloorDto> | undefined = undefined
+    floor = new DataLoader<FloorDto>()
+    bookableEntities = new DataLoader<BookableEntityDto[]>()
+    editingBookableEntity: SetOptional<BookableEntityDto, "id" | "parentId" | "floorId"> | undefined = undefined
 
     private readonly routeSub: Subscription
 
     constructor(
-        private readonly api: ApiService,
+        private readonly api: DefaultService,
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
-        this.routeSub = route.params.subscribe(async (params) => {
-            this.form = new Form(await api.getFloor(params["id"]))
+        this.floor.subscribe((floor) => {
+            this.form = new Form(floor)
             this.form.useSnackbar(snackBar)
             this.title = `Stockwerk ${this.form.data.name} bearbeiten`
+        })
 
-            this.bookableEntities.source(() => api.getBookableEntities(params["id"])).refresh()
+        this.routeSub = route.params.subscribe(async (params) => {
+            this.floor.source(() => api.apiFloorIdGet(params["id"])).refresh()
+            this.bookableEntities.source(() => api.apiFloorFloorIdBookableEntityGet(params["id"])).refresh()
         })
     }
 
-    public onSubmit() {
-        this.form?.submit((data) => this.api.updateFloor(data))
+    public get files(): FileUploadDto[] {
+        const planFile = this.form?.data.planFile
+
+        if (planFile === undefined || planFile === null) {
+            return []
+        }
+
+        return [planFile]
+    }
+
+    public set files(newFiles: FileUploadDto[]) {
+        if (this.form === undefined) {
+            return
+        }
+
+        this.form.data.planFile = newFiles.at(0) ?? undefined
+    }
+
+    public async onSubmit() {
+        await this.form?.submit((data) => this.api.apiFloorPut(data))
+        this.floor.refresh()
     }
 
     ngOnDestroy(): void {
         this.routeSub.unsubscribe()
     }
 
-    public onEditBookableEntity(bookableEntity?: BookableEntity) {
+    public onEditBookableEntity(bookableEntity?: BookableEntityDto) {
         this.editingBookableEntity = bookableEntity
     }
 
     public onCreateBookableEntity() {
-        this.editingBookableEntity = { name: "", type: null }
+        this.editingBookableEntity = { name: "", type: undefined }
     }
 
-    public onSubmitBookableEntity(bookableEntity: SetOptional<BookableEntity, "id" | "floorId" | "parentId">) {
+    public onSubmitBookableEntity(bookableEntity: BookableEntityDto) {
         this.bookableEntities.loading(true)
 
+        const form = new Form(bookableEntity)
+        form.useSnackbar(this.snackBar)
+
         if (bookableEntity.id === undefined) {
-            this.api
-                .createBookableEntity({
-                    ...bookableEntity,
-                    floorId: this.route.snapshot.params["id"],
-                    parentId: null,
-                })
-                .then(() => {
-                    this.bookableEntities.refresh()
-                    this.editingBookableEntity = undefined
-                })
+            form.submit((data) => this.api.apiBookableEntityPost({
+                ...data,
+                floorId: this.floor.data?.id,
+            })).then(() => {
+                this.bookableEntities.refresh()
+                this.editingBookableEntity = undefined
+            })
 
             return
         }
 
         if (bookableEntity.id !== undefined) {
-            this.api.updateBookableEntity(bookableEntity as BookableEntity).then(() => {
+            form.submit((data) => this.api.apiBookableEntityPut({
+                ...data,
+                floorId: this.floor.data?.id,
+            })).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined
             })
         }
+    }
+
+    public get initialFiles(): string[] {
+        const planFile = this.form?.data.planFile
+
+        if (planFile === undefined || planFile === null || planFile.temporary === true || planFile.id === undefined) {
+            return []
+        }
+
+        return [planFile.id]
+    }
+
+    public onFilesUploaded(files: FileUploadDto[]) {
+        this.files = files
     }
 }

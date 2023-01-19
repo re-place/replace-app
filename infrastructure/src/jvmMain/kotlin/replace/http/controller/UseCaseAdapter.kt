@@ -30,6 +30,13 @@ suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.exec
                 " ${e.stackTrace.joinToString("\n")}",
             status = HttpStatusCode.BadRequest
         )
+    } catch (e: IllegalStateException) {
+        call.respondText(
+            "Something went horrible wrong.\n" +
+                "${e.cause?.message ?: e.message}\n" +
+                e.stackTrace.joinToString("\n"),
+            status = HttpStatusCode.InternalServerError
+        )
     } catch (e: Exception) {
         call.respondText("[${e::class}]: An internal error occurred: ${e.message} \n ${e.stackTrace.joinToString("\n")}", status = HttpStatusCode.InternalServerError)
     }

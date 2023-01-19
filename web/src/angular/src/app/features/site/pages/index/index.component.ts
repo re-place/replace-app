@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
-import { Site } from "types"
 
-import { ApiService } from "src/app/core/services/api.service"
+import { DefaultService, SiteDto } from "src/app/core/openapi"
+
 
 @Component({
     selector: "index",
@@ -9,18 +9,18 @@ import { ApiService } from "src/app/core/services/api.service"
     styles: [],
 })
 export class IndexComponent {
-    public sites: Site[] | undefined
+    public sites: SiteDto[] | undefined
 
     public dataColumns = [
         { key: "id", label: "ID" },
         { key: "name", label: "Name" },
     ]
 
-    public constructor(private readonly api: ApiService) {
-        api.getSites().then((sites) => (this.sites = sites))
+    public constructor(private readonly api: DefaultService) {
+        api.apiSiteGet().subscribe((sites) => (this.sites = sites))
     }
 
-    public getEditRoute(site: Site) {
+    public getEditRoute(site: SiteDto) {
         return `./${site.id}/edit`
     }
 }

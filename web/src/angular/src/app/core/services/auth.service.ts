@@ -3,13 +3,13 @@ import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { firstValueFrom } from "rxjs"
 
-import { User } from "types"
+import { UserDto } from "../openapi"
 
 @Injectable({
     providedIn: "root",
 })
 export class AuthService {
-    currentUser: User | null = null
+    currentUser: UserDto | null = null
     loginError: string | undefined = undefined
     private readonly intendedUrl: string | null = null
 
@@ -21,7 +21,7 @@ export class AuthService {
     }
 
     public login(username: string, password: string) {
-        const req = this.http.post<User>("/api/login", {username, password}, {observe: "response"})
+        const req = this.http.post<UserDto>("/api/login", {username, password}, {observe: "response"})
         req.subscribe({
             next: res => {
                 // Save user object
@@ -30,7 +30,7 @@ export class AuthService {
                 let url = "/"
                 if(this.intendedUrl !== null) {
                     url = this.intendedUrl
-                } 
+                }
                 this.router.navigateByUrl(url)
             },
             error: err => {
@@ -50,14 +50,14 @@ export class AuthService {
         }
 
         try {
-            this.currentUser = await firstValueFrom(this.http.get<User>("/api/current-user"))
+            this.currentUser = await firstValueFrom(this.http.get<UserDto>("/api/current-user"))
             return true
         } catch (error) {
             return false
         }
     }
 
-    public async logout() {
+    public async  logout() {
         await firstValueFrom(this.http.post("/api/logout", {}))
         this.currentUser = null
         this.router.navigateByUrl("/login")

@@ -37,6 +37,11 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Creates a new site"
+            body {
+                json {
+                    schema<SiteDto>()
+                }
+            }
             200 response {
                 description = "The created site"
                 json {
@@ -51,6 +56,11 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             }
         } describe {
             description = "Updates a site"
+            body {
+                json {
+                    schema<SiteDto>()
+                }
+            }
             200 response {
                 description = "The updated site"
                 json {

@@ -1,6 +1,9 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { RouterModule } from "@angular/router"
+import * as FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
+import FilePondPluginImagePreview from "filepond-plugin-image-preview"
+import { FilePondModule, registerPlugin } from "ngx-filepond"
 
 import { MaterialModule } from "../material/material.module"
 import { AndrenaLogoComponent } from "./components/andrena-logo/andrena-logo.component"
@@ -9,6 +12,7 @@ import { CrudCardComponent } from "./components/crud-card/crud-card.component"
 import { CrudLayoutComponent } from "./components/crud-layout/crud-layout.component"
 import { DataTableComponent } from "./components/data-table/data-table.component"
 import { EmptyStateComponent } from "./components/empty-state/empty-state.component"
+import { FileUploadComponent } from "./components/file-upload/file-upload.component"
 import { LoadingStateComponent } from "./components/loading-state/loading-state.component"
 import { TextButtonComponent } from "./components/text-button/text-button.component"
 import { UserCardComponent } from "./components/user-card/user-card.component"
@@ -18,6 +22,12 @@ import { FooterDirective } from "./directives/footer.directive"
 import { HeaderDirective } from "./directives/header.directive"
 import { IconDirective } from "./directives/icon.directive"
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component"
+
+// Register the plugin
+registerPlugin(FilePondPluginImagePreview)
+// import filepond module
+
+registerPlugin(FilePondPluginFileValidateType)
 
 @NgModule({
     declarations: [
@@ -36,6 +46,7 @@ import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component
         EmptyStateComponent,
         ActionsDirective,
         IconDirective,
+        FileUploadComponent,
     ],
     exports: [
         AndrenaLogoComponent,
@@ -53,7 +64,8 @@ import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component
         EmptyStateComponent,
         ActionsDirective,
         IconDirective,
+        FileUploadComponent,
     ],
-    imports: [CommonModule, MaterialModule, RouterModule],
+    imports: [CommonModule, MaterialModule, RouterModule, FilePondModule],
 })
 export class SharedModule {}

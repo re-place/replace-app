@@ -9,11 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-
+import { FileUploadDto } from './fileUploadDto';
 
 export interface FloorDto { 
     id?: string;
     name?: string;
     siteId?: string;
+    planFile?: FileUploadDto;
 }
 

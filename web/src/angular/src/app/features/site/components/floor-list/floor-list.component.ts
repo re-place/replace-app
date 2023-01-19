@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
-import { Floor } from "types"
+
+import { FloorDto } from "src/app/core/openapi"
 
 @Component({
     selector: "floor-list",
@@ -7,9 +8,9 @@ import { Floor } from "types"
     styles: [],
 })
 export class FloorListComponent {
-    @Input() floors: Floor[] | undefined
+    @Input() floors: FloorDto[] | undefined
 
-    @Output() edit = new EventEmitter<Floor>()
+    @Output() edit = new EventEmitter<FloorDto>()
     @Output() create = new EventEmitter<void>()
 
     columns = [
@@ -17,7 +18,7 @@ export class FloorListComponent {
         { key: "name", label: "Name" },
     ]
 
-    public onEdit(floor: Floor) {
+    public onEdit(floor: FloorDto) {
         this.edit.emit(floor)
     }
 
@@ -25,7 +26,7 @@ export class FloorListComponent {
         this.create.emit()
     }
 
-    public getFloorEditLink(floor: Floor) {
+    public getFloorEditLink(floor: FloorDto) {
         return `/floor/${floor.id}/edit`
     }
 }

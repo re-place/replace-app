@@ -3,7 +3,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http"
 import { NgModule, Optional, SkipSelf } from "@angular/core"
 
 import { AuthGuard } from "./guards/auth.guard"
-import { SessionInterceptor } from "./interceptors/session.interceptor"
+import { NotAuthenticatedRedirect } from "./interceptors/not-authenticated-redirect.interceptor"
 
 @NgModule({
     declarations: [],
@@ -11,11 +11,10 @@ import { SessionInterceptor } from "./interceptors/session.interceptor"
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: SessionInterceptor,
+            useClass: NotAuthenticatedRedirect,
             multi: true,
         },
-        AuthGuard,
-    ],
+        AuthGuard],
 })
 export class CoreModule {
     constructor(@Optional() @SkipSelf() coreModule: CoreModule | null) {
