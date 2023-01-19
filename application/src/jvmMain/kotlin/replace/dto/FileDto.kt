@@ -4,14 +4,15 @@ import kotlinx.serialization.Serializable
 import replace.model.File
 
 @Serializable
-class FileDto(
-    override val id: String? = null,
+data class FileDto(
+    override val id: String,
     val name: String,
     val path: String,
     val extension: String,
     val sizeInBytes: Long,
     val mime: String? = null,
-) : Dto
+    val url: String,
+): ModelDto
 
 fun File.toDto() = FileDto(
     id = id.value,
@@ -20,4 +21,5 @@ fun File.toDto() = FileDto(
     extension = extension,
     sizeInBytes = sizeInBytes,
     mime = mime,
+    url = "test"
 )

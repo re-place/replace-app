@@ -15,19 +15,18 @@ import replace.http.controller.registerTemporaryFileUploadRoutes
 import replace.http.controller.registerUserRoutes
 
 fun Application.routeControllers(
-    db: CoroutineDatabase,
     fileStorage: FileStorage
 ) {
     routing {
         authenticate {
-            registerBookableEntityRoutes(db)
-            registerBookableEntityTypeRoutes(db)
-            registerBookingRoutes(db)
-            registerFloorRoutes(db, fileStorage)
-            registerSiteRoutes(db)
-            registerUserRoutes(db)
-            registerFileRoutes(db, fileStorage)
-            registerTemporaryFileUploadRoutes(db, fileStorage)
+            registerBookableEntityRoutes()
+            registerBookableEntityTypeRoutes()
+            registerBookingRoutes()
+            registerFloorRoutes(fileStorage)
+            registerSiteRoutes()
+            registerUserRoutes()
+            registerFileRoutes(fileStorage)
+            registerTemporaryFileUploadRoutes(fileStorage)
         }
     }
 }

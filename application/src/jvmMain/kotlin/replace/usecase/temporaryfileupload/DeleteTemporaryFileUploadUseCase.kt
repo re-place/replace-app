@@ -1,28 +1,37 @@
 package replace.usecase.temporaryfileupload
 
-import org.bson.types.ObjectId
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
+import replace.model.TemporaryFile
 
 object DeleteTemporaryFileUploadUseCase {
 
     suspend fun execute(
-        temporaryFileUploadId: String,
-        temporaryFileRepository: TemporaryFileRepository,
+        temporaryFileId: String,
         fileStorage: FileStorage,
     ) {
+        newSuspendedTransaction {
+            val temporaryFile = TemporaryFile.findById(temporaryFileId)
 
-        if (!ObjectId.isValid(temporaryFileUploadId)) {
-            throw IllegalArgumentException("Id $temporaryFileUploadId is not a valid ObjectId")
+            checkNotNull(temporaryFile) { "TemporaryFileUpload with id $temporaryFileId not found" }
+
+            if (fileStorage.deleteFile(temporaryFile.path)) {
+                temporaryFile.delete()
+            } else {
+                throw IllegalStateException("Could not delete temporary file upload with id $temporaryFileId")
+            }
         }
+    }
 
-        val temporaryFileUpload = temporaryFileRepository.findOneById(ObjectId(temporaryFileUploadId))
-            ?: throw IllegalArgumentException("Temporary file upload with id $temporaryFileUploadId not found")
-
-        if (fileStorage.deleteFile(temporaryFileUpload.path)) {
-            temporaryFileRepository.deleteOneById(ObjectId(temporaryFileUploadId))
+    suspend fun execute(
+        temporaryFile: TemporaryFile,
+        fileStorage: FileStorage,
+    ) {
+        if (fileStorage.deleteFile(temporaryFile.path)) {
+            temporaryFile.delete()
         } else {
-            throw IllegalStateException("Could not delete temporary file upload with id $temporaryFileUploadId")
+            throw IllegalStateException("Could not delete temporary file upload with id ${temporaryFile.id}")
         }
     }
 }

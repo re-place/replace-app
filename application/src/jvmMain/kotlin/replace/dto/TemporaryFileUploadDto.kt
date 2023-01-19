@@ -5,14 +5,15 @@ import replace.model.TemporaryFile
 
 @Serializable
 class TemporaryFileUploadDto(
-    override val id: String? = null,
+    override val id: String,
     val name: String,
     val path: String,
     val mime: String? = null,
     val extension: String,
     val sizeInBytes: Long,
     val createdAt: String,
-) : Dto
+    val url: String,
+) : ModelDto
 
 fun TemporaryFile.toDto() = TemporaryFileUploadDto(
     id = id.value,
@@ -21,5 +22,6 @@ fun TemporaryFile.toDto() = TemporaryFileUploadDto(
     mime = mime,
     extension = extension,
     sizeInBytes = sizeInBytes,
-    createdAt = createdAt.toString()
+    createdAt = createdAt.toString(),
+    url = "/api/v1/files/$id",
 )

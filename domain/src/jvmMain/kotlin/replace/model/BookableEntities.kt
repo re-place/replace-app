@@ -4,14 +4,14 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-object BookableEntities : Model() {
+object BookableEntities : Models() {
     val name = varchar("name", 255)
     val floor_id = reference("floor_id", Floors)
     val type_id = reference("type_id", BookableEntityTypes).nullable()
     val parent_id = reference("parent_id", BookableEntities).nullable()
 }
 
-class BookableEntity(id: EntityID<String>) : Entity<String>(id) {
+class BookableEntity(id: EntityID<String>) : Model(id) {
     companion object : EntityClass<String, BookableEntity>(BookableEntities)
     var name by BookableEntities.name
 

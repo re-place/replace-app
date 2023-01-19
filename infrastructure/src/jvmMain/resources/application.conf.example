@@ -1,11 +1,15 @@
-database: {
-    user: "user"
-    password: "password"
-    host: "localhost"
-    port: "27017"
-    database: "replace-app"
-    uri: null
-}
 ktor {
-    development = false
+    development = true
+    deployment {
+        url = "http://localhost"
+        port = 8000
+    }
+    db {
+        url = "jdbc:postgresql://localhost:5432/replace-app"
+        user = "postgres"
+        password = "postgres"
+    }
+    application {
+        modules = [ replace.http.ApplicationModuleKt.applicationModule ]
+    }
 }

@@ -1,16 +1,15 @@
 package replace.model
 
-import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-object Floors : Model() {
+object Floors : Models() {
     val name = varchar("name", 255)
     val site_id = reference("site_id", Sites)
     val plan_file_id = reference("plan_file_id", Files).nullable()
 }
 
-class Floor(id: EntityID<String>) : Entity<String>(id) {
+class Floor(id: EntityID<String>) : Model(id) {
     companion object : EntityClass<String, Floor>(Floors)
     var name by Floors.name
 

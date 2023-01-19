@@ -30,29 +30,28 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
-import org.bson.types.ObjectId
-import replace.datastore.UserRepository
 import replace.dto.LoginRequest
+import replace.model.User
 import replace.model.Users
 import replace.model.UserSession
 import replace.model.createSession
 
-fun Route.routeAuthentication(userRepository: UserRepository) {
+fun Route.routeAuthentication() {
     get("/api/current-user") {
         val session = call.sessions.get<UserSession>()
-        if (session?.userId === null) {
+        val userId = session?.userId
+        if (userId === null) {
             call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
             return@get
         }
-        val user: Users = try {
-            userRepository.findOneById(ObjectId(session.userId))
-                ?: error("User with id ${session.userId} not found in database")
-        } catch (e: Exception) {
-            return@get call.respondText(
-                "Unable to get current user: ${e.message}",
-                status = HttpStatusCode.InternalServerError,
-            )
+
+        val user = User.findById(userId)
+
+        if (user === null) {
+            call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
+            return@get
         }
+
         call.respond(user)
     }
     post("/api/logout") {
@@ -73,26 +72,16 @@ fun Route.routeAuthentication(userRepository: UserRepository) {
                 status = HttpStatusCode.BadRequest
             )
         }
-        val userFromDb = userRepository.findByUsername(user.username)
-        when {
-            userFromDb == null -> {
-                call.respondText(
-                    "User ${user.username} does not exist",
-                    status = HttpStatusCode.BadRequest
-                )
-            }
-            userFromDb.password != user.password -> {
-                // TODO: Replace with OAuth
-                // Never store plaintext passwords in a production DB
-                call.respondText(
-                    "Wrong password for user ${user.username}",
-                    status = HttpStatusCode.BadRequest
-                )
-            }
-            else -> {
-                call.sessions.set(userFromDb.createSession())
-                call.respond(userFromDb)
-            }
+        // TODO: Replace with OAuth
+
+        val userFromDb = User.find { Users.username eq user.username }.firstOrNull()
+
+        if (userFromDb === null) {
+            call.respondText("Could not sign in: User not found", status = HttpStatusCode.BadRequest)
+            return@post
         }
+        call.sessions.clear("X-SESSION-TOKEN")
+        call.sessions.set(userFromDb.createSession())
+        call.respond(userFromDb)
     }
 }

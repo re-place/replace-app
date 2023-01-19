@@ -11,21 +11,17 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import org.bson.types.ObjectId
-import replace.datastore.Repository
-import replace.dto.Dto
+import replace.dto.ModelDto
 import replace.http.controller.Routing
-import replace.model.Model
 import kotlin.reflect.typeOf
+import org.jetbrains.exposed.dao.EntityClass
+import replace.model.Model
 
-inline fun <reified T : Model, reified D : Dto> Route.routeRepository(repository: Repository<T>, crossinline toDto: (T) -> D) {
+inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repository: EntityClass<String, T>, crossinline toDto: (T) -> D) {
     val listType = typeOf<List<D>>()
 
     get {
-        try {
-            call.respond(repository.getAll().map(toDto))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        call.respond(repository.all().map(toDto))
     } describe {
         description = "Gets all ${T::class.simpleName}s"
         200 response {
@@ -37,15 +33,14 @@ inline fun <reified T : Model, reified D : Dto> Route.routeRepository(repository
     }
 
     get<Routing.ById> { route ->
-        if (!ObjectId.isValid(route.id)) {
-            return@get call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+        val model = repository.findById(route.id)
+
+        if (model === null) {
+            call.respondText("No Model with id ${route.id} found", status = HttpStatusCode.NotFound)
+            return@get
         }
-        val dbResult = repository.findOneById(ObjectId(route.id))
-        if (dbResult == null) {
-            call.respondText("No document with id ${route.id}", status = HttpStatusCode.NotFound)
-        } else {
-            call.respond(toDto(dbResult))
-        }
+
+        call.respond(toDto(model))
     } describe {
         description = "Gets a ${T::class.simpleName} by id"
         "id" pathParameter {
@@ -58,19 +53,21 @@ inline fun <reified T : Model, reified D : Dto> Route.routeRepository(repository
                 schema<D>()
             }
         }
-        400 response {
-            description = "The id is not a valid ObjectId"
-        }
         404 response {
             description = "No ${T::class.simpleName} with the given id exists"
         }
     }
 
     delete<Routing.ById> { route ->
-        if (!ObjectId.isValid(route.id)) {
-            return@delete call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+        val model = repository.findById(route.id)
+
+        if (model === null) {
+            return@delete
         }
-        call.respond(repository.deleteOneById(ObjectId(route.id)))
+
+        model.delete()
+
+        call.respondText("Deleted Model with id ${route.id}", status = HttpStatusCode.OK)
     } describe {
         description = "Deletes a ${T::class.simpleName} by id"
         "id" pathParameter {
@@ -82,9 +79,6 @@ inline fun <reified T : Model, reified D : Dto> Route.routeRepository(repository
             plainText {
                 schema(true)
             }
-        }
-        400 response {
-            description = "The id is not a valid ObjectId"
         }
     }
 }

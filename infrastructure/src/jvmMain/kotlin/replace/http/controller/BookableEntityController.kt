@@ -6,28 +6,25 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoRepository
 import replace.dto.BookableEntityDto
+import replace.dto.CreateBookableEntityDto
+import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.BookableEntities
-import replace.model.BookableEntityTypes
+import replace.model.BookableEntity
 import replace.usecase.bookableentity.CreateBookableEntityUseCase
 import replace.usecase.bookableentity.UpdateBookableEntityUseCase
 
-fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
-    val bookableEntityRepository = MongoRepository<BookableEntities>(db.getCollection())
-    val bookableEntityTypeRepository = MongoRepository<BookableEntityTypes>(db.getCollection())
+fun Route.registerBookableEntityRoutes() {
 
     route("/api/bookable-entity") {
-        routeRepository(bookableEntityRepository) {
+        routeRepository(BookableEntity.Companion) {
             it.toDto()
         }
 
-        post<BookableEntityDto> {
+        post<CreateBookableEntityDto> {
             executeUseCase {
-                CreateBookableEntityUseCase.execute(it, bookableEntityRepository, bookableEntityTypeRepository)
+                CreateBookableEntityUseCase.execute(it)
             }
         } describe {
             description = "Creates a new bookable entity"
@@ -44,9 +41,9 @@ fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
             }
         }
 
-        put<BookableEntityDto> {
+        put<UpdateBookableEntityDto> {
             executeUseCase {
-                UpdateBookableEntityUseCase.execute(it, bookableEntityRepository)
+                UpdateBookableEntityUseCase.execute(it)
             }
         } describe {
             description = "Updates a bookable entity"

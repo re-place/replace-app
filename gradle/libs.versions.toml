@@ -5,7 +5,10 @@ ktor = "2.2.2"
 log4j = "2.19.0"
 tegral = "0.0.3"
 liquibase = "2.1.1"
+liquibase-core = "4.18.0"
+liquibase-picocli = "4.7.0"
 exposed = "0.40.1"
+postgresql = "42.5.1"
 
 [libraries]
 kmongo-core = { module = "org.litote.kmongo:kmongo", version.ref = "kmongo" }
@@ -32,6 +35,9 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+liquibase-picocli = { module = "info.picocli:picocli", version.ref = "liquibase-picocli" }
 
 [bundles]
 kmongo = [ "kmongo.core", "kmongo.async", "kmongo.coroutine" ]

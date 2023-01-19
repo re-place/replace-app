@@ -1,21 +1,28 @@
 package replace.usecase.bookableentity
 
-import org.bson.types.ObjectId
-import replace.datastore.Repository
+import org.jetbrains.exposed.dao.id.EntityID
 import replace.dto.BookableEntityDto
+import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
-import replace.dto.toModel
 import replace.model.BookableEntities
+import replace.model.BookableEntity
+import replace.model.Floors
 
 object UpdateBookableEntityUseCase {
     suspend fun execute(
-        bookableEntityDto: BookableEntityDto,
-        bookableEntityRepository: Repository<BookableEntities>,
+        bookableEntityDto: UpdateBookableEntityDto,
     ): BookableEntityDto {
-        val bookableEntityId = ObjectId(bookableEntityDto.id)
+        val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
-        val updatedBookableEntity = bookableEntityRepository.updateOne(bookableEntityId, bookableEntityDto.toModel())
-        checkNotNull(updatedBookableEntity)
-        return updatedBookableEntity.toDto()
+        checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }
+
+        bookableEntity.name = bookableEntityDto.name
+        bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
+        bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
+        bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
+
+        bookableEntity.refresh()
+
+        return bookableEntity.toDto()
     }
 }

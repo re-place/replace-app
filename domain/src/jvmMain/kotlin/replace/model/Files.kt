@@ -4,7 +4,7 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-object Files : Model() {
+object Files : Models() {
     val name = varchar("name", 255)
     val path = varchar("path", 65535)
     val extension = varchar("extension", 255)
@@ -12,7 +12,7 @@ object Files : Model() {
     val mime = varchar("mime", 255).nullable()
 }
 
-class File(id: EntityID<String>) : Entity<String>(id) {
+class File(id: EntityID<String>) : Model(id) {
     companion object : EntityClass<String, File>(Files)
     var name by Files.name
     var path by Files.path

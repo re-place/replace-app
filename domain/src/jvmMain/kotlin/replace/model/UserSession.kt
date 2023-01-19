@@ -15,4 +15,4 @@ data class UserSession(
 val UserSession.startUtc: Instant
     get() = OffsetDateTime.parse(startUtcFormatted).toInstant()
 
-fun Users.createSession(): UserSession = UserSession(userId = id.toString())
+fun User.createSession(): UserSession = UserSession(userId = id.toString())

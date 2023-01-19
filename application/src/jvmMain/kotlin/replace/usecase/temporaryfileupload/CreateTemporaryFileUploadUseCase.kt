@@ -1,19 +1,18 @@
 package replace.usecase.temporaryfileupload
 
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
 import replace.dto.TemporaryFileUploadDto
 import replace.dto.toDto
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID.randomUUID
+import replace.model.TemporaryFile
 
 object CreateTemporaryFileUploadUseCase {
 
     suspend fun execute(
         fileName: String,
         input: InputStream,
-        temporaryFileRepository: TemporaryFileRepository,
         fileStorage: FileStorage,
     ): TemporaryFileUploadDto {
 
@@ -21,19 +20,17 @@ object CreateTemporaryFileUploadUseCase {
 
         fileStorage.saveFile(temporaryFileUploadPath, input)
 
-        val insertedTemporaryFile = temporaryFileRepository.insertOne(
-            TemporaryFile(
-                name = fileName.substringBeforeLast("."),
-                path = temporaryFileUploadPath,
-                mime = URLConnection.guessContentTypeFromName(fileName.lowercase()),
-                extension = fileName.substringAfterLast("."),
-                sizeInBytes = fileStorage.getFileSize(temporaryFileUploadPath),
-                createdAt = java.time.LocalDateTime.now(),
-            )
-        )
+        val fileSize = fileStorage.getFileSize(temporaryFileUploadPath)
 
-        checkNotNull(insertedTemporaryFile) { "Could not insert TemporaryFileUpload into Database" }
+        val temporaryFile = TemporaryFile.new {
+            name = fileName.substringBeforeLast(".")
+            path = temporaryFileUploadPath
+            mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
+            extension = fileName.substringAfterLast(".")
+            sizeInBytes = fileSize
+            createdAt = java.time.LocalDateTime.now()
+        }
 
-        return insertedTemporaryFile.toDto()
+        return temporaryFile.toDto()
     }
 }

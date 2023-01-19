@@ -24,10 +24,14 @@ dependencies {
     jvmMainImplementation(libs.tegral.openapi.base)
     jvmMainImplementation(libs.tegral.openapi.swagger)
     jvmTestImplementation(libs.kotest)
-    liquibaseRuntime("org.liquibase:liquibase-core:4.18.0")
-    liquibaseRuntime("info.picocli:picocli:4.7.0")
-    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:3.0.2")
-    liquibaseRuntime("org.postgresql:postgresql:42.5.1")
+    liquibaseRuntime(libs.liquibase.core)
+    liquibaseRuntime(libs.liquibase.picocli)
+    liquibaseRuntime(libs.postgrsql)
+    jvmMainImplementation(libs.exposed.core)
+    jvmMainImplementation(libs.exposed.dao)
+    jvmMainImplementation(libs.exposed.jdbc)
+    jvmMainImplementation(libs.exposed.java.time)
+    jvmMainImplementation(libs.postgrsql)
 }
 
 apply(plugin = "liquibase")
@@ -44,6 +48,7 @@ val migrationRoot = File("infrastructure/src/jvmMain/resources/db/changelog-root
 liquibase {
     activities {
         register("main") {
+
             val dbUrl = "jdbc:postgresql://localhost:5432/replace-app" // by project.extra.properties
             val dbUser = "postgres" // by project.extra.properties
             val dbPass = "postgres" // by project.extra.properties
@@ -65,22 +70,19 @@ val migrationStub = File("infrastructure/src/jvmMain/resources/db/changelog-stub
 
 tasks {
     register("make-migration") {
-        val migrationPrefix = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"))
-        val migrationName = "${migrationPrefix}_${project.findProperty("id") ?: ""}"
-        val migrationFile = File("${migrationDir.path}/$migrationName.json")
-
-        migrationStub.copyTo(migrationFile)
-
         doLast {
+            val migrationPrefix = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"))
+            val migrationName = "${migrationPrefix}_${project.findProperty("id") ?: ""}"
+            val migrationFile = File("${migrationDir.path}/$migrationName.json")
+
+            migrationStub.copyTo(migrationFile)
+
             println("Created migration file: ${migrationFile.path}")
 
             val newText = migrationStub.readText().replace("{{id}}", migrationName)
             migrationFile.writeText(newText)
         }
     }
-}
-
-tasks {
     register("fresh", ) {
         dependsOn("dropAll")
         dependsOn("update")

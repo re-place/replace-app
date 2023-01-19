@@ -12,28 +12,27 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import org.bson.types.ObjectId
-import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoFloorRepository
-import replace.datastore.MongoRepository
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
+import replace.dto.UpdateSiteDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.Sites
+import replace.model.Floor
+import replace.model.Floors
+import replace.model.Site
 import replace.usecase.site.CreateSiteUseCase
 import replace.usecase.site.UpdateSiteUseCase
 
-fun Route.registerSiteRoutes(db: CoroutineDatabase) {
-    val siteRepository = MongoRepository<Sites>(db.getCollection())
-    val floorRepository = MongoFloorRepository(db.getCollection())
-
+fun Route.registerSiteRoutes() {
     route("/api/site") {
-        routeRepository(siteRepository) {
+        routeRepository(Site.Companion) {
             it.toDto()
         }
 
-        post<SiteDto> {
+        post<CreateSiteDto> {
             executeUseCase {
-                CreateSiteUseCase.execute(it, siteRepository)
+                CreateSiteUseCase.execute(it)
             }
         } describe {
             description = "Creates a new site"
@@ -50,9 +49,9 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
             }
         }
 
-        put<SiteDto> {
+        put<UpdateSiteDto> {
             executeUseCase {
-                UpdateSiteUseCase.execute(it, siteRepository)
+                UpdateSiteUseCase.execute(it)
             }
         } describe {
             description = "Updates a site"
@@ -72,11 +71,7 @@ fun Route.registerSiteRoutes(db: CoroutineDatabase) {
         get("/{siteId}/floor") {
             val siteId = call.parameters["siteId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            if (!ObjectId.isValid(siteId)) {
-                return@get call.respondText("Id $siteId is not a valid ObjectId", status = HttpStatusCode.BadRequest)
-            }
-
-            val floors = floorRepository.findBySiteId(ObjectId(siteId)).map() { it.toDto() }
+            val floors = Floor.find { Floors.site_id eq siteId }.toList()
 
             call.respond(floors)
         } describe {

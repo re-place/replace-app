@@ -1,26 +1,33 @@
 package replace.usecase.booking
 
-import org.bson.types.ObjectId
-import replace.datastore.Repository
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.SizedIterable
 import replace.dto.BookingDto
+import replace.dto.CreateBookingDto
 import replace.dto.toDto
-import replace.model.Bookings
+import replace.model.BookableEntities
+import replace.model.BookableEntity
+import replace.model.BookedEntity
+import replace.model.Booking
+import replace.model.Users
 
 object CreateBookingUseCase {
     suspend fun execute(
-        bookingDto: BookingDto,
-        bookingRepository: Repository<Bookings>,
+        createBookingDto: CreateBookingDto,
     ): BookingDto {
-        val bookedEntities = bookingDto.bookedEntities.map { ObjectId(it) }
-
-        // ensure that each booked entity exists
-        // TODO: Clean up tree if parent + child are booked?
-
-        bookedEntities.forEach {
-            bookingRepository.findOneById(it) ?: throw IllegalStateException("Entity with id $it does not exist")
+        if (createBookingDto.bookedEntityIds.isEmpty()) {
+            throw IllegalArgumentException("BookedEntities must not be empty")
         }
-        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities))
-        checkNotNull(insertedBooking) { "Could not insert booking" }
-        return insertedBooking.toDto()
+
+        val newBookedEntities = BookableEntity.forEntityIds(createBookingDto.bookedEntityIds.map { EntityID(it, BookableEntities) })
+
+        val booking = Booking.new {
+            start = createBookingDto.start
+            end = createBookingDto.end
+            userId = EntityID(createBookingDto.userId, Users)
+            bookedEntities = newBookedEntities
+        }
+
+        return booking.toDto()
     }
 }

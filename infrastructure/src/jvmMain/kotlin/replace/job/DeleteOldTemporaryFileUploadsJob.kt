@@ -1,26 +1,28 @@
 package replace.job
 
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.transactions.transaction
+import replace.model.TemporaryFile
+import replace.model.TemporaryFiles
 
 class DeleteOldTemporaryFileUploadsJob(
     interval: Long,
     private val fileMaxAgeInMilliseconds: Long,
-    private val temporaryFileRepository: TemporaryFileRepository,
     private val fileStorage: FileStorage,
 ) : SchedulableJob(interval) {
     override suspend fun run() {
 
         try {
-            val oldTemporaryFileUploads = this.temporaryFileRepository.findOlderThan(LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
-
-            oldTemporaryFileUploads.forEach { temporaryFileUpload ->
-                temporaryFileUpload.id?.let {
-                    DeleteTemporaryFileUploadUseCase.execute(it.toHexString(), this.temporaryFileRepository, this.fileStorage)
-                }
+            val oldTemporaryFiles = transaction {
+                TemporaryFile.find( TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
+            }
+            println("Found ${oldTemporaryFiles.count()} old temporary files")
+            oldTemporaryFiles.forEach { temporaryFile ->
+                DeleteTemporaryFileUploadUseCase.execute(temporaryFile, this.fileStorage)
             }
         } catch (e: Exception) {
             println("Error while deleting old temporary file uploads: ${e.message}")

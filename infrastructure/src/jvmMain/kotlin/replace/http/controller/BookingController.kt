@@ -5,25 +5,22 @@ import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoRepository
 import replace.dto.BookingDto
+import replace.dto.CreateBookingDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.Bookings
+import replace.model.Booking
 import replace.usecase.booking.CreateBookingUseCase
 
-fun Route.registerBookingRoutes(db: CoroutineDatabase) {
-    val bookingRepository = MongoRepository<Bookings>(db.getCollection())
-
+fun Route.registerBookingRoutes() {
     route("/api/booking") {
-        routeRepository(bookingRepository) {
+        routeRepository(Booking.Companion) {
             it.toDto()
         }
 
-        post<BookingDto> {
+        post<CreateBookingDto> {
             executeUseCase {
-                CreateBookingUseCase.execute(it, bookingRepository)
+                CreateBookingUseCase.execute(it)
             }
         } describe {
             description = "Creates a new booking"

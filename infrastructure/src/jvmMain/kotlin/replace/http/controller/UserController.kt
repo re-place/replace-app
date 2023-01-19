@@ -2,16 +2,13 @@ package replace.http.controller
 
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
-import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoUserRepository
 import replace.dto.toDto
 import replace.http.routeRepository
+import replace.model.User
 
-fun Route.registerUserRoutes(db: CoroutineDatabase) {
-    val userRepository = MongoUserRepository(db.getCollection())
-
+fun Route.registerUserRoutes() {
     route("/api/user") {
-        routeRepository(userRepository) {
+        routeRepository(User.Companion) {
             it.toDto()
         }
     }
