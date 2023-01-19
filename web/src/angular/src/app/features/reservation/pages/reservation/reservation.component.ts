@@ -21,8 +21,8 @@ export class ReservationComponent implements OnInit {
 
     minDate = new Date()
     timeFormControl = new FormGroup({
-        startDate: new FormControl(new Date()),
-        endDate: new FormControl(new Date()),
+        startDate: new FormControl(),
+        endDate: new FormControl(),
     })
 
     images = [
@@ -107,12 +107,10 @@ export class ReservationComponent implements OnInit {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
 
-        const startDate = new Date()
-        startDate.setHours(startDate.getHours() + 1)
+        const startDate = new Date(new Date().setHours(0,0,0))
+        const endDate = new Date(new Date().setHours(23,59,0))
 
-        const endDate = new Date()
-        endDate.setHours(startDate.getHours() + 1)
-
+        this.timeFormControl.reset()
         this.timeFormControl.get("startDate")?.setValue(startDate)
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
