@@ -1,13 +1,35 @@
+import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 import {Component, OnInit} from "@angular/core"
 import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
 import {BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
 
+const INTL_DATE_INPUT_FORMAT = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hourCycle: "h23",
+    hour: "2-digit",
+    minute: "2-digit",
+}
+
+const MAT_DATE_FORMATS: NgxMatDateFormats = {
+    parse: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+    },
+    display: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+        monthYearLabel: { year: "numeric", month: "short" },
+        dateA11yLabel: { year: "numeric", month: "long", day: "numeric" },
+        monthYearA11yLabel: { year: "numeric", month: "long" },
+    },
+}
 @Component({
     selector: "reservation",
     templateUrl: "./reservation.component.html",
     styles: [],
+    providers: [{ provide: NGX_MAT_DATE_FORMATS, useValue: MAT_DATE_FORMATS }],
 })
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
