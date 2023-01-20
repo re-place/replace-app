@@ -3,11 +3,34 @@ import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
 import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
+import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
+
+const INTL_DATE_INPUT_FORMAT = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hourCycle: "h23",
+    hour: "2-digit",
+    minute: "2-digit",
+}
+
+const MAT_DATE_FORMATS: NgxMatDateFormats = {
+    parse: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+    },
+    display: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+        monthYearLabel: { year: "numeric", month: "short" },
+        dateA11yLabel: { year: "numeric", month: "long", day: "numeric" },
+        monthYearA11yLabel: { year: "numeric", month: "long" },
+    },
+}
 @Component({
     selector: "reservation",
     templateUrl: "./reservation.component.html",
     styles: [],
+    providers: [{ provide: NGX_MAT_DATE_FORMATS, useValue: MAT_DATE_FORMATS }],
 })
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
@@ -113,18 +136,10 @@ export class ReservationComponent implements OnInit {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
 
-        const startDate = new Date()
-        startDate.setHours(startDate.getHours() + 1)
+        const startDate = new Date(new Date().setHours(0,0,0))
+        const endDate = new Date(new Date().setHours(23,59,0))
 
-        const oldStartDate = this.timeFormControl.value.startDate
-        oldStartDate?.setHours(startDate.getHours())
-
-        const endDate = new Date()
-        endDate.setHours(startDate.getHours() + 1)
-
-        const oldEndDate = this.timeFormControl.value.endDate
-        oldEndDate?.setHours(endDate.getHours())
-
+        this.timeFormControl.reset()
         this.timeFormControl.get("startDate")?.setValue(startDate)
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
