@@ -14,7 +14,7 @@
 
             <div class="fixed inset-0 z-40 flex">
                 <div
-                    class="relative flex w-full max-w-xs flex-1 flex-col bg-primary-500 transition ease-in-out duration-300 transform"
+                    class="relative flex w-full max-w-xs flex-1 flex-col bg-zinc-300 transition ease-in-out duration-300 transform"
                     [ngClass]="isCollapsed ? '-translate-x-full' : 'translate-x-0'"
                 >
                     <div
@@ -44,7 +44,7 @@
 
                     <div class="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                         <div class="flex flex-shrink-0 items-center px-4">
-                            <img src="../../../../assets/Logo.svg" alt="re:Place" />
+                            <img src="../../../../assets/Logo.svg" alt="re:Place" class="w-full p-10" />
                         </div>
                         <nav class="mt-5 space-y-1 px-2">
                             <a
@@ -83,10 +83,10 @@
         <!-- Static sidebar for desktop -->
         <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             <!-- Sidebar component, swap this element with another sidebar if you like -->
-            <div class="flex min-h-0 flex-1 flex-col bg-primary-500">
+            <div class="flex min-h-0 flex-1 flex-col bg-zinc-300">
                 <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
                     <div class="flex flex-shrink-0 items-center px-4">
-                        <img src="../../../../assets/Logo.svg" alt="re:Place" style="width: 200px" />
+                        <img src="../../../../assets/Logo.svg" alt="re:Place" class="w-full p-4" />
                     </div>
                     <nav class="mt-5 flex-1 space-y-1 px-2">
                         <a
