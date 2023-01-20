@@ -18,7 +18,7 @@ object UpdateBookableEntityUseCase {
             val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
             checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }
-            println(bookableEntityDto.name)
+
             bookableEntity.name = bookableEntityDto.name
             bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
             bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }

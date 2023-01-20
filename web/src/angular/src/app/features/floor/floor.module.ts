@@ -5,13 +5,14 @@ import { FormsModule } from "@angular/forms"
 import { BookableEntityListComponent } from "./components/bookable-entity-list/bookable-entity-list.component"
 // eslint-disable-next-line max-len
 import { CreateOrUpdateBookableEntityComponent } from "./components/create-or-update-bookable-entity/create-or-update-bookable-entity.component"
+import { EntityMapComponent } from "./components/entity-map/entity-map.component"
 import { FloorRoutingModule } from "./floor-routing.module"
 import { EditComponent } from "./pages/edit/edit.component"
 import { MaterialModule } from "src/app/material/material.module"
 import { SharedModule } from "src/app/shared/shared.module"
 
 @NgModule({
-    declarations: [EditComponent, BookableEntityListComponent, CreateOrUpdateBookableEntityComponent],
+    declarations: [EditComponent, BookableEntityListComponent, CreateOrUpdateBookableEntityComponent, EntityMapComponent],
     imports: [CommonModule, FloorRoutingModule, SharedModule, MaterialModule, FormsModule],
 })
 export class FloorModule {}
