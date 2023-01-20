@@ -1,22 +1,23 @@
 package replace.usecase.site
 
-import org.bson.types.ObjectId
-import replace.datastore.SiteRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.SiteDto
+import replace.dto.UpdateSiteDto
 import replace.dto.toDto
-import replace.dto.toModel
+import replace.model.Site
 
 object UpdateSiteUseCase {
     suspend fun execute(
-        siteDto: SiteDto,
-        siteRepository: SiteRepository,
+        updateSiteDto: UpdateSiteDto,
     ): SiteDto {
-        val siteId = ObjectId(siteDto.id)
+        return transaction {
+            val site = Site.findById(updateSiteDto.id)
 
-        val updatedSite = siteRepository.updateOne(siteId, siteDto.toModel())
+            checkNotNull(site) { "Site with id ${updateSiteDto.id} not found" }
 
-        checkNotNull(updatedSite) { "Could not update Site" }
+            site.name = updateSiteDto.name
 
-        return updatedSite.toDto()
+            site.toDto()
+        }
     }
 }

@@ -9,10 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { BookableEntityDto } from './bookableEntityDto';
+import { UserDto } from './userDto';
 
 
 export interface BookingDto { 
     id?: string;
-    bookedEntities?: Array<string>;
+    userId?: string;
+    user?: UserDto;
+    bookedEntities?: Array<BookableEntityDto>;
+    start?: string;
+    end?: string;
 }
 

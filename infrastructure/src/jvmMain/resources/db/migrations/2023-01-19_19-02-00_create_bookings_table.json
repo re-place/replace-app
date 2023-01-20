@@ -1,0 +1,59 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_19-02-00_create_bookings_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(36)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_bookings_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "start",
+                  "type": "timestamp",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "end",
+                  "type": "timestamp",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "user_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_bookings_user",
+                    "references": "users(id)"
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "bookings"
+          }
+        }
+      }
+    }
+  ]
+}

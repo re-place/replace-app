@@ -4,6 +4,11 @@ kotlin = "1.8.0"
 ktor = "2.2.2"
 log4j = "2.19.0"
 tegral = "0.0.3"
+liquibase = "2.1.1"
+liquibase-core = "4.18.0"
+liquibase-picocli = "4.7.0"
+exposed = "0.40.1"
+postgresql = "42.5.1"
 
 [libraries]
 kmongo-core = { module = "org.litote.kmongo:kmongo", version.ref = "kmongo" }
@@ -11,6 +16,7 @@ kmongo-async = { module = "org.litote.kmongo:kmongo-async", version.ref = "kmong
 kmongo-coroutine = { module = "org.litote.kmongo:kmongo-coroutine-serialization", version.ref = "kmongo" }
 kotest = "io.kotest:kotest-runner-junit5-jvm:5.5.4"
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
@@ -26,7 +32,13 @@ logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.r
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 tegral-openapi-base = { module ="guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
 tegral-openapi-swagger = { module ="guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
-
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+liquibase-picocli = { module = "info.picocli:picocli", version.ref = "liquibase-picocli" }
 
 [bundles]
 kmongo = [ "kmongo.core", "kmongo.async", "kmongo.coroutine" ]
@@ -41,3 +53,4 @@ node = { id = "com.github.node-gradle.node", version = "3.5.0" }
 shadow = "com.github.johnrengelman.shadow:7.1.2"
 spring-boot = { id = "org.springframework.boot", version = "3.0.0-SNAPSHOT" }
 spring-dependency-management = { id = "io.spring.dependency-management", version = "1.1.0" }
+liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }

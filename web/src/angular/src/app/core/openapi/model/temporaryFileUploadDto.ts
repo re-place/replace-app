@@ -19,5 +19,6 @@ export interface TemporaryFileUploadDto {
     extension?: string;
     sizeInBytes?: number;
     createdAt?: string;
+    url?: string;
 }
 

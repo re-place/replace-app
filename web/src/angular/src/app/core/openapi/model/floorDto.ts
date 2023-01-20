@@ -9,13 +9,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { FileUploadDto } from './fileUploadDto';
+import { FileDto } from './fileDto';
+import { BookableEntityDto } from './bookableEntityDto';
+import { SiteDto } from './siteDto';
 
 
 export interface FloorDto { 
     id?: string;
     name?: string;
     siteId?: string;
-    planFile?: FileUploadDto;
+    site?: SiteDto;
+    planFileId?: string;
+    planFile?: FileDto;
+    bookableEntities?: Array<BookableEntityDto>;
 }
 

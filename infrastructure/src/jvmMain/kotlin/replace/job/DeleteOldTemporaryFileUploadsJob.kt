@@ -1,25 +1,31 @@
 package replace.job
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.minus
+import kotlinx.datetime.toJavaInstant
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
+import replace.model.TemporaryFile
+import replace.model.TemporaryFiles
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 class DeleteOldTemporaryFileUploadsJob(
     interval: Long,
     private val fileMaxAgeInMilliseconds: Long,
-    private val temporaryFileRepository: TemporaryFileRepository,
     private val fileStorage: FileStorage,
 ) : SchedulableJob(interval) {
     override suspend fun run() {
-
+        val fileStorage = fileStorage
         try {
-            val oldTemporaryFileUploads = this.temporaryFileRepository.findOlderThan(LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS))
+            newSuspendedTransaction {
+                val oldTemporaryFiles = TemporaryFile.find(
+                    TemporaryFiles.createdAt less Clock.System.now().minus(fileMaxAgeInMilliseconds, DateTimeUnit.MILLISECOND).toJavaInstant()
+                )
 
-            oldTemporaryFileUploads.forEach { temporaryFileUpload ->
-                temporaryFileUpload.id?.let {
-                    DeleteTemporaryFileUploadUseCase.execute(it.toHexString(), this.temporaryFileRepository, this.fileStorage)
+                oldTemporaryFiles.forEach { temporaryFile ->
+                    DeleteTemporaryFileUploadUseCase.execute(temporaryFile, fileStorage)
                 }
             }
         } catch (e: Exception) {

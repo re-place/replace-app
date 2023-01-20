@@ -1,0 +1,51 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_19-10-08_create_booked_entities_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(36)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_booked_entity_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "bookable_entity_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_booked_entities_bookable_entities",
+                    "references": "bookable_entities(id)"
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "booking_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_booked_entities_bookings",
+                    "references": "bookings(id)"
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "booked_entities"
+          }
+        }
+      }
+    }
+  ]
+}

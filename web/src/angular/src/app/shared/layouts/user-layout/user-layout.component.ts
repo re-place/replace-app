@@ -65,6 +65,6 @@ export class UserLayoutComponent implements OnInit {
             this.isCollapsed = true
         })
 
-        this.currentUserName = `${this.authService.currentUser?.firstName} ${this.authService.currentUser?.lastName}`
+        this.currentUserName = `${this.authService.currentUser?.firstname} ${this.authService.currentUser?.lastname}`
     }
 }

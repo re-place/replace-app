@@ -1,5 +1,5 @@
 package replace.dto
 
-interface Dto {
-    val id: String?
+abstract class Dto {
+    fun validate() {}
 }

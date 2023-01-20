@@ -2,16 +2,25 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import replace.model.BookableEntityType
+import kotlin.reflect.KProperty1
 
 @Serializable
 data class BookableEntityTypeDto(
-    override val id: String? = null,
+    override val id: String,
     val name: String,
-) : Dto
+    val bookableEntities: List<BookableEntityDto>? = null,
+) : ModelDto
 
-fun BookableEntityType.toDto() = BookableEntityTypeDto(
-    id = id?.toHexString(),
-    name = name,
-)
+fun BookableEntityType.toDto(with: List<KProperty1<BookableEntityType, *>> = emptyList()): BookableEntityTypeDto {
+    val bookableEntities = if (with.contains(BookableEntityType::bookableEntities)) {
+        bookableEntities.map { it.toDto() }
+    } else {
+        null
+    }
 
-fun BookableEntityTypeDto.toModel() = BookableEntityType(name)
+    return BookableEntityTypeDto(
+        id = id.value,
+        name = name,
+        bookableEntities = bookableEntities,
+    )
+}
