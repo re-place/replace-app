@@ -6,7 +6,6 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import { FilePondModule, registerPlugin } from "ngx-filepond"
 
 import { MaterialModule } from "../material/material.module"
-import { AndrenaLogoComponent } from "./components/andrena-logo/andrena-logo.component"
 import { CardComponent } from "./components/card/card.component"
 import { CrudCardComponent } from "./components/crud-card/crud-card.component"
 import { CrudLayoutComponent } from "./components/crud-layout/crud-layout.component"
@@ -31,7 +30,6 @@ registerPlugin(FilePondPluginFileValidateType)
 
 @NgModule({
     declarations: [
-        AndrenaLogoComponent,
         UserCardComponent,
         UserLayoutComponent,
         CrudLayoutComponent,
@@ -49,7 +47,6 @@ registerPlugin(FilePondPluginFileValidateType)
         FileUploadComponent,
     ],
     exports: [
-        AndrenaLogoComponent,
         UserCardComponent,
         UserLayoutComponent,
         CrudLayoutComponent,
