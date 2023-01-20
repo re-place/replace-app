@@ -2,16 +2,25 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import replace.model.Site
+import kotlin.reflect.KProperty1
 
 @Serializable
 class SiteDto(
-    override val id: String? = null,
+    override val id: String,
     val name: String,
-) : Dto
+    val floors: List<FloorDto>? = null,
+) : ModelDto
 
-fun Site.toDto() = SiteDto(
-    id = id?.toHexString(),
-    name = name,
-)
+fun Site.toDto(with: List<KProperty1<Site, *>> = emptyList()): SiteDto {
+    val floors = if (with.contains(Site::floors)) {
+        floors.map { it.toDto() }
+    } else {
+        null
+    }
 
-fun SiteDto.toModel() = Site(name)
+    return SiteDto(
+        id = id.value,
+        name = name,
+        floors = floors,
+    )
+}

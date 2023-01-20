@@ -1,0 +1,8 @@
+{
+  "databaseChangeLog": [
+    {
+      "includeAll": { "path":  "infrastructure/src/jvmMain/resources/db/migrations" }
+    }
+  ]
+}
+

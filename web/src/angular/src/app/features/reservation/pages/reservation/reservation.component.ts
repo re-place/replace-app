@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core"
 import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
-import {BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
+import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
 
 @Component({
     selector: "reservation",
@@ -28,12 +28,6 @@ export class ReservationComponent implements OnInit {
         endDate: new FormControl(new Date()),
     })
 
-    images = [
-        { name: "Darmstadt", path: "assets/andrena_Darmstadt.png" },
-        { name: "Frankfurt am Main", path: "assets/andrena_Frankfurt.png" },
-    ]
-
-    imgSrc: string = this.images[0].path
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
@@ -97,6 +91,7 @@ export class ReservationComponent implements OnInit {
 
         })
     }
+
     ngOnInit() {
 
         this.apiService.apiSiteGet().subscribe({
@@ -111,6 +106,7 @@ export class ReservationComponent implements OnInit {
         })
         this.getBookings()
     }
+
     // Set default to Darmstadt for the first version
 
     setDefaults() {
@@ -138,10 +134,11 @@ export class ReservationComponent implements OnInit {
         const end = this.timeFormControl.get("endDate")?.value?.getTime()??0
 
         this.bookings = this.allBookings.filter(i => {
-            if(i.startDateTime == undefined || i.endDateTime == undefined) return false
-                const startTime = new Date(i.startDateTime).getTime()
-            const endTime = new Date(i.endDateTime).getTime()
-            return !(startTime > end || endTime < start)
+            if(i.start == undefined || i.end == undefined) return false
+            const startTime = new Date(i.start).getTime()
+            const endTime = new Date(i.end).getTime()
+            console.log(startTime >= end, endTime <= start)
+            return !(startTime >= end || endTime <= start)
         })
     }
 
@@ -165,7 +162,6 @@ export class ReservationComponent implements OnInit {
         this.apiService.apiSiteSiteIdFloorGet(this.selectedSite.id).subscribe({
             next: response => {
                 this.floors = response
-                this.setImgSrc()
                 if(this.floors.length == 1) {
                     this.selectedFloor = this.floors[0]
                     this.getBookableEntities()
@@ -182,9 +178,10 @@ export class ReservationComponent implements OnInit {
 
     getBookableEntities() {
         this.selectedEntities = []
-        if(this.selectedFloor?.id == undefined) return
+        const selectedFloorId = this.selectedFloor?.id
+        if(selectedFloorId === undefined) return
 
-        this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id).subscribe({
+        this.apiService.apiFloorFloorIdBookableEntityGet(selectedFloorId).subscribe({
             next: response => {
                 this.bookableEntities = response
                 this.alphaSort(this.bookableEntities)
@@ -208,12 +205,12 @@ export class ReservationComponent implements OnInit {
         if(ids == undefined || ids.length < 1) {
             this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
             return
-        } 
+        }
 
-        const bookingDto: BookingDto = {
-            startDateTime: this.timeFormControl.value.startDate?.toISOString(),
-            endDateTime: this.timeFormControl.value.endDate?.toISOString(),
-            bookedEntities: ids,
+        const bookingDto: CreateBookingDto = {
+            start: this.timeFormControl.value.startDate?.toISOString(),
+            end: this.timeFormControl.value.endDate?.toISOString(),
+            bookedEntityIds: ids,
         }
         this.apiService.apiBookingPost(bookingDto).subscribe({
             next: () => {
@@ -237,14 +234,14 @@ export class ReservationComponent implements OnInit {
     }
 
     isBooked(id?: string) {
-        if(!id) return true
-        return this.bookings.some(booking => booking.bookedEntities?.some(eid => eid == id))
+        if(id === undefined) return true
+        return this.bookings.some(booking => booking.bookedEntities?.some(dto => dto.id === id))
     }
 
-    setImgSrc() {
-        if(this.selectedSite?.name == undefined) return
-        const site = this.selectedSite??{}
-        this.imgSrc = this.images.find(img => img.name == site.name)?.path??""
+    get imgSrc() {
+        const planFileUrl = this.selectedFloor?.planFile?.url
+
+        return planFileUrl ?? ""
     }
 
     alphaSort(arr: any[]) {

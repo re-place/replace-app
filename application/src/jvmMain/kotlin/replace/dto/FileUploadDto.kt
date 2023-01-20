@@ -1,20 +1,16 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import replace.datastore.FileRepository
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
 import replace.usecase.temporaryfileupload.SaveTemporaryFileUploadPersistentUseCase
 
 @Serializable
-class FileUploadDto(
-    override val id: String,
+data class FileUploadDto(
+    val fileId: String,
     val temporary: Boolean,
-) : Dto
+)
 
 suspend fun FileUploadDto.save(
-    temporaryFileRepository: TemporaryFileRepository,
-    fileRepository: FileRepository,
     fileStorage: FileStorage,
 ): FileUploadDto {
     if (!temporary) {
@@ -22,16 +18,14 @@ suspend fun FileUploadDto.save(
     }
 
     val file = SaveTemporaryFileUploadPersistentUseCase.execute(
-        id,
-        temporaryFileRepository,
-        fileRepository,
+        fileId,
         fileStorage,
     )
 
     checkNotNull(file.id) { "Could not save file" }
 
     return FileUploadDto(
-        id = file.id,
+        fileId = file.id,
         temporary = false,
     )
 }

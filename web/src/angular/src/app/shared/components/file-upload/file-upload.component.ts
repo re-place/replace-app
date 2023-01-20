@@ -5,10 +5,6 @@ import { FilePondOptions, FilePondFile, FileStatus, FileOrigin, FilePondInitialF
 
 import { DefaultService, FileUploadDto } from "src/app/core/openapi"
 
-export type FileUpload = {
-    id: string
-    temporary: boolean
-}
 
 type UpdateFilesEvent = {
     filepond: unknown
@@ -26,7 +22,7 @@ export class FileUploadComponent {
     @Input() initialFiles: (string | FileUploadDto)[] = []
     @Input() maxFiles: number | undefined = undefined
 
-    @Output() filesUpdated = new EventEmitter<FileUpload[]>()
+    @Output() filesUpdated = new EventEmitter<FileUploadDto[]>()
 
     constructor(private readonly apiService: DefaultService) {}
 
@@ -34,7 +30,7 @@ export class FileUploadComponent {
         return this.initialFiles.map((file) => {
             return {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                source: typeof file === "string" ? file : file.id!,
+                source: typeof file === "string" ? file : file.fileId!,
                 options: {
                     type: "local",
                 },
@@ -123,12 +119,12 @@ export class FileUploadComponent {
     }
 
     updateFilePondFiles(filePondFiles: FilePondFile[]) {
-        const files: FileUpload[] = filePondFiles
+        const files: FileUploadDto[] = filePondFiles
             .filter((file) => {
                 return file.status === FileStatus.PROCESSING_COMPLETE || file.status === FileStatus.IDLE
             })
             .map((file) => {
-                return { id: file.serverId, temporary: file.origin !== FileOrigin.LOCAL }
+                return { fileId: file.serverId, temporary: file.origin !== FileOrigin.LOCAL }
             })
 
         this.filesUpdated.emit(files)

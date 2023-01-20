@@ -1,7 +1,8 @@
 package replace.usecase.temporaryfileupload
 
+import kotlinx.datetime.Clock
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
 import replace.dto.TemporaryFileUploadDto
 import replace.dto.toDto
 import replace.model.TemporaryFile
@@ -14,27 +15,25 @@ object CreateTemporaryFileUploadUseCase {
     suspend fun execute(
         fileName: String,
         input: InputStream,
-        temporaryFileRepository: TemporaryFileRepository,
         fileStorage: FileStorage,
     ): TemporaryFileUploadDto {
+        return newSuspendedTransaction {
+            val temporaryFileUploadPath = "temporary_uploads/${randomUUID()}"
 
-        val temporaryFileUploadPath = "temporary_uploads/${randomUUID()}"
+            fileStorage.saveFile(temporaryFileUploadPath, input)
 
-        fileStorage.saveFile(temporaryFileUploadPath, input)
+            val fileSize = fileStorage.getFileSize(temporaryFileUploadPath)
 
-        val insertedTemporaryFile = temporaryFileRepository.insertOne(
-            TemporaryFile(
-                name = fileName.substringBeforeLast("."),
-                path = temporaryFileUploadPath,
-                mime = URLConnection.guessContentTypeFromName(fileName.lowercase()),
-                extension = fileName.substringAfterLast("."),
-                sizeInBytes = fileStorage.getFileSize(temporaryFileUploadPath),
-                createdAt = java.time.LocalDateTime.now(),
-            )
-        )
+            val temporaryFile = TemporaryFile.new {
+                name = fileName.substringBeforeLast(".")
+                path = temporaryFileUploadPath
+                mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
+                extension = fileName.substringAfterLast(".")
+                sizeInBytes = fileSize
+                createdAt = Clock.System.now()
+            }
 
-        checkNotNull(insertedTemporaryFile) { "Could not insert TemporaryFileUpload into Database" }
-
-        return insertedTemporaryFile.toDto()
+            temporaryFile.toDto()
+        }
     }
 }

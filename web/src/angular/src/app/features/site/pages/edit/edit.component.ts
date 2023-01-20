@@ -3,7 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 
-import { DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { CreateFloorDto, DefaultService, FloorDto, SiteDto, UpdateFloorDto, UpdateSiteDto } from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -13,10 +13,10 @@ import { DataLoader, Form } from "src/app/util"
 })
 export class EditComponent implements OnDestroy {
     title = ""
-    form: Form<SiteDto> | undefined = undefined
+    form: Form<UpdateSiteDto> | undefined = undefined
     site: DataLoader<SiteDto> = new DataLoader<SiteDto>()
     floors = new DataLoader<FloorDto[]>()
-    editingFloor: FloorDto | undefined = undefined
+    editingFloor: CreateFloorDto | UpdateFloorDto | undefined = undefined
 
     private readonly routeSub: Subscription
 
@@ -53,13 +53,13 @@ export class EditComponent implements OnDestroy {
         this.editingFloor = { name: "", planFile: undefined }
     }
 
-    public onSubmitFloor(floor: FloorDto) {
+    public onSubmitFloor(floor: CreateFloorDto | UpdateFloorDto) {
         this.floors.loading(true)
 
         const form = new Form(floor)
         form.useSnackbar(this.snackBar)
 
-        if (floor.id === undefined) {
+        if ((floor as UpdateFloorDto).id === undefined) {
             form.submit((data) => this.api.apiFloorPost({
                 ...data,
                 siteId: this.site.data?.id,
@@ -72,6 +72,7 @@ export class EditComponent implements OnDestroy {
 
             return
         }
+
         form.submit((data) => this.api.apiFloorPut({
             ...data,
             siteId: this.site.data?.id,

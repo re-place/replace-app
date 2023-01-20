@@ -1,31 +1,36 @@
 package replace.usecase.booking
 
 import kotlinx.datetime.Instant
-import org.bson.types.ObjectId
-import replace.datastore.BookableEntityRepository
-import replace.datastore.Repository
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
+import replace.dto.CreateBookingDto
 import replace.dto.toDto
+import replace.model.BookableEntities
+import replace.model.BookableEntity
 import replace.model.Booking
+import replace.model.Users
 
 object CreateBookingUseCase {
     suspend fun execute(
-        bookingDto: BookingDto,
-        bookingRepository: Repository<Booking>,
-        bookableEntityRepository: BookableEntityRepository,
+        createBookingDto: CreateBookingDto,
+        userId: String
     ): BookingDto {
-        val bookedEntities = bookingDto.bookedEntities.map { ObjectId(it) }
-        val startDateTime = bookingDto.startDateTime
-        val endDateTime = bookingDto.endDateTime
+        return transaction {
+            if (createBookingDto.bookedEntityIds.isEmpty()) {
+                throw IllegalArgumentException("BookedEntities must not be empty")
+            }
 
-        // ensure that each booked entity exists
-        // TODO: Clean up tree if parent + child are booked?
+            val newBookedEntities = BookableEntity.forEntityIds(createBookingDto.bookedEntityIds.map { EntityID(it, BookableEntities) })
 
-        bookedEntities.forEach {
-            bookableEntityRepository.findOneById(it) ?: throw IllegalStateException("Entity with id $it does not exist")
+            val booking = Booking.new {
+                start = Instant.parse(createBookingDto.start)
+                end = Instant.parse(createBookingDto.end)
+                this.userId = EntityID(userId, Users)
+                bookedEntities = newBookedEntities
+            }
+
+            booking.toDto()
         }
-        val insertedBooking = bookingRepository.insertOne(Booking(bookedEntities, Instant.parse(startDateTime), Instant.parse(endDateTime)))
-        checkNotNull(insertedBooking) { "Could not insert booking" }
-        return insertedBooking.toDto()
     }
 }

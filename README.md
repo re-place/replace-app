@@ -3,7 +3,7 @@
 ## Technologien
 
 - Backend: [Ktor](https://ktor.io/)
-- Datatabase: [MongoDB](https://www.mongodb.com)
+- Datatabase: [PostgreSQL](https://www.postgresql.org/)
 - Frontend:
   - [Angular](https://angular.io/)
   - [Angular Material](https://material.angular.io/)
@@ -25,19 +25,6 @@
 - In `/infrastructure/src/jvmMain/resources/application.conf` configure your database settings
 - If you want to contribute to the project run `./gradlew addKtlintCheckGitPreCommitHook` beforehand
 - execute `yarn install` in `/web/src/angular` to install frontend packages
-- add a `user` collection in your database and add an initial user. Copy-Paste Example:
-
-```json
-{
-  "_id": {
-    "$oid": "6391c928a8d80e8729177c7f"
-  },
-  "username": "user",
-  "password": "password",
-  "firstName": "Max",
-  "lastName": "Mustermann"
-}
-````
 
 ### Run
 
@@ -46,8 +33,9 @@
 
 ### Notes
 
+- When running ktor in Dev Mode, it will attempt to seed a dev user. See Console output for more information.
 - Frontend runs on port 4200, backend on port 8000. Frontend requests are getting proxied by angular to port 8000, configure in `/web/src/angular/proxy.conf.json`
-- Frontend hot reloads, backends needs to get restartet.
+- Frontend hot reloads, backends needs to get restarted.
 - For faster starting time of the backend, comment out `commonMainRuntimeOnly(project(":replace-web"))` in `/build.gradle.kts`.
   - Should look like this:
 
@@ -61,5 +49,5 @@
 
   ```
 
-  - frontend won't be compiled and served anymore by Ktor, which is irrelevant in Dev, since we are using the angular dev server
+- frontend won't be compiled and served anymore by Ktor, which is irrelevant in Dev, since we are using the angular dev server
 - You can execute `./gradlew ktlintCheck` and `./gradlew ktlintFormat` to check for backend formatting (alternatively ctrl + ctrl in intellij ot execute gradle commands)

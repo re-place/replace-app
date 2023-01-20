@@ -2,7 +2,7 @@ import { Component } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute, Router } from "@angular/router"
 
-import { DefaultService } from "src/app/core/openapi"
+import { CreateSiteDto, DefaultService } from "src/app/core/openapi"
 import { Form } from "src/app/util"
 
 @Component({
@@ -11,7 +11,7 @@ import { Form } from "src/app/util"
     styles: [],
 })
 export class CreateComponent {
-    public form = new Form({
+    public form = new Form<CreateSiteDto>({
         name: "",
     })
 

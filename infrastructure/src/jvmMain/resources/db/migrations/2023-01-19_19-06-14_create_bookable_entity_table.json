@@ -1,0 +1,70 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-19_19-06-14_create_bookable_entity_table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(36)",
+                  "defaultValueComputed": "gen_random_uuid()",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_bookable_entity_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "name",
+                  "type": "varchar(255)",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "floor_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_bookable_entities_floor",
+                    "references": "floors(id)"
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "type_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_bookable_entities_entity_types",
+                    "references": "bookable_entity_types(id)"
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "parent_id",
+                  "type": "varchar(36)",
+                  "constraints": {
+                    "foreignKeyName": "fk_bookable_entities_bookable_entities",
+                    "references": "bookable_entities(id)"
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "bookable_entities"
+          }
+        }
+      }
+    }
+  ]
+}

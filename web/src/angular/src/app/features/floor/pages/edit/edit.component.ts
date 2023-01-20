@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 import { SetOptional } from "type-fest"
 
-import { BookableEntityDto, DefaultService, FileUploadDto, FloorDto } from "src/app/core/openapi"
+import { BookableEntityDto, DefaultService, FileUploadDto, FloorDto, UpdateFloorDto } from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -14,7 +14,7 @@ import { DataLoader, Form } from "src/app/util"
 })
 export class EditComponent implements OnDestroy {
     title = ""
-    form: Form<FloorDto> | undefined = undefined
+    form: Form<UpdateFloorDto> | undefined = undefined
     floor = new DataLoader<FloorDto>()
     bookableEntities = new DataLoader<BookableEntityDto[]>()
     editingBookableEntity: SetOptional<BookableEntityDto, "id" | "parentId" | "floorId"> | undefined = undefined
@@ -27,7 +27,15 @@ export class EditComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
     ) {
         this.floor.subscribe((floor) => {
-            this.form = new Form(floor)
+            this.form = new Form({
+                id: floor.id,
+                name: floor.name,
+                planFile: floor.planFile ? {
+                    fileId: floor.planFile.id,
+                    temporary: false,
+                } : undefined,
+                siteId: floor.siteId,
+            })
             this.form.useSnackbar(snackBar)
             this.title = `Stockwerk ${this.form.data.name} bearbeiten`
         })
@@ -105,11 +113,17 @@ export class EditComponent implements OnDestroy {
     public get initialFiles(): string[] {
         const planFile = this.form?.data.planFile
 
-        if (planFile === undefined || planFile === null || planFile.temporary === true || planFile.id === undefined) {
+        if (planFile === undefined || planFile.temporary === true) {
             return []
         }
 
-        return [planFile.id]
+        const fileId = planFile.fileId
+
+        if (fileId === undefined) {
+            return []
+        }
+
+        return [fileId]
     }
 
     public onFilesUploaded(files: FileUploadDto[]) {

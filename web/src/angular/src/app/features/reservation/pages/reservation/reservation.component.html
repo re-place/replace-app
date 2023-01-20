@@ -3,11 +3,11 @@
         <h1 class="text-2xl font-semibold text-gray-900">Buchen</h1>
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-        <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 md:flex md:flex-row">
+        <div class="p-5 rounded-lg border-4 border-dashed border-gray-200 xl:flex xl:flex-row">
 
             <!-- Select Fields -->
             <!-- div class="flex flex-col w-fit"-->
-            <div class="flex flex-col md:w-3/10">
+            <div class="flex flex-col xl:w-1/3">
 
                 <form [formGroup]="timeFormControl">
                     <mat-form-field class="w-full">
@@ -29,47 +29,6 @@
                         </ngx-mat-datetime-picker>
                     </mat-form-field>
                 </form>
-                <!--div>
-                    <mat-form-field class="w-3/5 pr-2">
-                        <mat-label>Datum</mat-label>
-                        <input matInput [matDatepicker]="StartDatePicker"
-                               [matDatepickerFilter]="dateFilter"
-                               [ngModel]="startDate"
-                               (dateInput)="saveDate($event)"
-                               (dateChange)="saveDate($event)"
-                               [min]="earliestBookableDate">
-                        <mat-hint>MM/DD/YYYY</mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="StartDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #StartDatePicker></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field class="w-2/5">
-                        <mat-label>Von</mat-label>
-                        <input [ngModel]="startTime | date: 'HH:mm'" (input)="saveStartTime($event)" matInput type="time">
-                        <mat-hint>HH:mm</mat-hint>
-                    </mat-form-field>
-                </div>
-                <mat-slide-toggle (click)="toggleRange()">Über mehrere Tage buchen</mat-slide-toggle>
-                <div>
-                    <mat-form-field class="w-3/5 pr-2">
-                        <mat-label>Datum</mat-label>
-                        <input matInput [matDatepicker]="EndDatePicker"
-                               [matDatepickerFilter]="dateFilter"
-                               (dateInput)="saveDate($event)"
-                               (dateChange)="saveDate($event)"
-                               [disabled]="!toggle"
-                               [min]="earliestBookableDate">
-                        <mat-hint>MM/DD/YYYY</mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="EndDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #EndDatePicker></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field class="w-2/5">
-                        <mat-label>Bis</mat-label>
-                        <input [ngModel]="endTime | date: 'HH:mm'" matInput type="time">
-                        <mat-hint>HH:mm</mat-hint>
-                    </mat-form-field>
-                </div-->
                 <mat-form-field>
                     <mat-label>Standort</mat-label>
                     <mat-select
@@ -103,7 +62,7 @@
                 -->
 
                 <!-- This block will be shown at the bottom for mobile -->
-                <div class="hidden md:flex md:flex-col md:max-w-230">
+                <div class="hidden xl:flex xl:flex-col">
                     <div *ngIf="selectedSite && selectedFloor">
                         <mat-checkbox
                             class="w-1/2"
@@ -126,12 +85,12 @@
 
             </div>
 
-            <div class="w-1/1 md:w-7/10">
+            <div class="w-full xl:w-2/3">
                 <img [src]="imgSrc" *ngIf="imgSrc && selectedSite"
                     class="block w-full h-auto">
             </div>
 
-            <div class="visible flex flex-col md:hidden">
+            <div class="visible flex flex-col xl:hidden">
                 <div *ngIf="selectedSite && selectedFloor">
                     <mat-checkbox
                         class="w-1/2"

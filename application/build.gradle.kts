@@ -11,5 +11,9 @@ dependencies {
     jvmMainImplementation(libs.logging.impl)
     jvmMainImplementation(libs.logging.core)
     jvmMainImplementation(libs.kotlinx.serialization)
-    commonMainImplementation(libs.kotlinx.datetime)
+    jvmMainImplementation(libs.exposed.core)
+    jvmMainImplementation(libs.exposed.dao)
+    jvmMainImplementation(libs.exposed.jdbc)
+    jvmMainImplementation(libs.exposed.java.time)
+    jvmMainImplementation(libs.kotlinx.datetime)
 }

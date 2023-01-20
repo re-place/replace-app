@@ -1,20 +1,24 @@
 package replace.usecase.bookableentitytype
 
-import org.bson.types.ObjectId
-import replace.datastore.BookableEntityTypeRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityTypeDto
+import replace.dto.UpdateBookableEntityTypeDto
 import replace.dto.toDto
-import replace.dto.toModel
+import replace.model.BookableEntityType
 
 object UpdateBookableEntityTypeUseCase {
     suspend fun execute(
-        bookableEntityTypeDto: BookableEntityTypeDto,
-        bookableEntityTypeRepository: BookableEntityTypeRepository,
+        updateBookableEntityTypeDto: UpdateBookableEntityTypeDto,
     ): BookableEntityTypeDto {
-        val bookableEntityTypeId = ObjectId(bookableEntityTypeDto.id)
+        return transaction {
 
-        val updatedBookableEntityType = bookableEntityTypeRepository.updateOne(bookableEntityTypeId, bookableEntityTypeDto.toModel())
-        checkNotNull(updatedBookableEntityType) { "Could not update BookableEntityType" }
-        return updatedBookableEntityType.toDto()
+            val bookableEntityType = BookableEntityType.findById(updateBookableEntityTypeDto.id)
+
+            checkNotNull(bookableEntityType) { "BookableEntityType with id ${updateBookableEntityTypeDto.id} not found" }
+
+            bookableEntityType.name = updateBookableEntityTypeDto.name
+
+            bookableEntityType.toDto()
+        }
     }
 }

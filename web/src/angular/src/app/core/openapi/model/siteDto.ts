@@ -9,10 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { FloorDto } from './floorDto';
 
 
 export interface SiteDto { 
     id?: string;
     name?: string;
+    floors?: Array<FloorDto>;
 }
 
