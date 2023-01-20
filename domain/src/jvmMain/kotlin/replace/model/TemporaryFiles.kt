@@ -1,5 +1,7 @@
 package replace.model
 
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toKotlinInstant
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.javatime.timestamp
@@ -21,5 +23,5 @@ class TemporaryFile(id: EntityID<String>) : Model(id) {
     var extension by TemporaryFiles.extension
     var sizeInBytes by TemporaryFiles.sizeInBytes
     var mime by TemporaryFiles.mime
-    var createdAt by TemporaryFiles.createdAt
+    var createdAt by TemporaryFiles.createdAt.transform({ it.toJavaInstant() }, { it.toKotlinInstant() })
 }

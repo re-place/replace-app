@@ -160,10 +160,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiBookableEntityIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookableEntityIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookableEntityIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiBookableEntityIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookableEntityIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookableEntityIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookableEntityIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookableEntityIdDelete.")
         }
@@ -199,7 +199,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -218,10 +218,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityDto>;
-    public apiBookableEntityIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
-    public apiBookableEntityIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
-    public apiBookableEntityIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiBookableEntityIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityDto>;
+    public apiBookableEntityIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
+    public apiBookableEntityIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
+    public apiBookableEntityIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookableEntityIdGet.")
         }
@@ -257,7 +257,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<BookableEntityDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -460,10 +460,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypeIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiBookableEntityTypeIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookableEntityTypeIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookableEntityTypeIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookableEntityTypeIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookableEntityTypeIdDelete.")
         }
@@ -499,7 +499,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -518,10 +518,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypeIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityTypeDto>;
-    public apiBookableEntityTypeIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
-    public apiBookableEntityTypeIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
-    public apiBookableEntityTypeIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypeIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityTypeDto>;
+    public apiBookableEntityTypeIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
+    public apiBookableEntityTypeIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
+    public apiBookableEntityTypeIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookableEntityTypeIdGet.")
         }
@@ -557,7 +557,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<BookableEntityTypeDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -695,10 +695,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiBookingIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookingIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookingIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiBookingIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookingIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookingIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookingIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookingIdDelete.")
         }
@@ -734,7 +734,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -753,10 +753,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookingDto>;
-    public apiBookingIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
-    public apiBookingIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
-    public apiBookingIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiBookingIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookingDto>;
+    public apiBookingIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
+    public apiBookingIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
+    public apiBookingIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiBookingIdGet.")
         }
@@ -792,7 +792,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<BookingDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -876,10 +876,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFileIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
-    public apiFileIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
-    public apiFileIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
-    public apiFileIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
+    public apiFileIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
+    public apiFileIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
+    public apiFileIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
+    public apiFileIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiFileIdGet.")
         }
@@ -904,7 +904,7 @@ export class DefaultService {
         }
 
 
-        const localVarPath = `/api/file/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/file/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -923,10 +923,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorFloorIdBookableEntityGet(floorId: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<FloorDto>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<FloorDto>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (floorId === null || floorId === undefined) {
             throw new Error("Required parameter floorId was null or undefined when calling apiFloorFloorIdBookableEntityGet.")
         }
@@ -962,7 +962,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "floorId", value: floorId, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}/bookable-entity`
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "floorId", value: floorId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/bookable-entity`
         return this.httpClient.request<Array<FloorDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1035,10 +1035,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiFloorIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiFloorIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiFloorIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiFloorIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiFloorIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiFloorIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiFloorIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiFloorIdDelete.")
         }
@@ -1074,7 +1074,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1093,10 +1093,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<FloorDto>;
-    public apiFloorIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
-    public apiFloorIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
-    public apiFloorIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiFloorIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<FloorDto>;
+    public apiFloorIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
+    public apiFloorIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
+    public apiFloorIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiFloorIdGet.")
         }
@@ -1132,7 +1132,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<FloorDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1335,10 +1335,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiSiteIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiSiteIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiSiteIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiSiteIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiSiteIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiSiteIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiSiteIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiSiteIdDelete.")
         }
@@ -1374,7 +1374,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1393,10 +1393,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<SiteDto>;
-    public apiSiteIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
-    public apiSiteIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
-    public apiSiteIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiSiteIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<SiteDto>;
+    public apiSiteIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
+    public apiSiteIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
+    public apiSiteIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiSiteIdGet.")
         }
@@ -1432,7 +1432,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<SiteDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1581,10 +1581,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteSiteIdFloorGet(siteId: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<SiteDto>>;
-    public apiSiteSiteIdFloorGet(siteId: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
-    public apiSiteSiteIdFloorGet(siteId: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
-    public apiSiteSiteIdFloorGet(siteId: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<SiteDto>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (siteId === null || siteId === undefined) {
             throw new Error("Required parameter siteId was null or undefined when calling apiSiteSiteIdFloorGet.")
         }
@@ -1620,7 +1620,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "siteId", value: siteId, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}/floor`
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "siteId", value: siteId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/floor`
         return this.httpClient.request<Array<SiteDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1639,10 +1639,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTemporaryFileUploadIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public apiTemporaryFileUploadIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public apiTemporaryFileUploadIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public apiTemporaryFileUploadIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiTemporaryFileUploadIdDelete.")
         }
@@ -1677,7 +1677,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<any>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1696,10 +1696,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTemporaryFileUploadIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
-    public apiTemporaryFileUploadIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
-    public apiTemporaryFileUploadIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
-    public apiTemporaryFileUploadIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
+    public apiTemporaryFileUploadIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiTemporaryFileUploadIdGet.")
         }
@@ -1724,7 +1724,7 @@ export class DefaultService {
         }
 
 
-        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1851,10 +1851,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiUserIdDelete(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
-    public apiUserIdDelete(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiUserIdDelete(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiUserIdDelete(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
+    public apiUserIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiUserIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiUserIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiUserIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiUserIdDelete.")
         }
@@ -1890,7 +1890,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1909,10 +1909,10 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiUserIdGet(id: object, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<UserDto>;
-    public apiUserIdGet(id: object, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<UserDto>>;
-    public apiUserIdGet(id: object, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<UserDto>>;
-    public apiUserIdGet(id: object, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiUserIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<UserDto>;
+    public apiUserIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<UserDto>>;
+    public apiUserIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<UserDto>>;
+    public apiUserIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error("Required parameter id was null or undefined when calling apiUserIdGet.")
         }
@@ -1948,7 +1948,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "object", dataFormat: undefined})}`
+        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
         return this.httpClient.request<UserDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

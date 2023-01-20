@@ -23,5 +23,5 @@ fun TemporaryFile.toDto() = TemporaryFileUploadDto(
     extension = extension,
     sizeInBytes = sizeInBytes,
     createdAt = createdAt.toString(),
-    url = "/temporary-file-upload/$id",
+    url = "/api/temporary-file-upload/$id",
 )

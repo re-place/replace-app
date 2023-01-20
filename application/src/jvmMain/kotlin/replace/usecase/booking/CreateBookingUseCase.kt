@@ -1,5 +1,6 @@
 package replace.usecase.booking
 
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
@@ -13,6 +14,7 @@ import replace.model.Users
 object CreateBookingUseCase {
     suspend fun execute(
         createBookingDto: CreateBookingDto,
+        userId: String
     ): BookingDto {
         return transaction {
             if (createBookingDto.bookedEntityIds.isEmpty()) {
@@ -22,9 +24,9 @@ object CreateBookingUseCase {
             val newBookedEntities = BookableEntity.forEntityIds(createBookingDto.bookedEntityIds.map { EntityID(it, BookableEntities) })
 
             val booking = Booking.new {
-                start = createBookingDto.start
-                end = createBookingDto.end
-                userId = EntityID(createBookingDto.userId, Users)
+                start = Instant.parse(createBookingDto.start)
+                end = Instant.parse(createBookingDto.end)
+                this.userId = EntityID(userId, Users)
                 bookedEntities = newBookedEntities
             }
 

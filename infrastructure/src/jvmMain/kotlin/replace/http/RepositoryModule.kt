@@ -45,7 +45,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
         description = "Gets a ${T::class.simpleName} by id"
         "id" pathParameter {
             description = "The id of the ${T::class.simpleName}"
-            schema(String)
+            schema("<id>")
         }
         200 response {
             description = "The ${T::class.simpleName} with the given id"
@@ -72,7 +72,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
         description = "Deletes a ${T::class.simpleName} by id"
         "id" pathParameter {
             description = "The id of the ${T::class.simpleName}"
-            schema(String)
+            schema("<id>")
         }
         200 response {
             description = "The deleted ${T::class.simpleName} with the given id"

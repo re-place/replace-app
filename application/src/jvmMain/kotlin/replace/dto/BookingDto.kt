@@ -1,9 +1,7 @@
 package replace.dto
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import replace.model.Booking
-import java.time.Instant
 import kotlin.reflect.KProperty1
 
 @Serializable
@@ -12,8 +10,8 @@ data class BookingDto(
     val userId: String,
     val user: UserDto? = null,
     val bookedEntities: List<BookableEntityDto>? = null,
-    @Contextual val start: Instant,
-    @Contextual val end: Instant
+    val start: String,
+    val end: String
 ) : ModelDto
 
 fun Booking.toDto(with: List<KProperty1<Booking, *>> = emptyList()): BookingDto {
@@ -33,8 +31,8 @@ fun Booking.toDto(with: List<KProperty1<Booking, *>> = emptyList()): BookingDto 
     return BookingDto(
         id = id.value,
         userId = userId.value,
-        start = start,
-        end = end,
+        start = start.toString(),
+        end = end.toString(),
         bookedEntities = bookedEntities,
         user = user,
     )

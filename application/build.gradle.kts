@@ -15,4 +15,5 @@ dependencies {
     jvmMainImplementation(libs.exposed.dao)
     jvmMainImplementation(libs.exposed.jdbc)
     jvmMainImplementation(libs.exposed.java.time)
+    jvmMainImplementation(libs.kotlinx.datetime)
 }

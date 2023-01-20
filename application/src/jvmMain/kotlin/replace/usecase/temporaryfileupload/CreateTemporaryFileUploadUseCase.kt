@@ -1,5 +1,6 @@
 package replace.usecase.temporaryfileupload
 
+import kotlinx.datetime.Clock
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
@@ -7,7 +8,6 @@ import replace.dto.toDto
 import replace.model.TemporaryFile
 import java.io.InputStream
 import java.net.URLConnection
-import java.time.Instant
 import java.util.UUID.randomUUID
 
 object CreateTemporaryFileUploadUseCase {
@@ -30,7 +30,7 @@ object CreateTemporaryFileUploadUseCase {
                 mime = URLConnection.guessContentTypeFromName(fileName.lowercase())
                 extension = fileName.substringAfterLast(".")
                 sizeInBytes = fileSize
-                createdAt = Instant.now()
+                createdAt = Clock.System.now()
             }
 
             temporaryFile.toDto()

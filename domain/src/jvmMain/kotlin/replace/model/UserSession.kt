@@ -1,18 +1,17 @@
 package replace.model
 
 import io.ktor.server.auth.Principal
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import java.time.Instant
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
 @Serializable
 data class UserSession(
     val userId: String?,
-    val startUtcFormatted: String = OffsetDateTime.now(ZoneOffset.UTC).toString(),
+    val startTimeString: String = Clock.System.now().toString(),
 ) : Principal
 
-val UserSession.startUtc: Instant
-    get() = OffsetDateTime.parse(startUtcFormatted).toInstant()
+val UserSession.start: Instant
+    get() = Instant.parse(startTimeString)
 
 fun User.createSession(): UserSession = UserSession(userId = id.toString())

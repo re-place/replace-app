@@ -78,7 +78,7 @@ fun Route.registerSiteRoutes() {
             description = "Gets all floors for a site"
             "siteId" pathParameter {
                 description = "The id of the site"
-                schema(String)
+                schema("<id>")
             }
             200 response {
                 description = "The floors for the site"

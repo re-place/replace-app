@@ -63,7 +63,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
         } describe {
             "floorId" pathParameter {
                 description = "The id of the floor"
-                schema(String)
+                schema("<id>")
             }
             description = "Gets all bookable entities for a floor"
             200 response {

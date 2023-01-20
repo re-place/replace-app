@@ -95,7 +95,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
             description = "Gets a temporary file upload by id"
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(String)
+                schema("<id>")
             }
             200 response {
                 description = "The temporary file upload"
@@ -113,7 +113,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
         } describe {
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(String)
+                schema("<id>")
             }
             description = "Deletes a temporary file upload by id"
             204 response {

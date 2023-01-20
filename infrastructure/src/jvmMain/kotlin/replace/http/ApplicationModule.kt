@@ -15,8 +15,6 @@ import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.resources.Resources
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -25,7 +23,6 @@ import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.model.User
 import replace.model.Users
 import replace.plugin.SinglePageApplication
-import replace.serializer.ObjectIdSerializer
 
 fun Application.applicationModule() {
     install(CORS) {
@@ -42,9 +39,6 @@ fun Application.applicationModule() {
             Json {
                 encodeDefaults = false
                 ignoreUnknownKeys = true
-                serializersModule = SerializersModule {
-                    contextual(ObjectIdSerializer)
-                }
             }
         )
     }

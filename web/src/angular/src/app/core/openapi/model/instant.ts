@@ -11,9 +11,9 @@
  */
 
 
-export interface CreateBookingDto { 
-    bookedEntityIds?: Array<string>;
-    start?: string;
-    end?: string;
+export interface Instant { 
+    value$kotlinx_datetime?: string;
+    epochSeconds?: number;
+    nanosecondsOfSecond?: number;
 }
 

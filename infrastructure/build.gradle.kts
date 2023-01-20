@@ -39,6 +39,7 @@ dependencies {
     jvmMainImplementation(libs.exposed.jdbc)
     jvmMainImplementation(libs.exposed.java.time)
     jvmMainImplementation(libs.postgrsql)
+    jvmMainImplementation(libs.kotlinx.datetime)
 }
 
 apply(plugin = "liquibase")

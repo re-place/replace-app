@@ -30,6 +30,7 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.LoginRequest
 import replace.dto.toDto
@@ -77,7 +78,7 @@ fun Route.routeAuthentication() {
         // TODO: Replace with OAuth
 
         val userFromDb = transaction {
-            User.find { Users.username eq user.username }.firstOrNull()
+            User.find { Users.username eq user.username and(Users.password eq user.password) }.firstOrNull()
         }
 
         if (userFromDb === null) {

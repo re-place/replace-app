@@ -1,14 +1,15 @@
 package replace.job
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.minus
+import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.model.TemporaryFile
 import replace.model.TemporaryFiles
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 
 class DeleteOldTemporaryFileUploadsJob(
     interval: Long,
@@ -17,13 +18,10 @@ class DeleteOldTemporaryFileUploadsJob(
 ) : SchedulableJob(interval) {
     override suspend fun run() {
         val fileStorage = fileStorage
-
         try {
             newSuspendedTransaction {
                 val oldTemporaryFiles = TemporaryFile.find(
-                    TemporaryFiles.createdAt less LocalDateTime.now().minus(fileMaxAgeInMilliseconds, ChronoUnit.MILLIS).toInstant(
-                        ZoneOffset.UTC
-                    )
+                    TemporaryFiles.createdAt less Clock.System.now().minus(fileMaxAgeInMilliseconds, DateTimeUnit.MILLISECOND).toJavaInstant()
                 )
 
                 oldTemporaryFiles.forEach { temporaryFile ->
