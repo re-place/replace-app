@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
-import replace.dto.GetBookingDto
+import replace.dto.GetBookingByDateDto
 import replace.dto.toDto
 import replace.model.Booking
 import replace.model.Bookings
@@ -14,21 +14,22 @@ import java.time.Instant
 
 object GetBookingUseCase {
     suspend fun execute(
-        getBookingDto: GetBookingDto,
-        userId: String,
+        start: String?,
+        end: String?,
+        userId: String?,
     ): List<BookingDto> {
-        val start = Instant.parse(getBookingDto.start)
-        var end: Instant? = null
-        if (getBookingDto.end != null) {
-            end = Instant.parse(getBookingDto.end)
+        val startInst = Instant.parse(start)
+        var endInst: Instant? = null
+        if (end != null) {
+            endInst = Instant.parse(end)
         }
 
         val bookings = transaction {
             Booking.find {
-                if (end == null) {
-                    (Bookings.start greaterEq timestampLiteral(start)) and (Bookings.user_id eq userId)
+                if (endInst == null) {
+                    (Bookings.end greaterEq timestampLiteral(startInst)) and (Bookings.user_id eq userId)
                 } else {
-                    not((Bookings.end lessEq timestampLiteral(start)) or (Bookings.start greater timestampLiteral(end)))
+                    not((Bookings.end lessEq timestampLiteral(startInst)) or (Bookings.start greater timestampLiteral(endInst)))
                 }
             }.map { it.toDto() }
         }
