@@ -45,7 +45,9 @@ fun Route.registerBookingRoutes() {
 
         post<GetBookingDto> ("/availableByDate") {
             executeUseCase {
-                GetBookingUseCase.execute(it)
+                val userId = call.sessions.get<UserSession>()?.userId!!
+
+                GetBookingUseCase.execute(it, userId)
             }
         } describe {
             body {
