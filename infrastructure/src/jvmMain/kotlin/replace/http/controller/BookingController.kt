@@ -14,11 +14,13 @@ import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
 import replace.dto.CreateBookingDto
+import replace.dto.GetBookingDto
 import replace.dto.toDto
 import replace.http.routeRepository
 import replace.model.Booking
 import replace.model.UserSession
 import replace.usecase.booking.CreateBookingUseCase
+import replace.usecase.booking.GetBookingUseCase
 import kotlin.reflect.typeOf
 
 fun Route.registerBookingRoutes() {
@@ -36,8 +38,27 @@ fun Route.registerBookingRoutes() {
                 }
             }
         }
+
         routeRepository(Booking.Companion) {
             it.toDto()
+        }
+
+        post<GetBookingDto> ("/availableByDate") {
+            executeUseCase {
+                GetBookingUseCase.execute(it)
+            }
+        } describe {
+            body {
+                json {
+                    schema<GetBookingDto>()
+                }
+            }
+            200 response {
+                description = "The bookings by Date from User"
+                json {
+                    schema(typeOf<List<BookingDto>>())
+                }
+            }
         }
 
         post<CreateBookingDto> {
