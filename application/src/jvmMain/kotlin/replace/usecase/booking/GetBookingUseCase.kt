@@ -1,12 +1,12 @@
 package replace.usecase.booking
 
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.javatime.timestampLiteral
 import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
-import replace.dto.GetBookingByDateDto
 import replace.dto.toDto
 import replace.model.Booking
 import replace.model.Bookings
@@ -31,7 +31,7 @@ object GetBookingUseCase {
                 } else {
                     not((Bookings.end lessEq timestampLiteral(startInst)) or (Bookings.start greater timestampLiteral(endInst)))
                 }
-            }.map { it.toDto() }
+            }.orderBy(Bookings.start to SortOrder.ASC).map { it.toDto() }
         }
 
         return bookings
