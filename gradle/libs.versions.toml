@@ -1,5 +1,5 @@
 [versions]
-exposed = "0.40.1"
+exposed = "0.41.1"
 kotlin = "1.8.0"
 ktor = "2.2.2"
 liquibase = "2.1.1"
