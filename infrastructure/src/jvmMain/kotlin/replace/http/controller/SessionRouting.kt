@@ -1,22 +1,4 @@
-/*
- *   ESATT - https://www.github.com/alexstaeding/ESATT
- *   Copyright (C) 2021 Bachelor-Praktikum Gruppe 20
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU Lesser General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-package replace.http
+package replace.http.controller
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -32,15 +14,15 @@ import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.dto.LoginRequest
 import replace.dto.toDto
 import replace.model.User
 import replace.model.UserSession
 import replace.model.Users
 import replace.model.createSession
+import replace.usecase.session.dto.LoginRequest
 
-fun Route.routeAuthentication() {
-    get("/api/current-user") {
+fun Route.routeSession() {
+    get("/api/session/current-user") {
         val session = call.sessions.get<UserSession>()
         val userId = session?.userId
         if (userId === null) {
@@ -57,11 +39,11 @@ fun Route.routeAuthentication() {
 
         call.respond(user.toDto())
     }
-    post("/api/logout") {
+    post("/api/session/logout") {
         call.sessions.clear<UserSession>()
         call.respond(HttpStatusCode.OK)
     }
-    post("/api/login") {
+    post("/api/session/login") {
         if (call.sessions.get<UserSession>()?.userId != null) {
             call.respondText("Already authenticated", status = HttpStatusCode.BadRequest)
             return@post
@@ -71,7 +53,7 @@ fun Route.routeAuthentication() {
             call.receive<LoginRequest>()
         } catch (e: Exception) {
             return@post call.respondText(
-                "Could not sign in: ${e.message} caused by ${e.cause?.message}",
+                "Could not sign in ${e::class.simpleName}: ${e.message}\n${e.cause?.stackTraceToString()}",
                 status = HttpStatusCode.BadRequest
             )
         }

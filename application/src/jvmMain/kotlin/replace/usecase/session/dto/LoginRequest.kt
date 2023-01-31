@@ -1,4 +1,4 @@
-package replace.dto
+package replace.usecase.session.dto
 
 import kotlinx.serialization.Serializable
 
