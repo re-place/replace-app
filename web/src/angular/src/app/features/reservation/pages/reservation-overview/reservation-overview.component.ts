@@ -67,17 +67,15 @@ export class ReservationOverviewComponent implements OnInit {
     enrichBookings() {
         const rows: any[] = []
         this.bookings.forEach(booking => {
-            booking.bookedEntities?.forEach(entity => {
-                const row: any = {...booking}
-                row.entity = entity
-                row.floor = this.floors.find(floor => floor.id == entity.floorId)
-                console.log(row)
-                row.site = this.sites.find(site => site.id == row.floor.siteId)
-                
-                rows.push(row)
-            })
+            const row: any = {...booking}
+            if(booking.bookedEntities == undefined || booking.bookedEntities.length < 1)
+                return
+            const entity = booking.bookedEntities[0]
+            row.entities = booking.bookedEntities.map(ent => ent.name).join(", ")
+            row.floor = this.floors.find(floor => floor.id == entity.floorId)
+            row.site = this.sites.find(site => site.id == row.floor.siteId)
+            rows.push(row)
         })
-        console.log(rows)
         this.dataSource = new MatTableDataSource(rows)
     }
 
