@@ -50,17 +50,7 @@ export class AuthService {
         }
 
         try {
-            this.currentUser = await firstValueFrom(this.http.get<UserDto>(
-                "/api/session/current-user",
-                {
-                    headers: {
-                        "Access-Control-Allow-Origin": "*",
-                        // "Access-Control-Allow-Methods": "GET",
-                        // "Access-Control-Allow-Credentials": "true",
-                        // "Access-Control-Allow-Headers": "Content-Type",
-                    }
-                }
-            ))
+            this.currentUser = await firstValueFrom(this.http.get<UserDto>("/session/current-user"))
             return true
         } catch (error) {
             return false
@@ -68,8 +58,7 @@ export class AuthService {
     }
 
     public async logout() {
-        await firstValueFrom(this.http.post("/api/logout", {}))
+        await firstValueFrom(this.http.post("/session/logout", {}))
         this.currentUser = null
-        this.router.navigateByUrl("/login")
     }
 }
