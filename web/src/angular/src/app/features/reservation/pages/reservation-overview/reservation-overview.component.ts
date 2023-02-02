@@ -25,7 +25,7 @@ export class ReservationOverviewComponent implements OnInit {
 
     getBookings() {
         const today = new Date()
-        today.setUTCHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
         this.apiService.apiBookingByDateGet(today.toISOString()).subscribe({
             next: response => {
                 this.bookings = response
@@ -80,7 +80,6 @@ export class ReservationOverviewComponent implements OnInit {
     }
 
     deleteBooking(element: any) {
-        console.log(element)
         this.apiService.apiBookingIdDelete(element.id).subscribe({
             next: response => {
                 this.snackBar.open("Buchung gelöscht", "ok", {duration: 4000})
