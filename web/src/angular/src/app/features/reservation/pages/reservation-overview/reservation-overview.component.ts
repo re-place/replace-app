@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { BookingDto, DefaultService, FloorDto, SiteDto } from 'src/app/core/openapi';
+import { Component, OnInit } from "@angular/core"
+import { MatSnackBar } from "@angular/material/snack-bar"
+import { MatTableDataSource } from "@angular/material/table"
+
+import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 
 @Component({
-  selector: 'reservation-overview',
-  templateUrl: './reservation-overview.component.html',
-  styles: [
-  ]
+    selector: "reservation-overview",
+    templateUrl: "./reservation-overview.component.html",
+    styles: [
+    ],
 })
 export class ReservationOverviewComponent implements OnInit {
     dataSource: MatTableDataSource<any> = new MatTableDataSource()
@@ -17,7 +18,7 @@ export class ReservationOverviewComponent implements OnInit {
     floors: FloorDto[] = []
     sites: SiteDto[] = []
 
-    constructor(private apiService: DefaultService, private snackBar: MatSnackBar) { }
+    constructor(private readonly apiService: DefaultService, private readonly snackBar: MatSnackBar) { }
 
     ngOnInit(): void {
         this.getBookings()
@@ -33,8 +34,8 @@ export class ReservationOverviewComponent implements OnInit {
             },
             error: err => {
                 console.log(err)
-                this.snackBar.open("Buchungen konnten nicht abgefragt werden", "error", {duration: 5000}) 
-            }
+                this.snackBar.open("Buchungen konnten nicht abgefragt werden", "error", {duration: 5000})
+            },
         })
     }
 
@@ -46,8 +47,8 @@ export class ReservationOverviewComponent implements OnInit {
             },
             error: err => {
                 console.log(err)
-                this.snackBar.open("Stockwerke konnten nicht abgefragt werden", "error", {duration: 5000}) 
-            }
+                this.snackBar.open("Stockwerke konnten nicht abgefragt werden", "error", {duration: 5000})
+            },
         })
     }
 
@@ -59,8 +60,8 @@ export class ReservationOverviewComponent implements OnInit {
             },
             error: err => {
                 console.log(err)
-                this.snackBar.open("Stockwerke konnten nicht abgefragt werden", "error", {duration: 5000}) 
-            }
+                this.snackBar.open("Stockwerke konnten nicht abgefragt werden", "error", {duration: 5000})
+            },
         })
     }
 
@@ -87,7 +88,7 @@ export class ReservationOverviewComponent implements OnInit {
             },
             error: err => {
                 this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
-            }
+            },
         })
     }
 
