@@ -19,8 +19,8 @@ export class UserLayoutComponent implements OnInit {
 
     public menuItems: MenuItem[] = [
         {
-            title: "Dashboard",
-            route: "/dashboard",
+            title: "Meine Buchungen",
+            route: "/reservation/my-bookings",
             icon: "dashboard",
         },
         {
