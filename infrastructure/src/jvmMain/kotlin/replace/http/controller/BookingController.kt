@@ -19,6 +19,7 @@ import replace.http.routeRepository
 import replace.model.Booking
 import replace.model.UserSession
 import replace.usecase.booking.CreateBookingUseCase
+import replace.usecase.booking.GetBookingUseCase
 import kotlin.reflect.typeOf
 
 fun Route.registerBookingRoutes() {
@@ -36,8 +37,37 @@ fun Route.registerBookingRoutes() {
                 }
             }
         }
+
         routeRepository(Booking.Companion) {
             it.toDto()
+        }
+
+        get("/byDate") {
+            executeUseCase {
+                val start = call.parameters["start"]
+                val end = call.parameters["end"]
+
+                val userId = call.sessions.get<UserSession>()?.userId!!
+
+                GetBookingUseCase.execute(start, end, userId)
+            }
+        } describe {
+            "start" queryParameter {
+                description = "The start timestamp"
+                required = false
+                schema(typeOf<String>())
+            }
+            "end" queryParameter {
+                description = "The end timestamp"
+                required = false
+                schema(typeOf<String>())
+            }
+            200 response {
+                description = "The bookings by Date from User"
+                json {
+                    schema(typeOf<List<BookingDto>>())
+                }
+            }
         }
 
         post<CreateBookingDto> {

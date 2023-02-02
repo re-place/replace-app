@@ -81,7 +81,7 @@ export class ReservationComponent implements OnInit {
                 endDateControl.reset()
                 endDateControl.setValue(endDate)
             }
-            this.getCurrentBookings()
+            this.getBookings()
 
         })
 
@@ -110,13 +110,12 @@ export class ReservationComponent implements OnInit {
                 startDateControl.reset()
                 startDateControl.setValue(startDate)
             }
-            this.getCurrentBookings()
+            this.getBookings()
 
         })
     }
 
     ngOnInit() {
-
         this.apiService.apiSiteGet().subscribe({
             next: response => {
                 this.sites = response
@@ -127,7 +126,6 @@ export class ReservationComponent implements OnInit {
                 this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
             },
         })
-        this.getBookings()
     }
 
     // Set default to Darmstadt for the first version
@@ -144,28 +142,18 @@ export class ReservationComponent implements OnInit {
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
-    getCurrentBookings() {
-        const start = this.timeFormControl.get("startDate")?.value?.getTime()??0
-        const end = this.timeFormControl.get("endDate")?.value?.getTime()??0
-
-        this.bookings = this.allBookings.filter(i => {
-            if(i.start == undefined || i.end == undefined) return false
-            const startTime = new Date(i.start).getTime()
-            const endTime = new Date(i.end).getTime()
-            console.log(startTime >= end, endTime <= start)
-            return !(startTime >= end || endTime <= start)
-        })
-    }
-
     getBookings() {
-        this.apiService.apiBookingGet().subscribe({
-            next: response => {
-                this.allBookings = response
-                this.getCurrentBookings()
+        const start = this.timeFormControl.get("startDate")?.value?.toISOString()??new Date().toISOString()
+        const end = this.timeFormControl.get("endDate")?.value?.toISOString()??new Date().toISOString()
+
+        this.apiService.apiBookingByDateGet(start, end).subscribe({
+            next: result => {
+                this.bookings = result
             },
-            error: () => {
+            error: err => {
+                console.log(err)
                 this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
-            },
+            }
         })
     }
 
