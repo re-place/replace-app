@@ -2,10 +2,9 @@ package replace.usecase.booking
 
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.javatime.timestampLiteral
-import org.jetbrains.exposed.sql.not
-import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
 import replace.dto.toDto
@@ -19,22 +18,30 @@ object GetBookingUseCase {
         end: String?,
         userId: String?,
     ): List<BookingDto> {
-        val startInst = Instant.parse(start)
-        var endInst: Instant? = null
-        if (end != null) {
-            endInst = Instant.parse(end)
+        val startInst = start?.let { Instant.parse(it) }
+        val endInst = end?.let { Instant.parse(it) }
+
+        val bookingDtos = transaction {
+
+            val query = Bookings.selectAll()
+
+            startInst?.let {
+                query.andWhere { Bookings.end greaterEq timestampLiteral(it) }
+            }
+
+            endInst?.let {
+                query.andWhere { Bookings.start lessEq timestampLiteral(it) }
+            }
+
+            userId?.let {
+                query.andWhere { Bookings.user_id eq it }
+            }
+
+            val bookings = query.where?.let { Booking.find { it } } ?: Booking.all()
+
+            bookings.orderBy(Bookings.start to SortOrder.ASC).with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) }
         }
 
-        val bookings = transaction {
-            Booking.find {
-                if (endInst == null) {
-                    (Bookings.end greaterEq timestampLiteral(startInst)) and (Bookings.user_id eq userId)
-                } else {
-                    not((Bookings.end lessEq timestampLiteral(startInst)) or (Bookings.start greater timestampLiteral(endInst)))
-                }
-            }.orderBy(Bookings.start to SortOrder.ASC).with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) }
-        }
-
-        return bookings
+        return bookingDtos
     }
 }
