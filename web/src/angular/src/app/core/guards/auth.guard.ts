@@ -19,13 +19,13 @@ export class AuthGuard implements CanActivate {
                 return true
             }
 
-            this.router.navigateByUrl("/login", {
-                replaceUrl: true,
-                state: {
-                    intendedUrl: state.url,
-                },
-            })
-
+            // this.router.navigateByUrl("/session/login", {
+            //     replaceUrl: true,
+            //     state: {
+            //         intendedUrl: state.url,
+            //     },
+            // })
+            window.location.href = "http://localhost:8000/api/session/login"
             return false
         })
     }
