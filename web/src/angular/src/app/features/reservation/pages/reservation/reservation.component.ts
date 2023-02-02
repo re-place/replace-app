@@ -3,11 +3,34 @@ import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
 import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
+import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
+
+const INTL_DATE_INPUT_FORMAT = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hourCycle: "h23",
+    hour: "2-digit",
+    minute: "2-digit",
+}
+
+const MAT_DATE_FORMATS: NgxMatDateFormats = {
+    parse: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+    },
+    display: {
+        dateInput: INTL_DATE_INPUT_FORMAT,
+        monthYearLabel: { year: "numeric", month: "short" },
+        dateA11yLabel: { year: "numeric", month: "long", day: "numeric" },
+        monthYearA11yLabel: { year: "numeric", month: "long" },
+    },
+}
 @Component({
     selector: "reservation",
     templateUrl: "./reservation.component.html",
     styles: [],
+    providers: [{ provide: NGX_MAT_DATE_FORMATS, useValue: MAT_DATE_FORMATS }],
 })
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
@@ -58,7 +81,7 @@ export class ReservationComponent implements OnInit {
                 endDateControl.reset()
                 endDateControl.setValue(endDate)
             }
-            this.getCurrentBookings()
+            this.getBookings()
 
         })
 
@@ -87,13 +110,12 @@ export class ReservationComponent implements OnInit {
                 startDateControl.reset()
                 startDateControl.setValue(startDate)
             }
-            this.getCurrentBookings()
+            this.getBookings()
 
         })
     }
 
     ngOnInit() {
-
         this.apiService.apiSiteGet().subscribe({
             next: response => {
                 this.sites = response
@@ -104,7 +126,6 @@ export class ReservationComponent implements OnInit {
                 this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
             },
         })
-        this.getBookings()
     }
 
     // Set default to Darmstadt for the first version
@@ -113,44 +134,26 @@ export class ReservationComponent implements OnInit {
         this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
         this.getFloors()
 
-        const startDate = new Date()
-        startDate.setHours(startDate.getHours() + 1)
+        const startDate = new Date(new Date().setHours(0,0,0))
+        const endDate = new Date(new Date().setHours(23,59,0))
 
-        const oldStartDate = this.timeFormControl.value.startDate
-        oldStartDate?.setHours(startDate.getHours())
-
-        const endDate = new Date()
-        endDate.setHours(startDate.getHours() + 1)
-
-        const oldEndDate = this.timeFormControl.value.endDate
-        oldEndDate?.setHours(endDate.getHours())
-
+        this.timeFormControl.reset()
         this.timeFormControl.get("startDate")?.setValue(startDate)
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
-    getCurrentBookings() {
-        const start = this.timeFormControl.get("startDate")?.value?.getTime()??0
-        const end = this.timeFormControl.get("endDate")?.value?.getTime()??0
-
-        this.bookings = this.allBookings.filter(i => {
-            if(i.start == undefined || i.end == undefined) return false
-            const startTime = new Date(i.start).getTime()
-            const endTime = new Date(i.end).getTime()
-            console.log(startTime >= end, endTime <= start)
-            return !(startTime >= end || endTime <= start)
-        })
-    }
-
     getBookings() {
-        this.apiService.apiBookingGet().subscribe({
-            next: response => {
-                this.allBookings = response
-                this.getCurrentBookings()
+        const start = this.timeFormControl.get("startDate")?.value?.toISOString()??new Date().toISOString()
+        const end = this.timeFormControl.get("endDate")?.value?.toISOString()??new Date().toISOString()
+
+        this.apiService.apiBookingByDateGet(start, end).subscribe({
+            next: result => {
+                this.bookings = result
             },
-            error: () => {
+            error: err => {
+                console.log(err)
                 this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
-            },
+            }
         })
     }
 

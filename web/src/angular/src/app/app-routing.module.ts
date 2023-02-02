@@ -13,17 +13,13 @@ const routes: Routes = [
     },
     {
         path: "",
-        redirectTo: "/dashboard",
+        redirectTo: "/reservation/my-bookings",
         pathMatch: "full",
     },
     {
         path: "",
         component: UserLayoutComponent,
         children: [
-            {
-                path: "dashboard",
-                loadChildren: () => import("./features/dashboard/dashboard.module").then((m) => m.DashboardModule),
-            },
             {
                 path: "reservation",
                 loadChildren: () => import("./features/reservation/reservation.module").then((m) => m.ReservationModule),

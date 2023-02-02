@@ -65,9 +65,13 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
             return@delete
         }
 
-        model.delete()
+        val deleteResult = transaction { model.delete(); true }
 
-        call.respondText("Deleted Model with id ${route.id}", status = HttpStatusCode.OK)
+        if (deleteResult) {
+            call.respond(HttpStatusCode.NoContent)
+        } else {
+            call.respond(HttpStatusCode.InternalServerError)
+        }
     } describe {
         description = "Deletes a ${T::class.simpleName} by id"
         "id" pathParameter {

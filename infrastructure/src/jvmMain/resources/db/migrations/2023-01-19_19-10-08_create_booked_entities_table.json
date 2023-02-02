@@ -26,7 +26,8 @@
                   "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_booked_entities_bookable_entities",
-                    "references": "bookable_entities(id)"
+                    "references": "bookable_entities(id)",
+                    "deleteCascade": true
                   }
                 }
               },
@@ -36,7 +37,8 @@
                   "type": "varchar(36)",
                   "constraints": {
                     "foreignKeyName": "fk_booked_entities_bookings",
-                    "references": "bookings(id)"
+                    "references": "bookings(id)",
+                    "deleteCascade": true
                   }
                 }
               }

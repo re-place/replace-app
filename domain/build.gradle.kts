@@ -5,7 +5,6 @@ plugins {
 }
 
 dependencies {
-    jvmMainApi(libs.bundles.kmongo)
     jvmMainImplementation(libs.ktor.server.auth)
     jvmTestImplementation(libs.kotest)
     jvmMainImplementation(libs.exposed.core)
