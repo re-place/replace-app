@@ -90,6 +90,15 @@ fun Application.authenticationModule() {
 
     routing {
         get("/api/session/current-user") {
+            val session = call.sessions.get<UserSession>()
+            if (session === null) {
+                call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
+            } else {
+                val req = httpClient.get("https://graph.microsoft.com/v1.0/me") {
+                    header("Authorization", "Bearer ${session.token}")
+                }.body<MicrosoftUserInfo>()
+                call.respondText("Logged in as $req")
+            }
         }
         post("/api/session/logout") {
             call.sessions.clear<UserSession>()

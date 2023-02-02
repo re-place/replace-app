@@ -50,7 +50,7 @@ export class AuthService {
         }
 
         try {
-            this.currentUser = await firstValueFrom(this.http.get<UserDto>("/session/current-user"))
+            this.currentUser = await firstValueFrom(this.http.get<UserDto>("/api/session/current-user"))
             return true
         } catch (error) {
             return false
@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     public async logout() {
-        await firstValueFrom(this.http.post("/session/logout", {}))
+        await firstValueFrom(this.http.post("/api/session/logout", {}))
         this.currentUser = null
     }
 }
