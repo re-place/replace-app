@@ -10,6 +10,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
@@ -20,6 +21,7 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.auth.principal
 import io.ktor.server.config.tryGetString
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -32,9 +34,14 @@ import io.ktor.server.sessions.directorySessionStorage
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import io.ktor.util.pipeline.PipelineContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.transactions.transaction
+import replace.dto.toDto
+import replace.model.User
+import replace.model.Users
 import java.io.File
 
 fun Application.authenticationModule() {
@@ -90,15 +97,7 @@ fun Application.authenticationModule() {
 
     routing {
         get("/api/session/current-user") {
-            val session = call.sessions.get<UserSession>()
-            if (session === null) {
-                call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
-            } else {
-                val req = httpClient.get("https://graph.microsoft.com/v1.0/me") {
-                    header("Authorization", "Bearer ${session.token}")
-                }.body<MicrosoftUserInfo>()
-                call.respondText("Logged in as $req")
-            }
+            withUser { call.respond(it.toDto()) }
         }
         post("/api/session/logout") {
             call.sessions.clear<UserSession>()
@@ -110,12 +109,40 @@ fun Application.authenticationModule() {
             }
             get("/api/session/callback") {
                 val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
-                call.sessions.set(
-                    UserSession(
-                        checkNotNull(principal.state) { "No state" },
-                        principal.accessToken
-                    )
+
+                val userInfo = httpClient.get("https://graph.microsoft.com/v1.0/me") {
+                    header("Authorization", "Bearer ${principal.accessToken}")
+                }.body<MicrosoftUserInfo>()
+
+                val session = UserSession(
+                    checkNotNull(principal.state) { "No state" },
+                    principal.accessToken,
+                    userInfo.email
                 )
+
+                println("Creating session $session")
+
+                call.sessions.set(session)
+
+                // find user in db
+
+                val user = transaction {
+                    User.find { Users.email eq userInfo.email }.firstOrNull()
+                }
+
+                if (user == null) {
+                    transaction {
+                        println("Creating user with email ${userInfo.email}")
+                        User.new {
+                            email = userInfo.email
+                            firstname = userInfo.firstName
+                            lastname = userInfo.lastName
+                        }
+                    }
+                } else {
+                    println("Found user with email ${user.email} in DB")
+                }
+
                 println("Setting session token to ${principal.accessToken}")
                 call.respondRedirect("http://localhost:4200/dashboard")
             }
@@ -123,10 +150,22 @@ fun Application.authenticationModule() {
     }
 }
 
+suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
+    val session = call.sessions.get<UserSession>()
+    if (session === null) {
+        call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
+    } else {
+        val user = transaction { User.find { Users.email eq session.email }.firstOrNull() }
+        checkNotNull(user) { "Could not find user ${session.email} in DB" }
+        block(user)
+    }
+}
+
 @Serializable
 data class UserSession(
     val state: String,
     val token: String,
+    val email: String,
 )
 
 @Serializable

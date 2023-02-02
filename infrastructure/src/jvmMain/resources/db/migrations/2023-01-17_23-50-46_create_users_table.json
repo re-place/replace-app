@@ -23,20 +23,11 @@
                 },
                 {
                   "column": {
-                    "name": "username",
+                    "name": "email",
                     "type": "varchar(255)",
                     "constraints": {
                       "nullable": false,
                       "unique": true
-                    }
-                  }
-                },
-                {
-                  "column": {
-                    "name": "password",
-                    "type": "varchar(255)",
-                    "constraints": {
-                      "nullable": false
                     }
                   }
                 },
