@@ -23,6 +23,8 @@ object UpdateBookableEntityUseCase {
             bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
             bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
             bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
+            bookableEntity.posX = bookableEntityDto.posX
+            bookableEntity.posY = bookableEntityDto.posY
 
             bookableEntity.toDto()
         }

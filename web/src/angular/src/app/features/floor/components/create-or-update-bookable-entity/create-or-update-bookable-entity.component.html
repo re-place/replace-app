@@ -1,11 +1,42 @@
-<form class="flex flex-col" (submit)="onSubmit($event)">
+<form class="flex flex-col gap-2" (submit)="onSubmit($event)" ngNativeValidate>
+    <h4 class="text-lg font-medium text-gray-700 mb-2">{{ titleText }}</h4>
     <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Objekt name</mat-label>
-        <input type="text" matInput [(ngModel)]="bookableEntityToEdit.name" placeholder="1. OG" name="floor_name" />
-        <mat-hint>Name des Objektes</mat-hint>
+        <mat-label>Name</mat-label>
+        <input required type="text" matInput [(ngModel)]="nameInput" placeholder="AP 1" name="object_name" />
     </mat-form-field>
 
-    <div class="flex justify-end mt-8">
+    <div class="flex gap-2">
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Position X</mat-label>
+            <input
+                required
+                type="number"
+                matInput
+                [(ngModel)]="posXInput"
+                placeholder="0"
+                step="1"
+                name="position_x"
+            />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Position Y</mat-label>
+            <input
+                required
+                type="number"
+                matInput
+                [(ngModel)]="posYInput"
+                placeholder="0"
+                step="1"
+                name="position_y"
+            />
+        </mat-form-field>
+    </div>
+
+    <div class="flex justify-end mt-8 gap-4">
+        <button mat-raised-button color="white" type="button" (click)="onCancel()">
+            Abbrechen
+        </button>
         <button mat-raised-button color="primary" type="submit">
             {{ saveText }}
         </button>

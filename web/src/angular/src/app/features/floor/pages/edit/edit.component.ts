@@ -46,6 +46,18 @@ export class EditComponent implements OnDestroy {
         })
     }
 
+    public get selectedEntity(): BookableEntityDto | undefined {
+        if (this.editingBookableEntity?.id !== undefined) {
+            return this.bookableEntities.data?.find((entity) => entity.id === this.editingBookableEntity?.id)
+        }
+
+        return undefined
+    }
+
+    public set selectedEntity(entity: BookableEntityDto | undefined) {
+        this.editingBookableEntity = { ...entity }
+    }
+
     public get files(): FileUploadDto[] {
         const planFile = this.form?.data.planFile
 
@@ -74,20 +86,29 @@ export class EditComponent implements OnDestroy {
     }
 
     public onEditBookableEntity(bookableEntity?: BookableEntityDto) {
-        this.editingBookableEntity = bookableEntity
+        this.editingBookableEntity = { ...bookableEntity}
     }
 
     public onCreateBookableEntity() {
-        this.editingBookableEntity = { name: "", type: undefined }
+        this.editingBookableEntity = {
+            name: "",
+            type: undefined,
+            posX: 0,
+            posY: 0,
+        }
     }
 
-    public onSubmitBookableEntity(bookableEntity: BookableEntityDto) {
+    public onSubmitBookableEntity() {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
         this.bookableEntities.loading(true)
 
-        const form = new Form(bookableEntity)
+        const form = new Form(this.editingBookableEntity)
         form.useSnackbar(this.snackBar)
 
-        if (bookableEntity.id === undefined) {
+        if (this.editingBookableEntity.id === undefined) {
             form.submit((data) => this.api.apiBookableEntityPost({
                 ...data,
                 floorId: this.floor.data?.id,
@@ -99,7 +120,7 @@ export class EditComponent implements OnDestroy {
             return
         }
 
-        if (bookableEntity.id !== undefined) {
+        if (this.editingBookableEntity.id !== undefined) {
             form.submit((data) => this.api.apiBookableEntityPut({
                 ...data,
                 floorId: this.floor.data?.id,
@@ -108,6 +129,19 @@ export class EditComponent implements OnDestroy {
                 this.editingBookableEntity = undefined
             })
         }
+    }
+
+    public onCancelEditingBookableEntity() {
+        this.editingBookableEntity = undefined
+    }
+
+    public onDragBookableEntity(event: { entity: BookableEntityDto, deltaX: number, deltaY: number}) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity.posX = (this.editingBookableEntity.posX ?? 0) + event.deltaX
+        this.editingBookableEntity.posY = (this.editingBookableEntity.posY ?? 0) + event.deltaY
     }
 
     public get initialFiles(): string[] {

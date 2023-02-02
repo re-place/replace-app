@@ -14,10 +14,10 @@
 export interface UpdateBookableEntityDto { 
     id?: string;
     name?: string;
-    posX?: number;
-    posY?: number;
     floorId?: string;
     parentId?: string;
     typeId?: string;
+    posX?: number;
+    posY?: number;
 }
 
