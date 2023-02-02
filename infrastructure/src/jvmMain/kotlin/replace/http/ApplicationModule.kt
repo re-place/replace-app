@@ -69,7 +69,6 @@ fun Application.applicationModule() {
         devSeeder()
     }
 
-    sessionModule()
     authenticationModule()
 
     install(SinglePageApplication) {

@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http"
-import { Injectable } from "@angular/core"
-import { Router } from "@angular/router"
-import { firstValueFrom } from "rxjs"
+import {HttpClient} from "@angular/common/http"
+import {Injectable} from "@angular/core"
+import {Router} from "@angular/router"
+import {firstValueFrom} from "rxjs"
 
-import { UserDto } from "../openapi"
+import {UserDto} from "../openapi"
 
 @Injectable({
     providedIn: "root",
@@ -15,7 +15,7 @@ export class AuthService {
 
     constructor(private readonly http: HttpClient, private readonly router: Router) {
         const intendedUrl = this.router.getCurrentNavigation()?.extras.state?.["intendedUrl"]
-        if(typeof intendedUrl === "string") {
+        if (typeof intendedUrl === "string") {
             this.intendedUrl = intendedUrl
         }
     }
@@ -28,7 +28,7 @@ export class AuthService {
                 this.currentUser = res.body
 
                 let url = "/"
-                if(this.intendedUrl !== null) {
+                if (this.intendedUrl !== null) {
                     url = this.intendedUrl
                 }
                 this.router.navigateByUrl(url)
@@ -41,7 +41,7 @@ export class AuthService {
     }
 
     public getLoginError(): string {
-        return this.loginError?? ""
+        return this.loginError ?? ""
     }
 
     public async isAuthenticated(): Promise<boolean> {
@@ -50,14 +50,24 @@ export class AuthService {
         }
 
         try {
-            this.currentUser = await firstValueFrom(this.http.get<UserDto>("/api/current-user"))
+            this.currentUser = await firstValueFrom(this.http.get<UserDto>(
+                "/api/session/current-user",
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        // "Access-Control-Allow-Methods": "GET",
+                        // "Access-Control-Allow-Credentials": "true",
+                        // "Access-Control-Allow-Headers": "Content-Type",
+                    }
+                }
+            ))
             return true
         } catch (error) {
             return false
         }
     }
 
-    public async  logout() {
+    public async logout() {
         await firstValueFrom(this.http.post("/api/logout", {}))
         this.currentUser = null
         this.router.navigateByUrl("/login")
