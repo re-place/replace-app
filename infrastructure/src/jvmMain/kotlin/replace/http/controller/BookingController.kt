@@ -8,15 +8,13 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
 import replace.dto.CreateBookingDto
 import replace.dto.toDto
-import replace.http.UserSession
 import replace.http.routeRepository
+import replace.http.withUserSession
 import replace.model.Booking
 import replace.usecase.booking.CreateBookingUseCase
 import replace.usecase.booking.GetBookingUseCase
@@ -27,7 +25,11 @@ fun Route.registerBookingRoutes() {
         val listType = typeOf<List<BookingDto>>()
 
         get {
-            call.respond(transaction { Booking.all().with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) } })
+            call.respond(
+                transaction {
+                    Booking.all().with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) }
+                }
+            )
         } describe {
             description = "Gets all Bookings"
             200 response {
@@ -44,12 +46,11 @@ fun Route.registerBookingRoutes() {
 
         get("/byDate") {
             executeUseCase {
-                val start = call.parameters["start"]
-                val end = call.parameters["end"]
-
-                val userId = call.sessions.get<UserSession>()?.email!!
-
-                GetBookingUseCase.execute(start, end, userId)
+                withUserSession {
+                    val start = call.parameters["start"]
+                    val end = call.parameters["end"]
+                    GetBookingUseCase.execute(start, end, it.userId)
+                }
             }
         } describe {
             "start" queryParameter {
@@ -70,11 +71,11 @@ fun Route.registerBookingRoutes() {
             }
         }
 
-        post<CreateBookingDto> {
+        post<CreateBookingDto> { dto ->
             executeUseCase {
-                val userId = call.sessions.get<UserSession>()?.email!!
-
-                CreateBookingUseCase.execute(it, userId)
+                withUserSession {
+                    CreateBookingUseCase.execute(dto, it.userId)
+                }
             }
         } describe {
             body {

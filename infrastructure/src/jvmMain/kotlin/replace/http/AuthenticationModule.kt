@@ -12,7 +12,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.OAuthServerSettings
@@ -81,20 +80,6 @@ fun Application.authenticationModule() {
         }
     }
 
-    val authMiddleware = createApplicationPlugin("AuthMiddleware") {
-        onCall { call ->
-            val session = call.sessions.get<UserSession>()
-            if (session === null) {
-                call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
-            } else {
-                val req = httpClient.get("https://graph.microsoft.com/v1.0/me") {
-                    header("Authorization", "Bearer ${session.token}")
-                }.body<MicrosoftUserInfo>()
-                call.respondText("Logged in as $req")
-            }
-        }
-    }
-
     routing {
         get("/api/session/current-user") {
             withUser { call.respond(it.toDto()) }
@@ -114,7 +99,22 @@ fun Application.authenticationModule() {
                     header("Authorization", "Bearer ${principal.accessToken}")
                 }.body<MicrosoftUserInfo>()
 
+                // find user in db
+
+                val user = transaction {
+                    User.find { Users.email eq userInfo.email }.firstOrNull()
+                        ?.also { println("Found user with email ${it.email} in DB") }
+                } ?: transaction {
+                    println("Creating user with email ${userInfo.email}")
+                    User.new {
+                        email = userInfo.email
+                        firstname = userInfo.firstName
+                        lastname = userInfo.lastName
+                    }
+                }
+
                 val session = UserSession(
+                    user.id.value,
                     checkNotNull(principal.state) { "No state" },
                     principal.accessToken,
                     userInfo.email
@@ -124,25 +124,6 @@ fun Application.authenticationModule() {
 
                 call.sessions.set(session)
 
-                // find user in db
-
-                val user = transaction {
-                    User.find { Users.email eq userInfo.email }.firstOrNull()
-                }
-
-                if (user == null) {
-                    transaction {
-                        println("Creating user with email ${userInfo.email}")
-                        User.new {
-                            email = userInfo.email
-                            firstname = userInfo.firstName
-                            lastname = userInfo.lastName
-                        }
-                    }
-                } else {
-                    println("Found user with email ${user.email} in DB")
-                }
-
                 println("Setting session token to ${principal.accessToken}")
                 call.respondRedirect("http://localhost:4200/dashboard")
             }
@@ -150,11 +131,17 @@ fun Application.authenticationModule() {
     }
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
+suspend fun PipelineContext<Unit, ApplicationCall>.withUserSession(block: suspend (UserSession) -> Unit) {
     val session = call.sessions.get<UserSession>()
     if (session === null) {
         call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
     } else {
+        block(session)
+    }
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
+    withUserSession { session ->
         val user = transaction { User.find { Users.email eq session.email }.firstOrNull() }
         checkNotNull(user) { "Could not find user ${session.email} in DB" }
         block(user)
@@ -163,6 +150,7 @@ suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User
 
 @Serializable
 data class UserSession(
+    val userId: String,
     val state: String,
     val token: String,
     val email: String,
