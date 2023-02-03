@@ -6,8 +6,7 @@ import VectorLayer from "ol/layer/Vector"
 import Map from "ol/Map.js"
 import ImageStatic from "ol/source/ImageStatic"
 import VectorSource from "ol/source/Vector"
-import { Circle, Fill, Stroke } from "ol/style"
-import Style from "ol/style/Style"
+import { Circle, Fill, Stroke, Style } from "ol/style"
 
 
 import { BookableEntityDto, FileDto } from "src/app/core/openapi"

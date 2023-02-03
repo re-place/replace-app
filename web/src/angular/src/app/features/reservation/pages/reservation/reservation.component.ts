@@ -3,6 +3,7 @@ import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
+import { Entity } from "../../components/entity-map/entity-map.component"
 import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
 
 
@@ -142,9 +143,21 @@ export class ReservationComponent implements OnInit {
         this.timeFormControl.get("endDate")?.setValue(endDate)
     }
 
+    get mapEntities(): Entity[] {
+        return this.bookableEntities.map(entity => ({
+            available: !this.isBooked(entity.id),
+            selected: this.selectedEntities.some(selectedEntity => selectedEntity.id == entity.id),
+            entity,
+        }))
+    }
+
+    set mapEntities(entities: Entity[]) {
+        this.selectedEntities = entities.filter(entity => entity.selected).map(entity => entity.entity)
+    }
+
     getBookings() {
-        const start = this.timeFormControl.get("startDate")?.value?.toISOString()??new Date().toISOString()
-        const end = this.timeFormControl.get("endDate")?.value?.toISOString()??new Date().toISOString()
+        const start = this.timeFormControl.get("startDate")?.value?.toISOString() ?? new Date().toISOString()
+        const end = this.timeFormControl.get("endDate")?.value?.toISOString() ?? new Date().toISOString()
 
         this.apiService.apiBookingByParamsGet(start, end).subscribe({
             next: result => {
@@ -239,12 +252,6 @@ export class ReservationComponent implements OnInit {
     isBooked(id?: string) {
         if(id === undefined) return true
         return this.bookings.some(booking => booking.bookedEntities?.some(dto => dto.id === id))
-    }
-
-    get imgSrc() {
-        const planFileUrl = this.selectedFloor?.planFile?.url
-
-        return planFileUrl ?? ""
     }
 
     alphaSort(arr: any[]) {

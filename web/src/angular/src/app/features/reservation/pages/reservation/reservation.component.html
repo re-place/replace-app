@@ -68,6 +68,7 @@
                             class="w-1/2"
                             *ngFor="let entity of bookableEntities"
                             (change)="updateSelectedEntities(entity, $event.checked)"
+                            [checked]="selectedEntities.includes(entity)"
                             [disabled]="isBooked(entity.id)">
                             {{ entity.name }}
                         </mat-checkbox>
@@ -85,9 +86,13 @@
 
             </div>
 
-            <div class="w-full xl:w-2/3">
-                <img [src]="imgSrc" *ngIf="imgSrc && selectedSite"
-                    class="block w-full h-auto">
+            <div class="w-full h-96 xl:h-auto xl:w-2/3">
+                <entity-map
+                    class="touch-none"
+                    *ngIf="selectedSite && selectedFloor"
+                    [(entities)]="mapEntities"
+                    [backgroundImage]="this.selectedFloor.planFile"
+                ></entity-map>
             </div>
 
             <div class="visible flex flex-col xl:hidden">
@@ -96,6 +101,7 @@
                         class="w-1/2"
                         *ngFor="let entity of bookableEntities"
                         (change)="updateSelectedEntities(entity, $event.checked)"
+                        [checked]="selectedEntities.includes(entity)"
                         [disabled]="isBooked(entity.id)">
                         {{ entity.name }}
                     </mat-checkbox>
