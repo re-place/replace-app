@@ -163,4 +163,20 @@ export class EditComponent implements OnDestroy {
     public onFilesUploaded(files: FileUploadDto[]) {
         this.files = files
     }
+
+    public onSelectedEntityPosXUpdate(posX: number) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, posX }
+    }
+
+    public onSelectedEntityPosYUpdate(posY: number) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, posY }
+    }
 }

@@ -40,10 +40,12 @@
                 class="w-80 border-x-2 border-gray-300 p-2"
                 *ngIf="editingBookableEntity !== undefined"
                 [(name)]="editingBookableEntity.name"
-                [(posX)]="editingBookableEntity.posX"
-                [(posY)]="editingBookableEntity.posY"
+                [posX]="editingBookableEntity.posX"
+                [posY]="editingBookableEntity.posY"
                 (submitBookableEntity)="onSubmitBookableEntity()"
                 (cancel)="onCancelEditingBookableEntity()"
+                (posXChange)="onSelectedEntityPosXUpdate($event)"
+                (posYChange)="onSelectedEntityPosYUpdate($event)"
             >
             </create-or-update-bookable-entity>
             <loading-state [loading]="bookableEntities.loading()">

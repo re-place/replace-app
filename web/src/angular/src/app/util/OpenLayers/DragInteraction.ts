@@ -17,7 +17,7 @@ export type DragInteractionOptions = {
 }
 
 export type DragEndSubscriber = (feature: FeatureLike, deltaX: number, deltaY: number) => void
-export type DragSubscriber = (feature: FeatureLike, deltaX: number, deltaY: number) => void
+export type DragSubscriber = (feature: FeatureLike, deltaX: number, deltaY: number) => void | boolean
 export type Unsubscribe = () => void
 /**
  * Inspired by https://openlayers.org/en/latest/examples/custom-interactions.html
@@ -111,12 +111,12 @@ export class DragInteraction extends PointerInteraction {
             return
         }
 
-        (geometry as Geometry).translate(deltaX, deltaY)
+        if (!this.dragSubscribers.reduce<boolean>((agg, sub) => agg || sub(feature, deltaX, deltaY) === false, false)) {
+            (geometry as Geometry).translate(deltaX, deltaY)
+        }
 
         this.coordinates[0] = event.coordinate[0]
         this.coordinates[1] = event.coordinate[1]
-
-        this.dragSubscribers.forEach((subscriber) => subscriber(feature, deltaX, deltaY))
     }
 
     override handleMoveEvent(event: MapBrowserEvent<UIEvent>) {

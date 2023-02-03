@@ -149,7 +149,16 @@ export class EntityMapComponent implements OnInit, OnChanges {
             return
         }
 
-        const entity = entityChange.currentValue
+        const entity = entityChange.currentValue as BookableEntityDto | undefined
+        const previousEntity = entityChange.previousValue as BookableEntityDto | undefined
+
+        if (entity !== undefined && previousEntity?.id === entity?.id ) {
+            this.selectedEntitySource.forEachFeature((feature) => {
+                feature.setGeometry(new Point([entity?.posX ?? 0, entity?.posY ?? 0]))
+            })
+            return
+        }
+
 
         this.selectedEntitySource.clear()
         this.unselectedEntitySource.clear()
