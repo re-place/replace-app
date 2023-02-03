@@ -39,6 +39,7 @@
             <create-or-update-bookable-entity
                 class="w-80 border-x-2 border-gray-300 p-2"
                 *ngIf="editingBookableEntity !== undefined"
+                [id]="editingBookableEntity.id"
                 [(name)]="editingBookableEntity.name"
                 [posX]="editingBookableEntity.posX"
                 [posY]="editingBookableEntity.posY"
@@ -46,6 +47,7 @@
                 (cancel)="onCancelEditingBookableEntity()"
                 (posXChange)="onSelectedEntityPosXUpdate($event)"
                 (posYChange)="onSelectedEntityPosYUpdate($event)"
+                (delete)="onDeleteEntity($event)"
             >
             </create-or-update-bookable-entity>
             <loading-state [loading]="bookableEntities.loading()">

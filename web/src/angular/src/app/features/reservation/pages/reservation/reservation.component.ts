@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core"
 import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
+import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
 import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
-import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
 
 const INTL_DATE_INPUT_FORMAT = {
@@ -146,14 +146,14 @@ export class ReservationComponent implements OnInit {
         const start = this.timeFormControl.get("startDate")?.value?.toISOString()??new Date().toISOString()
         const end = this.timeFormControl.get("endDate")?.value?.toISOString()??new Date().toISOString()
 
-        this.apiService.apiBookingByDateGet(start, end).subscribe({
+        this.apiService.apiBookingByParamsGet(start, end).subscribe({
             next: result => {
                 this.bookings = result
             },
             error: err => {
                 console.log(err)
                 this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
-            }
+            },
         })
     }
 

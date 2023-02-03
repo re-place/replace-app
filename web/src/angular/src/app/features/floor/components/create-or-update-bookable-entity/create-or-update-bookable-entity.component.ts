@@ -1,4 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
+import { MatDialog } from "@angular/material/dialog"
+
+import { DeleteBookableEntityDialogComponent } from "../entity-deletion-modal/delete-bookable-entity-dialog.component"
 
 @Component({
     selector: "create-or-update-bookable-entity",
@@ -6,7 +9,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core"
     styles: [],
 })
 export class CreateOrUpdateBookableEntityComponent {
-    @Input() createsNewEntity = false
+    @Input() id: string | undefined
     @Input() name: string | undefined
     @Input() posX: number | undefined
     @Input() posY: number | undefined
@@ -17,9 +20,12 @@ export class CreateOrUpdateBookableEntityComponent {
 
     @Output() submitBookableEntity = new EventEmitter<void>()
     @Output() cancel = new EventEmitter<void>()
+    @Output() delete = new EventEmitter<string>()
+
+    constructor (public dialog: MatDialog) {}
 
     get saveText() {
-        return this.createsNewEntity ? "Hinzufügen" : "Speichern"
+        return this.id === undefined ? "Hinzufügen" : "Speichern"
     }
 
     public onSubmit(event: SubmitEvent) {
@@ -56,10 +62,22 @@ export class CreateOrUpdateBookableEntityComponent {
     }
 
     get titleText() {
-        if (this.createsNewEntity) {
+        if (this.id === undefined) {
             return "Neues Buchungselement erstellen"
         } else {
             return "Buchungselement bearbeiten"
         }
+    }
+    public onDelete() {
+        this.dialog.open(DeleteBookableEntityDialogComponent, {
+            data: {
+                id: this.id,
+                name: this.name,
+            },
+        }).afterClosed().subscribe(result => {
+            if (result === true && this.id !== undefined) {
+                this.delete.emit(this.id)
+            }
+        })
     }
 }

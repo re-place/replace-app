@@ -1,5 +1,12 @@
-<form class="flex flex-col gap-2" (submit)="onSubmit($event)" ngNativeValidate>
-    <h4 class="text-lg font-medium text-gray-700 mb-2">{{ titleText }}</h4>
+<form class="flex flex-col gap-2 h-full" (submit)="onSubmit($event)" ngNativeValidate>
+    <div class="flex items-center mb-2">
+        <h4 class="text-lg font-medium text-gray-700">{{ titleText }}</h4>
+        <text-button *ngIf="id !== undefined" type="button" color="red" class="ml-auto" (click)="onDelete()">
+            <ng-template>
+                <mat-icon>delete</mat-icon>
+            </ng-template>
+        </text-button>
+    </div>
     <mat-form-field appearance="fill" class="w-full">
         <mat-label>Name</mat-label>
         <input required type="text" matInput [(ngModel)]="nameInput" placeholder="AP 1" name="object_name" />

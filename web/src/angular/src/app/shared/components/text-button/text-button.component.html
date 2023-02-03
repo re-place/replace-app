@@ -1,5 +1,5 @@
 <ng-container [ngSwitch]="type">
-    <button *ngSwitchCase="'button'" class="rounded-full w-8 h-8 flex justify-center items-center" [ngClass]="colorStyle">
+    <button *ngSwitchCase="'button'" class="rounded-full w-8 h-8 flex justify-center items-center" [ngClass]="colorStyle" type="button">
         <ng-container *ngIf="content !== undefined" [ngTemplateOutlet]="content"></ng-container>
     </button>
     <a

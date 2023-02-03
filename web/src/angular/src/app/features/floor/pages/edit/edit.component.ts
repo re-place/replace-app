@@ -78,6 +78,7 @@ export class EditComponent implements OnDestroy {
 
     public async onSubmit() {
         await this.form?.submit((data) => this.api.apiFloorPut(data))
+        this.snackBar.open("Stockwerk erfolgreich aktualisiert", "OK", { duration: 1000 })
         this.floor.refresh()
     }
 
@@ -115,6 +116,7 @@ export class EditComponent implements OnDestroy {
             })).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined
+                this.snackBar.open("Erfolgreich erstellt", "OK", { duration: 1000 })
             })
 
             return
@@ -127,6 +129,7 @@ export class EditComponent implements OnDestroy {
             })).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined
+                this.snackBar.open("Erfolgreich aktualisiert", "OK", { duration: 1000 })
             })
         }
     }
@@ -178,5 +181,20 @@ export class EditComponent implements OnDestroy {
         }
 
         this.editingBookableEntity = { ...this.editingBookableEntity, posY }
+    }
+
+    public onDeleteEntity(id: string) {
+        this.api.apiBookableEntityIdDelete(id).subscribe({
+            next: () => {
+                if (this.editingBookableEntity?.id === id) {
+                    this.editingBookableEntity = undefined
+                }
+                this.bookableEntities.refresh()
+                this.snackBar.open("Erfolgreich gelöscht", "OK", { duration: 1000 })
+            },
+            error: (error) => {
+                this.snackBar.open(error.message, "OK")
+            },
+        })
     }
 }

@@ -638,13 +638,14 @@ export class DefaultService {
     /**
      * @param start The start timestamp
      * @param end The end timestamp
+     * @param bookableEntityId The id of a bookable entity
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingByDateGet(start?: string, end?: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookingDto>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookingDto>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder})
         if (start !== undefined && start !== null) {
@@ -654,6 +655,10 @@ export class DefaultService {
         if (end !== undefined && end !== null) {
             localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>end, "end")
+        }
+        if (bookableEntityId !== undefined && bookableEntityId !== null) {
+            localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>bookableEntityId, "bookableEntityId")
         }
 
         let localVarHeaders = this.defaultHeaders
@@ -687,7 +692,7 @@ export class DefaultService {
             }
         }
 
-        const localVarPath = "/api/booking/byDate"
+        const localVarPath = "/api/booking/byParams"
         return this.httpClient.request<Array<BookingDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
