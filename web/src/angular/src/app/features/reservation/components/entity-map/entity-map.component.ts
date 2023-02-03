@@ -122,6 +122,8 @@ export class EntityMapComponent implements OnInit, OnChanges {
 
         this.entitySource.clear()
         this.entitySource.addFeatures(this.toFeatures(entities))
+
+        this.map?.updateSize()
     }
 
 
@@ -149,7 +151,6 @@ export class EntityMapComponent implements OnInit, OnChanges {
                 return
             }
 
-            map.updateSize()
             const size = map.getSize()
 
             if (size === undefined) {
