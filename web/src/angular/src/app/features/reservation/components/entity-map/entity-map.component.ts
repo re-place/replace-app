@@ -188,6 +188,12 @@ export class EntityMapComponent implements OnInit, OnChanges {
                 return
             }
 
+            const properties = feature.getProperties()
+
+            if (properties["available"] === false) {
+                return
+            }
+
             const entityIndex = this.entities.findIndex(entity => entity.entity.id === feature.getId())
 
             if (entityIndex < 0) {
@@ -206,6 +212,13 @@ export class EntityMapComponent implements OnInit, OnChanges {
             })
 
             if (feature === undefined) {
+                map.getTargetElement().style.cursor = ""
+                return
+            }
+
+            const properties = feature.getProperties()
+
+            if (properties["available"] === false) {
                 map.getTargetElement().style.cursor = ""
                 return
             }
