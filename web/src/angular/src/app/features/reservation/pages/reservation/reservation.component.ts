@@ -2,8 +2,10 @@ import {Component, OnInit} from "@angular/core"
 import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
 
-import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
+import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto, UserDto} from "src/app/core/openapi"
 import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
+import { AuthService } from "src/app/core/services/auth.service"
+import { DatePipe } from "@angular/common"
 
 
 const INTL_DATE_INPUT_FORMAT = {
@@ -45,6 +47,8 @@ export class ReservationComponent implements OnInit {
     allBookings: BookingDto[] = []
     bookings: BookingDto[] = []
 
+    users: UserDto[] = []
+
     minDate = new Date()
     timeFormControl = new FormGroup({
         startDate: new FormControl(new Date()),
@@ -54,6 +58,7 @@ export class ReservationComponent implements OnInit {
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
+        private readonly datePipe: DatePipe,
     ) {
 
         this.timeFormControl.get("startDate")?.valueChanges.subscribe((startDate) => {
@@ -116,6 +121,7 @@ export class ReservationComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getUsers()
         this.apiService.apiSiteGet().subscribe({
             next: response => {
                 this.sites = response
@@ -153,7 +159,7 @@ export class ReservationComponent implements OnInit {
             error: err => {
                 console.log(err)
                 this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
-            }
+            },
         })
     }
 
@@ -191,6 +197,18 @@ export class ReservationComponent implements OnInit {
             },
             error: () => {
                 this.showErrorSnackbar("Buchbare Objekte konnten nicht abgefragt werden")
+            },
+        })
+    }
+
+    getUsers() {
+        this.apiService.apiUserGet().subscribe({
+            next: response => {
+                this.users = response
+            },
+            error: err => {
+                console.log(err)
+                this.showErrorSnackbar("Nutzer konnten nicht abgefragt werden")
             },
         })
     }
@@ -240,6 +258,52 @@ export class ReservationComponent implements OnInit {
         if(id === undefined) return true
         return this.bookings.some(booking => booking.bookedEntities?.some(dto => dto.id === id))
     }
+
+    getBookingsForEntity(entId?: string): BookingDto[] {
+        return this.bookings.filter(booking => booking.bookedEntities?.some(dto => dto.id === entId))
+    }
+
+    getUsersForBookings(bookings: BookingDto[]): UserDto[] {
+        return this.users.filter(user => bookings.some(booking => booking.userId == user.id))
+    }
+
+    getDisplayName(item: BookableEntityDto) {
+        const bookings = this.getBookingsForEntity(item.id)
+        if(bookings.length == 0)
+            return item.name
+
+        const users = this.getUsersForBookings(bookings)
+        if(users.length == 0)
+            return item.name
+
+        return item.name + " (" + users.map(user => user.firstname + " " + user.lastname?.charAt(0)).join(", ") + ")"
+    }
+
+    getTooltip(item: BookableEntityDto) {
+        const bookings = this.getBookingsForEntity(item.id)
+        return bookings.map(booking => {
+            const user = this.getUsersForBookings([booking])[0]
+            const name = user.firstname + " " + user.lastname
+
+            let res = name + ": " +
+                this.datePipe.transform(booking.start, "short") + " - "
+
+            if(this.datesAreOnSameDay(new Date(booking.start!), new Date(booking.end!))) {
+                res += this.datePipe.transform(booking.end, "shortTime")
+            } else {
+                res += this.datePipe.transform(booking.end, "short")
+            }
+
+            return res
+        }).join("\n")
+    }
+
+    datesAreOnSameDay(first: Date, second: Date): boolean {
+        return first.getFullYear() == second.getFullYear()
+            && first.getMonth() == second.getMonth()
+            && first.getDate() == second.getDate()
+    }
+
 
     get imgSrc() {
         const planFileUrl = this.selectedFloor?.planFile?.url
