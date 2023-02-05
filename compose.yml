@@ -1,16 +1,29 @@
 version: '3.3'
 services:
-  replace-frontend:
-    build: web/src/angular
-    ports:
-      - 4200:80
-    depends_on:
-      - replace-backend
+#  replace-frontend:
+#    build: web/src/angular
+#    ports:
+#      - "4200:80"
+#    depends_on:
+#      - replace-backend
   replace-backend:
-    image: replace-backend:latest
+    image: localhost/replace-backend:latest
+    environment:
+      - "REPLACE.DATABASE.URL=jdbc:postgresql://host.docker.internal:5432/replace-app"
+      - "REPLACE.DATABASE.USER=postgres"
+      - "REPLACE.DATABASE.PASSWORD=postgres"
     ports:
-      - 8000:80
-  proxy:
+      - "8000:8000"
+#  proxy:
+#    image: nginx:latest
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./web/src/nginx/nginx.conf:/etc/nginx/nginx.conf
+#      - ./web/src/nginx/conf.d:/etc/nginx/conf.d
+#    depends_on:
+#      - replace-frontend
+#      - replace-backend
 networks:
   default:
     driver: bridge
