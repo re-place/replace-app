@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  replace-frontend:
+    build: web/src/angular
+    ports:
+      - 4200:80
+    depends_on:
+      - replace-backend
+  replace-backend:
+    image: replace-backend:latest
+    ports:
+      - 8000:80
+  proxy:
+networks:
+  default:
+    driver: bridge

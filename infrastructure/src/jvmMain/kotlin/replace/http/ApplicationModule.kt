@@ -22,7 +22,6 @@ import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.model.User
 import replace.model.Users
-import replace.plugin.SinglePageApplication
 
 fun Application.applicationModule() {
     install(CORS) {
@@ -71,11 +70,6 @@ fun Application.applicationModule() {
 
     sessionModule()
     authenticationModule()
-
-    install(SinglePageApplication) {
-        folderPath = "static"
-        ignoreIfContains = Regex("^/api.*$")
-    }
 
     routing {
         openApiEndpoint("/openapi")

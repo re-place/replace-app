@@ -13,10 +13,6 @@ allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }
 
-application {
-    mainClass.set("replace.MainKt")
-}
-
 dependencies {
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-infrastructure"))
