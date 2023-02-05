@@ -1,29 +1,29 @@
 package replace.usecase.bookableentity
 
-import org.bson.types.ObjectId
-import replace.datastore.Repository
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
+import replace.dto.CreateBookableEntityDto
 import replace.dto.toDto
-import replace.dto.toModel
+import replace.model.BookableEntities
 import replace.model.BookableEntity
-import replace.model.BookableEntityType
+import replace.model.BookableEntityTypes
+import replace.model.Floors
 
 object CreateBookableEntityUseCase {
-    suspend fun execute(
-        bookableEntityDto: BookableEntityDto,
-        bookableEntityRepository: Repository<BookableEntity>,
-        bookableEntityTypeRepository: Repository<BookableEntityType>,
+    fun execute(
+        bookableEntityDto: CreateBookableEntityDto,
     ): BookableEntityDto {
 
-        val bookableEntityTypeId = bookableEntityDto.type?.id
+        return transaction {
+            val bookableEntity = BookableEntity.new {
+                name = bookableEntityDto.name
+                floorId = EntityID(bookableEntityDto.floorId, Floors)
+                parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
+                typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntityTypes) }
+            }
 
-        if (bookableEntityTypeId !== null) {
-            val bookableEntityType = bookableEntityTypeRepository.findOneById(ObjectId(bookableEntityDto.type.id))
-            checkNotNull(bookableEntityType) { " Bookable Entity Type $bookableEntityTypeId does not exists" }
+            bookableEntity.toDto()
         }
-
-        val insertedBookableEntity = bookableEntityRepository.insertOne(bookableEntityDto.toModel())
-        checkNotNull(insertedBookableEntity) { "Could not insert BookableEntity" }
-        return insertedBookableEntity.toDto()
     }
 }

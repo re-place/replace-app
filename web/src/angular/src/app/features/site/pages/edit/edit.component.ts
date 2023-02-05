@@ -2,10 +2,8 @@ import { Component, OnDestroy } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
-import { SetOptional } from "type-fest"
-import { Floor, Site } from "types"
 
-import { ApiService } from "src/app/core/services/api.service"
+import { CreateFloorDto, DefaultService, FloorDto, SiteDto, UpdateFloorDto, UpdateSiteDto } from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -15,28 +13,36 @@ import { DataLoader, Form } from "src/app/util"
 })
 export class EditComponent implements OnDestroy {
     title = ""
-    form: Form<Site> | undefined = undefined
-    floors = new DataLoader<Floor[]>()
-    editingFloor: SetOptional<Floor, "id" | "siteId"> | undefined = undefined
+    form: Form<UpdateSiteDto> | undefined = undefined
+    site: DataLoader<SiteDto> = new DataLoader<SiteDto>()
+    floors = new DataLoader<FloorDto[]>()
+    editingFloor: CreateFloorDto | UpdateFloorDto | undefined = undefined
 
     private readonly routeSub: Subscription
 
     constructor(
-        private readonly api: ApiService,
+        private readonly api: DefaultService,
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
-        this.routeSub = route.params.subscribe(async (params) => {
-            this.form = new Form(await api.getSite(params["id"]))
+        this.site.subscribe((site) => {
+            this.form = new Form(site)
             this.form.useSnackbar(snackBar)
             this.title = `Gebäude ${this.form.data.name} bearbeiten`
+        })
 
-            this.floors.source(() => api.getFloors(params["id"])).refresh()
+        this.routeSub = route.params.subscribe(async (params) => {
+            this.site.source(() => api.apiSiteIdGet(params["id"])).refresh()
+            this.floors.source(() => api.apiSiteSiteIdFloorGet(params["id"])).refresh()
         })
     }
 
-    public async onSubmit() {
-        this.form?.submit((data) => this.api.updateSite(data))
+    public onSubmit() {
+        this.form?.submit((data) => this.api.apiSitePut(data), {
+            onSuccess: () => {
+                this.site.refresh()
+            },
+        })
     }
 
     ngOnDestroy(): void {
@@ -44,31 +50,38 @@ export class EditComponent implements OnDestroy {
     }
 
     public onCreateFloor() {
-        this.editingFloor = { name: "", planFile: null }
+        this.editingFloor = { name: "", planFile: undefined }
     }
 
-    public onSubmitFloor(floor: SetOptional<Floor, "id" | "siteId">) {
+    public onSubmitFloor(floor: CreateFloorDto | UpdateFloorDto) {
         this.floors.loading(true)
 
-        if (floor.id === undefined) {
-            this.api
-                .createFloor({
-                    ...floor,
-                    siteId: this.route.snapshot.params["id"],
-                })
-                .then(() => {
+        const form = new Form(floor)
+        form.useSnackbar(this.snackBar)
+
+        if ((floor as UpdateFloorDto).id === undefined) {
+            form.submit((data) => this.api.apiFloorPost({
+                ...data,
+                siteId: this.site.data?.id,
+            }), {
+                onSuccess: () => {
                     this.floors.refresh()
                     this.editingFloor = undefined
-                })
+                },
+            })
 
             return
         }
 
-        if (floor.id !== undefined) {
-            this.api.updateFloor(floor as Floor).then(() => {
+        form.submit((data) => this.api.apiFloorPut({
+            ...data,
+            siteId: this.site.data?.id,
+        }), {
+            onSuccess: () => {
+
                 this.floors.refresh()
                 this.editingFloor = undefined
-            })
-        }
+            },
+        })
     }
 }

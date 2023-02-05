@@ -6,12 +6,9 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.session
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.routing
-import replace.datastore.UserRepository
 import replace.model.UserSession
 
-fun Application.authenticationModule(
-    userRepository: UserRepository,
-) {
+fun Application.authenticationModule() {
     authentication {
         session<UserSession> {
             validate { session ->
@@ -29,6 +26,6 @@ fun Application.authenticationModule(
     }
 
     routing {
-        routeAuthentication(userRepository)
+        routeAuthentication()
     }
 }

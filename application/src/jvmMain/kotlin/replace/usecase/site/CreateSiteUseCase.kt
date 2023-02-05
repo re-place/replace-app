@@ -1,18 +1,21 @@
 package replace.usecase.site
 
-import replace.datastore.SiteRepository
+import org.jetbrains.exposed.sql.transactions.transaction
+import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
 import replace.dto.toDto
 import replace.model.Site
 
 object CreateSiteUseCase {
     suspend fun execute(
-        siteDto: SiteDto,
-        siteRepository: SiteRepository,
+        createSiteDto: CreateSiteDto,
     ): SiteDto {
-        val site = Site(siteDto.name)
-        val insertedSite = siteRepository.insertOne(site)
-        checkNotNull(insertedSite) { "Could not insert Site" }
-        return insertedSite.toDto()
+        return transaction {
+            val site = Site.new {
+                name = createSiteDto.name
+            }
+
+            site.toDto()
+        }
     }
 }

@@ -11,46 +11,41 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.bson.types.ObjectId
-import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
-import replace.datastore.MongoBookableEntityRepository
-import replace.datastore.MongoFloorRepository
-import replace.datastore.MongoRepository
-import replace.datastore.MongoTemporaryFileRepository
+import replace.dto.CreateFloorDto
 import replace.dto.FloorDto
+import replace.dto.UpdateFloorDto
 import replace.dto.toDto
 import replace.http.routeRepository
-import replace.model.File
-import replace.model.Site
+import replace.model.BookableEntities
+import replace.model.BookableEntity
+import replace.model.Floor
 import replace.usecase.floor.CreateFloorUseCase
 import replace.usecase.floor.UpdateFloorUseCase
 
-fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
-    val floorRepository = MongoFloorRepository(db.getCollection())
-    val siteRepository = MongoRepository<Site>(db.getCollection())
-    val bookableEntityRepository = MongoBookableEntityRepository(db.getCollection())
-    val fileRepository = MongoRepository<File>(db.getCollection())
-    val temporaryFileUploadRepository = MongoTemporaryFileRepository(db.getCollection())
+fun Route.registerFloorRoutes(fileStorage: FileStorage) {
 
     route("/api/floor") {
-        routeRepository(floorRepository) {
+        routeRepository(Floor.Companion) {
             it.toDto()
         }
 
-        post<FloorDto> {
+        post<CreateFloorDto> {
             executeUseCase {
                 CreateFloorUseCase.execute(
                     it,
-                    floorRepository,
-                    siteRepository,
-                    temporaryFileUploadRepository,
-                    fileRepository,
                     fileStorage,
                 )
             }
         } describe {
             description = "Creates a new floor"
+            body {
+                json {
+                    schema<CreateFloorDto>()
+                }
+            }
             200 response {
                 description = "The created floor"
                 json {
@@ -62,17 +57,13 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
         get("/{floorId}/bookable-entity") {
             val floorId = call.parameters["floorId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            if (!ObjectId.isValid(floorId)) {
-                return@get call.respondText("Id $floorId is not a valid ObjectId", status = HttpStatusCode.BadRequest)
-            }
+            val bookableEntityDtos = transaction { BookableEntity.find(BookableEntities.floor_id eq floorId).map { it.toDto() } }
 
-            val bookableEntities = bookableEntityRepository.forFloor(ObjectId(floorId)).map() { it.toDto() }
-
-            call.respond(bookableEntities)
+            call.respond(bookableEntityDtos)
         } describe {
             "floorId" pathParameter {
                 description = "The id of the floor"
-                schema(ObjectId().toString())
+                schema("<id>")
             }
             description = "Gets all bookable entities for a floor"
             200 response {
@@ -83,12 +74,17 @@ fun Route.registerFloorRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
             }
         }
 
-        put<FloorDto> {
+        put<UpdateFloorDto> {
             executeUseCase {
-                UpdateFloorUseCase.execute(it, floorRepository, temporaryFileUploadRepository, fileRepository, fileStorage)
+                UpdateFloorUseCase.execute(it, fileStorage)
             }
         } describe {
             description = "Updates a floor"
+            body {
+                json {
+                    schema<UpdateFloorDto>()
+                }
+            }
             200 response {
                 description = "The updated floor"
                 json {

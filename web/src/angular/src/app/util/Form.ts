@@ -1,6 +1,11 @@
 import { MatSnackBar } from "@angular/material/snack-bar"
 import cloneDeep from "lodash/cloneDeep"
-import { Subject, Subscription } from "rxjs"
+import { firstValueFrom, Observable, Subject, Subscription } from "rxjs"
+
+export type SubmitConfig<R> = {
+    onSuccess?: (result: R) => void
+    onError?: (error: string) => void
+}
 
 export default class From<T> {
     protected _data: T
@@ -49,22 +54,36 @@ export default class From<T> {
         return this._data
     }
 
-    public async submit<R>(submitTo: (data: T) => Promise<R>): Promise<R | undefined> {
+    public async submit<R>(
+        submitTo: (data: T) => Promise<R> | Observable<R>,
+        config?: SubmitConfig<R> | undefined,
+    ): Promise<R | undefined> {
         if (this._isProcessing) {
             return Promise.resolve(undefined)
         }
 
         this._isProcessing = true
 
+        let to = submitTo(this._data)
+
+        if (!(to instanceof Promise)) {
+            to = firstValueFrom(to)
+        }
+
+
         try {
-            const response = await submitTo(this._data)
+            const response = await to
             this._error = undefined
             this._isProcessing = false
+
+            config?.onSuccess?.(response)
             return response
         } catch (error) {
             this._error = JSON.stringify(error)
             this._isProcessing = false
             this.onError.next(this._error)
+
+            config?.onError?.(this._error)
             return undefined
         }
     }

@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { FloorDto } from './floorDto';
 import { BookableEntityTypeDto } from './bookableEntityTypeDto';
 
 
@@ -17,6 +18,9 @@ export interface BookableEntityDto {
     name?: string;
     floorId?: string;
     parentId?: string;
+    typeId?: string;
+    floor?: FloorDto;
+    parent?: BookableEntityDto;
     type?: BookableEntityTypeDto;
 }
 

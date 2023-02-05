@@ -1,61 +1,41 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import org.bson.types.ObjectId
-import replace.datastore.FileRepository
-import replace.datastore.FileStorage
-import replace.datastore.TemporaryFileRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.Floor
+import kotlin.reflect.KProperty1
 
 @Serializable
 class FloorDto(
-    override val id: String? = null,
+    override val id: String,
     val name: String,
     val siteId: String,
-    val planFile: FileUploadDto? = null,
-) : Dto
+    val site: SiteDto? = null,
+    val planFileId: String? = null,
+    val planFile: FileDto? = null,
+    val bookableEntities: List<BookableEntityDto>? = null,
+) : ModelDto
 
-fun Floor.toDto(): FloorDto {
+fun Floor.toDto(with: List<KProperty1<Floor, *>> = emptyList()): FloorDto {
 
-    val fileId = planFileId?.toHexString()
-        ?: return FloorDto(
-            id = id?.toHexString(),
-            name = name,
-            siteId = siteId.toHexString(),
-        )
+    val siteDto = if (with.contains(Floor::site)) {
+        site.toDto()
+    } else {
+        null
+    }
+
+    val bookableEntities = if (with.contains(Floor::bookableEntities)) {
+        bookableEntities.map { it.toDto() }
+    } else {
+        null
+    }
 
     return FloorDto(
-        id = id?.toHexString(),
+        id = id.value,
         name = name,
-        siteId = siteId.toHexString(),
-        planFile = FileUploadDto(
-            id = fileId,
-            temporary = false,
-        ),
-    )
-}
-
-fun FloorDto.toModel(): Floor {
-    return Floor(
-        name = name,
-        siteId = ObjectId(siteId),
-        planFileId = planFile?.let { ObjectId(planFile.id) },
-    )
-}
-
-suspend fun FloorDto.saveFiles(
-    temporaryFileRepository: TemporaryFileRepository,
-    fileRepository: FileRepository,
-    fileStorage: FileStorage
-): FloorDto {
-    return FloorDto(
-        id = id,
-        name = name,
-        siteId = siteId,
-        planFile = planFile?.save(
-            temporaryFileRepository = temporaryFileRepository,
-            fileRepository = fileRepository,
-            fileStorage = fileStorage,
-        ),
+        siteId = siteId.value,
+        planFile = transaction { planFile?.toDto() },
+        site = siteDto,
+        bookableEntities = bookableEntities,
     )
 }

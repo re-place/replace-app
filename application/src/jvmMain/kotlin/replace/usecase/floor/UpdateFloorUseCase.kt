@@ -1,36 +1,30 @@
 package replace.usecase.floor
 
-import org.bson.types.ObjectId
-import replace.datastore.FileRepository
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
-import replace.datastore.FloorRepository
-import replace.datastore.TemporaryFileRepository
 import replace.dto.FloorDto
+import replace.dto.UpdateFloorDto
+import replace.dto.save
 import replace.dto.toDto
-import replace.dto.toModel
+import replace.model.File
+import replace.model.Floor
 
 object UpdateFloorUseCase {
     suspend fun execute(
-        dto: FloorDto,
-        repository: FloorRepository,
-        temporaryFileRepository: TemporaryFileRepository,
-        fileRepository: FileRepository,
+        updateFloorDto: UpdateFloorDto,
         fileStorage: FileStorage,
     ): FloorDto {
-        val floorId = ObjectId(dto.id)
+        return newSuspendedTransaction {
+            val floor = Floor.findById(updateFloorDto.id)
 
-        val floorDtoWithPlan = SaveFloorPlanFileUseCase.execute(
-            dto,
-            repository,
-            temporaryFileRepository,
-            fileRepository,
-            fileStorage,
-        )
+            checkNotNull(floor) { "Floor with id ${updateFloorDto.id} not found" }
 
-        val updatedModel = repository.updateOne(floorId, floorDtoWithPlan.toModel())
+            val file = updateFloorDto.planFile?.save(fileStorage)?.let { File.findById(it.fileId) }
 
-        checkNotNull(updatedModel) { "Could not update Floor with id $floorId\n$floorDtoWithPlan" }
+            floor.name = updateFloorDto.name
+            floor.planFile = file
 
-        return updatedModel.toDto()
+            floor.toDto()
+        }
     }
 }

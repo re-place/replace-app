@@ -1,13 +1,9 @@
-import { File, TemporaryFileUpload } from "types"
+import { FileUploadDto } from "../core/openapi"
 
-export function urlForFile(file: File | string): string {
-    const fileId = typeof file === "string" ? file : file.id
+export function urlForFile(file: FileUploadDto): string {
+    if (file.temporary === true) {
+        return `/api/temporary-file-upload/${file.fileId}`
+    }
 
-    return `/api/file/${fileId}`
-}
-
-export function urlForTemporaryFileUpload(file: TemporaryFileUpload | string): string {
-    const fileId = typeof file === "string" ? file : file.id
-
-    return `/api/temporary-file-upload/${fileId}`
+    return `/api/file/${file.fileId}`
 }

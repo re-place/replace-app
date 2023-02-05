@@ -22,18 +22,15 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.swagger.v3.oas.models.media.FileSchema
 import io.swagger.v3.oas.models.media.MapSchema
-import org.bson.types.ObjectId
-import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
-import replace.datastore.MongoTemporaryFileRepository
 import replace.dto.TemporaryFileUploadDto
+import replace.model.TemporaryFile
 import replace.usecase.temporaryfileupload.CreateTemporaryFileUploadUseCase
 import replace.usecase.temporaryfileupload.DeleteTemporaryFileUploadUseCase
 import java.util.UUID
 
-fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
-    val temporaryFileUploadRepository = MongoTemporaryFileRepository(db.getCollection())
-
+fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
     route("/api/temporary-file-upload") {
         post {
             executeUseCase {
@@ -51,7 +48,6 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
                     val newFile = CreateTemporaryFileUploadUseCase.execute(
                         name,
                         it.streamProvider(),
-                        temporaryFileUploadRepository,
                         fileStorage
                     )
                     temporaryFileUploadDtos.add(newFile)
@@ -77,36 +73,33 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
         }
 
         get<Routing.ById> { route ->
-            if (!ObjectId.isValid(route.id)) {
-                return@get call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
-            }
 
-            val dbResult = temporaryFileUploadRepository.findOneById(ObjectId(route.id))
-                ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
+            val file = transaction { TemporaryFile.findById(route.id) }
 
-            if (!fileStorage.exists(dbResult.path)) {
-                return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
+            if (file === null) {
+                call.respondText("No File with id ${route.id} found", status = HttpStatusCode.NotFound)
+                return@get
             }
 
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Inline.withParameter(
-                    ContentDisposition.Parameters.FileName, "${dbResult.name}.${dbResult.extension}"
+                    ContentDisposition.Parameters.FileName, "${file.name}.${file.extension}"
                 ).toString()
             )
 
-            val mime = dbResult.mime ?: ContentType.Application.OctetStream.toString()
+            val mime = file.mime ?: ContentType.Application.OctetStream.toString()
 
-            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
+            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(file.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(ObjectId().toString())
+                schema("<id>")
             }
             200 response {
                 description = "The temporary file upload"
-                "application/octet-stream" content {
+                "*" content {
                     schema = FileSchema()
                 }
             }
@@ -114,13 +107,13 @@ fun Route.registerTemporaryFileUploadRoutes(db: CoroutineDatabase, fileStorage: 
 
         delete<Routing.ById> { route ->
             executeUseCase {
-                DeleteTemporaryFileUploadUseCase.execute(route.id, temporaryFileUploadRepository, fileStorage)
+                DeleteTemporaryFileUploadUseCase.execute(route.id, fileStorage)
                 return@delete call.respond(HttpStatusCode.NoContent)
             }
         } describe {
             "id" pathParameter {
                 description = "The id of the temporary file"
-                schema(ObjectId().toString())
+                schema("<id>")
             }
             description = "Deletes a temporary file upload by id"
             204 response {

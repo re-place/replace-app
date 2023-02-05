@@ -5,7 +5,11 @@ plugins {
 }
 
 dependencies {
-    jvmMainApi(libs.bundles.kmongo)
-    jvmTestImplementation(libs.kotest)
     jvmMainImplementation(libs.ktor.server.auth)
+    jvmTestImplementation(libs.kotest)
+    jvmMainImplementation(libs.exposed.core)
+    jvmMainImplementation(libs.exposed.dao)
+    jvmMainImplementation(libs.exposed.jdbc)
+    jvmMainImplementation(libs.exposed.java.time)
+    jvmMainImplementation(libs.kotlinx.datetime)
 }

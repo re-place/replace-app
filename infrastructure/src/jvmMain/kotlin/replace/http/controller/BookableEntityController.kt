@@ -6,31 +6,33 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.litote.kmongo.coroutine.CoroutineDatabase
-import replace.datastore.MongoRepository
 import replace.dto.BookableEntityDto
+import replace.dto.CreateBookableEntityDto
+import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
 import replace.http.routeRepository
 import replace.model.BookableEntity
-import replace.model.BookableEntityType
 import replace.usecase.bookableentity.CreateBookableEntityUseCase
 import replace.usecase.bookableentity.UpdateBookableEntityUseCase
 
-fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
-    val bookableEntityRepository = MongoRepository<BookableEntity>(db.getCollection())
-    val bookableEntityTypeRepository = MongoRepository<BookableEntityType>(db.getCollection())
+fun Route.registerBookableEntityRoutes() {
 
     route("/api/bookable-entity") {
-        routeRepository(bookableEntityRepository) {
+        routeRepository(BookableEntity.Companion) {
             it.toDto()
         }
 
-        post<BookableEntityDto> {
+        post<CreateBookableEntityDto> {
             executeUseCase {
-                CreateBookableEntityUseCase.execute(it, bookableEntityRepository, bookableEntityTypeRepository)
+                CreateBookableEntityUseCase.execute(it)
             }
         } describe {
             description = "Creates a new bookable entity"
+            body {
+                json {
+                    schema<CreateBookableEntityDto>()
+                }
+            }
             200 response {
                 description = "The created bookable entity"
                 json {
@@ -39,12 +41,17 @@ fun Route.registerBookableEntityRoutes(db: CoroutineDatabase) {
             }
         }
 
-        put<BookableEntityDto> {
+        put<UpdateBookableEntityDto> {
             executeUseCase {
-                UpdateBookableEntityUseCase.execute(it, bookableEntityRepository)
+                UpdateBookableEntityUseCase.execute(it)
             }
         } describe {
             description = "Updates a bookable entity"
+            body {
+                json {
+                    schema<UpdateBookableEntityDto>()
+                }
+            }
             200 response {
                 description = "The updated bookable entity"
                 json {

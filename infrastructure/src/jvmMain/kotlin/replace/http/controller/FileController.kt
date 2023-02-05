@@ -14,47 +14,44 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
 import io.swagger.v3.oas.models.media.FileSchema
-import org.bson.types.ObjectId
-import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
-import replace.datastore.MongoRepository
 import replace.model.File
 
-fun Route.registerFileRoutes(db: CoroutineDatabase, fileStorage: FileStorage) {
-    val fileRepository = MongoRepository<File>(db.getCollection())
-
+fun Route.registerFileRoutes(fileStorage: FileStorage) {
     route("/api/file") {
         get<Routing.ById> { route ->
-            if (!ObjectId.isValid(route.id)) {
-                return@get call.respondText("Id ${route.id} is not a valid ObjectId", status = HttpStatusCode.BadRequest)
+            val file = transaction { File.findById(route.id) }
+
+            if (file === null) {
+                call.respondText("No File with id ${route.id} found", status = HttpStatusCode.NotFound)
+                return@get
             }
 
-            val dbResult = fileRepository.findOneById(ObjectId(route.id))
-                ?: return@get call.respondText("Temporary file upload with id ${route.id} not found", status = HttpStatusCode.NotFound)
-
-            if (!fileStorage.exists(dbResult.path)) {
-                return@get call.respondText("File with id ${route.id} not found", status = HttpStatusCode.NotFound)
+            if (!fileStorage.exists(file.path)) {
+                call.respondText("File with id ${route.id} not found", status = HttpStatusCode.NotFound)
+                return@get
             }
 
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Inline.withParameter(
-                    ContentDisposition.Parameters.FileName, "${dbResult.name}.${dbResult.extension}"
+                    ContentDisposition.Parameters.FileName, "${file.name}.${file.extension}"
                 ).toString()
             )
 
-            val mime = dbResult.mime ?: ContentType.Application.OctetStream.toString()
+            val mime = file.mime ?: ContentType.Application.OctetStream.toString()
 
-            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(dbResult.path).readBytes() }
+            call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(file.path).readBytes() }
         } describe {
             description = "Gets a temporary file upload by id"
             "id" pathParameter {
                 description = "The id of the file"
-                schema(ObjectId().toString())
+                schema("<id>")
             }
             200 response {
                 description = "The temporary file upload"
-                "application/octet-stream" content {
+                "*" content {
                     schema = FileSchema()
                 }
             }

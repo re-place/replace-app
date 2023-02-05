@@ -1,40 +1,31 @@
 package replace.usecase.floor
 
-import org.bson.types.ObjectId
-import replace.datastore.FileRepository
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
-import replace.datastore.FloorRepository
-import replace.datastore.SiteRepository
-import replace.datastore.TemporaryFileRepository
+import replace.dto.CreateFloorDto
 import replace.dto.FloorDto
+import replace.dto.save
 import replace.dto.toDto
-import replace.dto.toModel
+import replace.model.File
+import replace.model.Floor
+import replace.model.Sites
 
 object CreateFloorUseCase {
     suspend fun execute(
-        floorDto: FloorDto,
-        floorRepository: FloorRepository,
-        siteRepository: SiteRepository,
-        temporaryFileRepository: TemporaryFileRepository,
-        fileRepository: FileRepository,
+        createFloorDto: CreateFloorDto,
         fileStorage: FileStorage,
     ): FloorDto {
-        val siteId = ObjectId(floorDto.siteId)
-        val site = siteRepository.findOneById(siteId)
-        checkNotNull(site) { "Site with id $siteId not found" }
+        return newSuspendedTransaction {
+            val file = createFloorDto.planFile?.save(fileStorage)?.let { File.findById(it.fileId) }
 
-        val floorDtoWithPlan = SaveFloorPlanFileUseCase.execute(
-            floorDto,
-            floorRepository,
-            temporaryFileRepository,
-            fileRepository,
-            fileStorage,
-        )
+            val insertedFloor = Floor.new {
+                name = createFloorDto.name
+                siteId = EntityID(createFloorDto.siteId, Sites)
+                planFile = file
+            }
 
-        val insertedFloor = floorRepository.insertOne(floorDtoWithPlan.toModel())
-
-        checkNotNull(insertedFloor) { "Could not insert BookableEntity" }
-
-        return insertedFloor.toDto()
+            insertedFloor.toDto()
+        }
     }
 }
