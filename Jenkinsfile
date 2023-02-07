@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Frontend') {
             steps {
@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Backend') {
             steps {
-                sh 'docker build -f ./backend.Dockerfile -t replace-backend .'
+                sh './gradlew publishImageToLocalRegistry'
             }
         }
         stage('Deploy') {
