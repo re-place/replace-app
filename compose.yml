@@ -24,7 +24,7 @@ services:
     network_mode: "host"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.router_1.priority=2"
+      - "traefik.http.routers.backend.priority=2"
       - "traefik.http.routers.backend.rule=Host(`0.0.0.0`) && Path(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
 
