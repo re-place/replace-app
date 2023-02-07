@@ -17,6 +17,7 @@ import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
+import replace.Replace
 import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
 
@@ -46,7 +47,7 @@ fun Application.applicationModule() {
     install(TegralOpenApiKtor) {
         title = "Replace API"
         description = "API for the Replace application"
-        version = "2022.1-SNAPSHOT"
+        version = Replace.version
     }
 
     install(TegralSwaggerUiKtor)
