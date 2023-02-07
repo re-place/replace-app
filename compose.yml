@@ -3,10 +3,12 @@ services:
   proxy:
     image: traefik:latest
     command:
-      - --accesslog
-      - --api.insecure=true
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
+#      - "--accesslog"
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
     ports:
       - "7000:80"
       - "8080:8080"
@@ -21,13 +23,15 @@ services:
       - "8002:80"
     network_mode: "host"
     labels:
-      - traefik.enable=true
-      - Path(`/api`)
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`0.0.0.0`) && Path(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=web"
 
   replace-frontend:
     build: web
     ports:
       - "8001:80"
     labels:
-      - traefik.enable=true
-      - Path(`/`)
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`0.0.0.0`) && Path(`/`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
