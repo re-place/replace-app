@@ -18,7 +18,7 @@ services:
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
     ports:
-      - "8002:8002"
+      - "8002:80"
     network_mode: "host"
     labels:
       - traefik.enable=true
