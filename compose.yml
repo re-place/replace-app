@@ -8,9 +8,9 @@ services:
       - "--api.insecure=true"
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.address=:7000"
     ports:
-      - "7000:80"
+      - "7000:7000"
       - "8080:8080"
 
   replace-backend:
@@ -24,6 +24,7 @@ services:
     network_mode: "host"
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.router_1.priority=2"
       - "traefik.http.routers.backend.rule=Host(`0.0.0.0`) && Path(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
 
