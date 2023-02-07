@@ -2,6 +2,8 @@ import com.typesafe.config.ConfigFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import io.ktor.plugin.features.JreVersion
+import io.ktor.plugin.features.DockerPortMapping
+import io.ktor.plugin.features.DockerPortMappingProtocol
 
 buildscript {
     dependencies {
@@ -50,6 +52,13 @@ application {
 
 ktor {
     docker {
+        portMappings.set(listOf(
+            DockerPortMapping(
+                8002,
+                8002,
+                DockerPortMappingProtocol.TCP
+            )
+        ))
         jreVersion.set(JreVersion.JRE_17)
         localImageName.set("replace-backend")
         imageTag.set("latest")

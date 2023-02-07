@@ -17,7 +17,7 @@ services:
       - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
-    expose:
+    ports:
       - 8002
     network_mode: "host"
     labels:
@@ -26,7 +26,7 @@ services:
 
   replace-frontend:
     build: web
-    expose:
+    ports:
       - 8001
     labels:
       - traefik.enable=true
