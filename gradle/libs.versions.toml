@@ -3,7 +3,7 @@ exposed = "0.40.1"
 kotlin = "1.8.0"
 ktor = "2.2.2"
 liquibase = "2.1.1"
-liquibase-core = "4.18.0"
+liquibase-core = "4.19.0"
 liquibase-picocli = "4.7.0"
 log4j = "2.19.0"
 postgresql = "42.5.1"
@@ -45,4 +45,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ktlint = "org.jlleitschuh.gradle.ktlint:11.0.0"
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
 node = "com.github.node-gradle.node:3.5.0"
-shadow = "com.github.johnrengelman.shadow:7.1.2"
+ktor = { id = "io.ktor.plugin", version.ref = "ktor"}
