@@ -22,9 +22,10 @@ import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.model.User
 import replace.model.Users
-import replace.plugin.SinglePageApplication
 
 fun Application.applicationModule() {
+    println("Starting backend...")
+
     install(CORS) {
         anyHost() // TODO: Don't do this in production
         allowHeader(HttpHeaders.ContentType)
@@ -72,11 +73,6 @@ fun Application.applicationModule() {
     sessionModule()
     authenticationModule()
 
-    install(SinglePageApplication) {
-        folderPath = "static"
-        ignoreIfContains = Regex("^/api.*$")
-    }
-
     routing {
         openApiEndpoint("/openapi")
         swaggerUiEndpoint("/swagger", "/openapi")
@@ -93,6 +89,8 @@ fun Application.applicationModule() {
     )
 
     deleteOldTemporaryFileUploadsJob.dispatch()
+
+    println("Backend started!")
 }
 
 fun devSeeder() {

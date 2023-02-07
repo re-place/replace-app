@@ -1,4 +1,5 @@
 import com.typesafe.config.ConfigFactory
+import io.ktor.plugin.features.JreVersion
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -13,6 +14,7 @@ plugins {
     id("kotlin-jvm.base-conventions")
     kotlin("plugin.serialization")
     alias(libs.plugins.liquibase)
+    alias(libs.plugins.ktor)
 }
 
 dependencies {
@@ -42,9 +44,26 @@ dependencies {
     jvmMainImplementation(libs.kotlinx.datetime)
 }
 
-apply(plugin = "liquibase")
+application {
+    mainClass.set("replace.MainKt")
+}
+
+ktor {
+    docker {
+        jreVersion.set(JreVersion.JRE_17)
+        localImageName.set("replace-backend")
+        imageTag.set("latest")
+    }
+}
 
 tasks {
+    withType<JavaExec> {
+        doFirst {
+            val runDir = file("build/run")
+            runDir.mkdirs()
+            workingDir = runDir
+        }
+    }
     test {
         useJUnitPlatform()
     }
