@@ -1,28 +1,33 @@
 version: '3.3'
 services:
+  proxy:
+    image: traefik:latest
+    command:
+      - --accesslog
+      - --api.insecure=true
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+    ports:
+      - "80:80"
+      - "8080:8080"
+
+  replace-backend:
+    image: localhost/replace-backend:latest
+    environment:
+      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
+      - "REPLACE.DATABASE.USER=postgres"
+      - "REPLACE.DATABASE.PASSWORD=postgres"
+    expose:
+      - 8000
+    network_mode: "host"
+    labels:
+      - traefik.enable=true
+      - Path(`/api`)
+
   replace-frontend:
     build: web
-    ports:
-      - "4200:80"
-#  replace-backend:
-#    image: localhost/replace-backend:latest
-#    environment:
-#      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
-#      - "REPLACE.DATABASE.USER=postgres"
-#      - "REPLACE.DATABASE.PASSWORD=postgres"
-#    ports:
-#      - "8000:8000"
-#    network_mode: "host"
-#  proxy:
-#    image: nginx:latest
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - ./web/src/nginx/nginx.conf:/etc/nginx/nginx.conf
-#      - ./web/src/nginx/conf.d:/etc/nginx/conf.d
-#    depends_on:
-#      - replace-frontend
-#      - replace-backend
-networks:
-  default:
-    driver: bridge
+    expose:
+      - 80
+    labels:
+      - traefik.enable=true
+      - Path(`/`)
