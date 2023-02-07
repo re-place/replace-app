@@ -18,7 +18,7 @@ services:
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
     expose:
-      - 8000
+      - 8002
     network_mode: "host"
     labels:
       - traefik.enable=true
@@ -27,7 +27,7 @@ services:
   replace-frontend:
     build: web
     expose:
-      - 80
+      - 8001
     labels:
       - traefik.enable=true
       - Path(`/`)
