@@ -24,8 +24,7 @@ services:
     network_mode: "host"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.priority=2"
-      - "traefik.http.routers.backend.rule=Host(`0.0.0.0`) && Path(`/api`)"
+      - "traefik.http.routers.backend.PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
 
   replace-frontend:
@@ -34,5 +33,5 @@ services:
       - "8001:80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`0.0.0.0`) && Path(`/`)"
+      - "traefik.http.routers.frontend.PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
