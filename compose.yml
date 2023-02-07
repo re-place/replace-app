@@ -9,11 +9,12 @@ services:
   replace-backend:
     image: localhost/replace-backend:latest
     environment:
-      - "REPLACE.DATABASE.URL=jdbc:postgresql://host.docker.internal:5432/replace-app"
+      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
     ports:
       - "8000:8000"
+    network_mode: "host"
 #  proxy:
 #    image: nginx:latest
 #    ports:

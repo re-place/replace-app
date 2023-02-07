@@ -24,6 +24,8 @@ import replace.model.User
 import replace.model.Users
 
 fun Application.applicationModule() {
+    println("Starting backend...")
+
     install(CORS) {
         anyHost() // TODO: Don't do this in production
         allowHeader(HttpHeaders.ContentType)
@@ -87,6 +89,8 @@ fun Application.applicationModule() {
     )
 
     deleteOldTemporaryFileUploadsJob.dispatch()
+
+    println("Backend started!")
 }
 
 fun devSeeder() {
