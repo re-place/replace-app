@@ -6,8 +6,8 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: replace-app
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
     volumes:
       - "/var/lib/postgresql/data:/var/lib/postgresql/data"
 
@@ -17,8 +17,8 @@ services:
       - "REPLACE.DATABASE.URL=jdbc:postgresql://db:5432/replace-app"
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
-    ports:
-      - "8002:80"
+    expose:
+      - 80
     labels:
       - "traefik.http.routers.backend.rule=(Host(`omicron`) && PathPrefix(`/api`))"
       - "traefik.http.routers.backend.entrypoints=web"
@@ -27,8 +27,8 @@ services:
 
   replace-frontend:
     build: web
-    ports:
-      - "8001:80"
+    expose:
+      - 80
     labels:
       - "traefik.http.routers.frontend.rule=(Host(`omicron`) && PathPrefix(`/`))"
       - "traefik.http.routers.frontend.entrypoints=web"
@@ -36,13 +36,13 @@ services:
   proxy:
     image: traefik:latest
     command:
-      - "--log.level=DEBUG"
+#      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker"
-      - "--entrypoints.web.address=:7000"
+      - "--entrypoints.web.address=:80"
     ports:
-      - "7000:7000"
-      - "8080:8080"
+      - "80:80"
+#      - "8080:8080" // Uncomment this line to access the Traefik dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
