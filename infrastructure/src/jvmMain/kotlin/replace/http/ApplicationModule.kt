@@ -56,14 +56,6 @@ fun Application.applicationModule() {
 
     install(TegralSwaggerUiKtor)
 
-    val pathLoggerPlugin = createApplicationPlugin("PathLoggerPlugin") {
-        onCall { call ->
-            println("Backend received path: ${call.request.path()}")
-        }
-    }
-
-    install(pathLoggerPlugin)
-
     val databaseConfig = DatabaseConfig {
         keepLoadedReferencesOutOfTransaction = true
     }
