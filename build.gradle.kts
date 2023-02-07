@@ -7,7 +7,10 @@ plugins {
     application
 }
 
+val projectVersion = file("version").readLines().first()
+
 allprojects {
+    version = projectVersion
     apply(plugin = "org.jetbrains.kotlin.multiplatform")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }

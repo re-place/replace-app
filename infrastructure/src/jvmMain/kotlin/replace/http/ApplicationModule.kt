@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.transactions.transaction
+import replace.Replace
 import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
 import replace.model.User
@@ -49,7 +50,7 @@ fun Application.applicationModule() {
     install(TegralOpenApiKtor) {
         title = "Replace API"
         description = "API for the Replace application"
-        version = "2022.1-SNAPSHOT"
+        version = Replace.version
     }
 
     install(TegralSwaggerUiKtor)
