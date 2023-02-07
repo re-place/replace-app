@@ -1,7 +1,7 @@
 import com.typesafe.config.ConfigFactory
+import io.ktor.plugin.features.JreVersion
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import io.ktor.plugin.features.JreVersion
 
 buildscript {
     dependencies {

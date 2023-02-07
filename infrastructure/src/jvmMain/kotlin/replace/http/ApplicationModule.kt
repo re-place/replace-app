@@ -64,7 +64,6 @@ fun Application.applicationModule() {
 
     install(pathLoggerPlugin)
 
-
     val databaseConfig = DatabaseConfig {
         keepLoadedReferencesOutOfTransaction = true
     }
