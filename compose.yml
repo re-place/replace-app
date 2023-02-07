@@ -1,30 +1,50 @@
-version: '3.3'
+version: '3.8'
 services:
+  db:
+    image: docker.io/postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: replace-app
+    ports:
+      - "5432:5432"
+    volumes:
+      - "/var/lib/postgresql/data:/var/lib/postgresql/data"
 
   replace-backend:
-    image: localhost/replace-backend:latest
+    image: replace-backend:latest
     environment:
-      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
+      - "REPLACE.DATABASE.URL=jdbc:postgresql://db:5432/replace-app"
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
     ports:
       - "8002:80"
-    network_mode: "host"
     labels:
-      - "traefik.http.routers.api.rule=(Host(`app.localhost`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.backend.rule=(Host(`omicron`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.backend.entrypoints=web"
+    depends_on:
+      - db
 
   replace-frontend:
     build: web
     ports:
       - "8001:80"
     labels:
-      - "traefik.http.routers.site.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.frontend.rule=(Host(`omicron`) && PathPrefix(`/`))"
+      - "traefik.http.routers.frontend.entrypoints=web"
 
   proxy:
     image: traefik:latest
     command:
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker"
+      - "--entrypoints.web.address=:7000"
     ports:
-      - "7000:80"
+      - "7000:7000"
       - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - replace-backend
+      - replace-frontend
