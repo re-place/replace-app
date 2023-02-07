@@ -1,20 +1,18 @@
 version: '3.3'
 services:
-#  replace-frontend:
-#    build: web/src/angular
-#    ports:
-#      - "4200:80"
-#    depends_on:
-#      - replace-backend
-  replace-backend:
-    image: localhost/replace-backend:latest
-    environment:
-      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
-      - "REPLACE.DATABASE.USER=postgres"
-      - "REPLACE.DATABASE.PASSWORD=postgres"
+  replace-frontend:
+    build: web
     ports:
-      - "8000:8000"
-    network_mode: "host"
+      - "4200:80"
+#  replace-backend:
+#    image: localhost/replace-backend:latest
+#    environment:
+#      - "REPLACE.DATABASE.URL=jdbc:postgresql://localhost:5432/replace-app"
+#      - "REPLACE.DATABASE.USER=postgres"
+#      - "REPLACE.DATABASE.PASSWORD=postgres"
+#    ports:
+#      - "8000:8000"
+#    network_mode: "host"
 #  proxy:
 #    image: nginx:latest
 #    ports:
