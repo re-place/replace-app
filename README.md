@@ -27,7 +27,7 @@
 
 ### Run
 
-- run `./gradlew runShadow` to start backend
+- run `./gradlew runFatJar` to start backend
 - run `yarn start` in `/web/src/angular` to start frontend
 
 ### Notes

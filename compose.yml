@@ -1,15 +1,15 @@
 version: '3.3'
 services:
-  proxy:
-    image: traefik:latest
-    command:
-      - --accesslog
-      - --api.insecure=true
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
-    ports:
-      - "80:80"
-      - "8080:8080"
+#  proxy:
+#    image: traefik:latest
+#    command:
+#      - --accesslog
+#      - --api.insecure=true
+#      - --providers.docker
+#      - --providers.docker.exposedbydefault=false
+#    ports:
+#      - "80:80"
+#      - "8080:8080"
 
   replace-backend:
     image: localhost/replace-backend:latest
@@ -18,16 +18,16 @@ services:
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
     ports:
-      - 8002
+      - "8002:8002"
     network_mode: "host"
-    labels:
-      - traefik.enable=true
-      - Path(`/api`)
+#    labels:
+#      - traefik.enable=true
+#      - Path(`/api`)
 
   replace-frontend:
     build: web
     ports:
-      - 8001
-    labels:
-      - traefik.enable=true
-      - Path(`/`)
+      - "8001:8001"
+#    labels:
+#      - traefik.enable=true
+#      - Path(`/`)

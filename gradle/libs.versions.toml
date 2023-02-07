@@ -44,4 +44,3 @@ ktlint = "org.jlleitschuh.gradle.ktlint:11.0.0"
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
 node = "com.github.node-gradle.node:3.5.0"
 ktor = { id = "io.ktor.plugin", version.ref = "ktor"}
-shadow = "com.github.johnrengelman.shadow:7.1.2"

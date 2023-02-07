@@ -8,10 +8,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.request.path
 import io.ktor.server.resources.Resources
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
@@ -53,6 +55,15 @@ fun Application.applicationModule() {
     }
 
     install(TegralSwaggerUiKtor)
+
+    val pathLoggerPlugin = createApplicationPlugin("PathLoggerPlugin") {
+        onCall { call ->
+            println("Backend received path: ${call.request.path()}")
+        }
+    }
+
+    install(pathLoggerPlugin)
+
 
     val databaseConfig = DatabaseConfig {
         keepLoadedReferencesOutOfTransaction = true
