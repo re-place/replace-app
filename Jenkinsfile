@@ -4,31 +4,29 @@ pipeline {
     stages {
         stage('Frontend') {
             steps {
-                //docker.build(${ECR_FRONTEND}, '.')
-                sh 'docker build -f ./web/Dockerfile -t ${ECR_FRONTEND} .'
+                dir('web') {
+                    sh 'docker build -t ${REPLACE_ECR_FRONTEND} .'
+                }
             }
         }
         stage('Backend') {
             steps {
-                sh 'gradle publishImageToLocalRegistry'
+                sh './gradlew -PktorImage=${REPLACE_ECR_BACKEND} publishImageToLocalRegistry'
             }
         }
         stage('Update Database') {
-            when {
-                branch 'master'
+            agent {
+                docker { image 'liquibase/liquibase:latest' }
             }
             steps {
-                sh 'gradle update'
+                echo 'not working yet'
+                //sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USER} --password=${REPLACE_DATABASE_PASSWORD}'
             }
         }
         stage('Push into ecr-Repository') {
-            when {
-                branch 'master'
-            }
             steps {
-                echo 'push image into ECR repository'
-                //docker.image(${ECR_FRONTEND}).push('latest')
-                //docker.image(${ECR_BACKEND}).push('latest')
+                sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
+                sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
             }
         }
         stage('Run') {
@@ -36,7 +34,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'run docker compose, so that it works with the pipeline finishing'
+                sh 'docker-compose up --detach --pull always --remove-orphans'
             }
         }
     }
