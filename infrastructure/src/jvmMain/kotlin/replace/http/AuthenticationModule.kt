@@ -108,7 +108,7 @@ fun Application.authenticationModule() {
             call.sessions.clear<UserSession>()
             call.respondText("Logged out")
         }
-        authenticate {
+        authenticate("microsoft-oauth") {
             get("/api/session/login") {
                 // Redirects to 'authorizeUrl' automatically
             }
