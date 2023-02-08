@@ -58,7 +58,13 @@ export class AuthService {
     }
 
     public async logout() {
-        await firstValueFrom(this.http.post("/api/session/logout", {}))
-        this.currentUser = null
+        await firstValueFrom(this.http.post("/api/session/logout", {}, {
+            responseType: "text",
+        })).then(() => {
+            this.currentUser = null
+            window.location.href = "/api/session/login"
+        }).catch(error => {
+            console.log(error)
+        })
     }
 }

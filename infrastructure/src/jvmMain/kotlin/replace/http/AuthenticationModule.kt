@@ -33,11 +33,10 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.directorySessionStorage
 import io.ktor.server.sessions.get
+import io.ktor.server.sessions.maxAge
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import io.ktor.util.pipeline.PipelineContext
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -46,7 +45,7 @@ import replace.dto.toDto
 import replace.model.User
 import replace.model.Users
 import java.io.File
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.hours
 
 fun Application.authenticationModule() {
     val httpClient = HttpClient(CIO) {
@@ -63,18 +62,12 @@ fun Application.authenticationModule() {
         cookie<UserSession>("X-SESSION-TOKEN", directorySessionStorage(File("sessions"), cached = false)) {
             cookie.path = "/"
             cookie.httpOnly = true
+            cookie.maxAge = 1.hours
         }
     }
     authentication {
         session<UserSession>("internal-session") {
-            validate { session ->
-                if (Clock.System.now().minus(session.createdAt) > 10.minutes) {
-                    session
-                } else {
-                    null
-                }
-            }
-
+            validate { it }
             challenge {
                 call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
             }
@@ -171,9 +164,7 @@ data class UserSession(
     val state: String,
     val token: String,
     val email: String,
-) : Principal {
-    val createdAt: Instant = Clock.System.now()
-}
+) : Principal
 
 @Serializable
 data class MicrosoftUserInfo(
