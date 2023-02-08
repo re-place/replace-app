@@ -4,21 +4,18 @@ pipeline {
     stages {
         stage('Frontend') {
             steps {
-                docker.build(${ECR_FRONTEND}, '.')
-                sh 'docker build -f ./web/src/angular/frontend.Dockerfile -t replace-frontend .'
-                'Image noch taggen mit ecr-Command'
+                //docker.build(${ECR_FRONTEND}, '.')
+                sh 'docker build -f ./web/Dockerfile -t ${ECR_FRONTEND} .'
             }
         }
         stage('Backend') {
             steps {
-                docker.build(${ECR_BACKEND}, '.')
-                sh './gradlew publishImageToLocalRegistry'
-                echo 'Image noch taggen mit ecr command'
+                sh 'gradle publishImageToLocalRegistry'
             }
         }
         stage('Update Database') {
             when {
-                branch 'test'
+                branch 'master'
             }
             steps {
                 sh 'gradle update'
@@ -26,7 +23,7 @@ pipeline {
         }
         stage('Push into ecr-Repository') {
             when {
-                branch 'test'
+                branch 'master'
             }
             steps {
                 docker.image(${ECR_FRONTEND}).push('latest')
@@ -35,7 +32,7 @@ pipeline {
         }
         stage('Run') {
             when {
-                branch 'test'
+                branch 'master'
             }
             steps {
                 echo 'run docker compose, so that it works with the pipeline finishing'

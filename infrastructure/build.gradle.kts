@@ -51,7 +51,10 @@ application {
 ktor {
     docker {
         jreVersion.set(JreVersion.JRE_17)
-        localImageName.set("replace-backend")
+
+        val buildTag = config.getString("ktor.build.backendTag") ?: throw IllegalArgumentException("Build Tag for Backend not set")
+
+        localImageName.set(buildTag)
         imageTag.set("latest")
     }
 }
