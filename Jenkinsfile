@@ -15,6 +15,9 @@ pipeline {
             }
         }
         stage('Update Database') {
+            // when {
+            //     branch 'master'
+            // }
             agent {
                 docker { image 'liquibase/liquibase:latest' }
             }
@@ -24,15 +27,18 @@ pipeline {
             }
         }
         stage('Push into ecr-Repository') {
+            // when {
+            //     branch 'master'
+            // }
             steps {
                 sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
                 sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
             }
         }
         stage('Run') {
-            when {
-                branch 'master'
-            }
+            // when {
+            //     branch 'master'
+            // }
             steps {
                 sh 'docker-compose up --detach --pull always --remove-orphans'
             }
