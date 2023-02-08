@@ -40,7 +40,11 @@ pipeline {
             //     branch 'master'
             // }
             steps {
-                sh 'docker-compose up --detach --pull always --remove-orphans'
+                script {
+                    docker.withServer('ssh://test.local') {
+                        sh 'docker-compose up --detach --pull always --remove-orphans'
+                    }
+                }
             }
         }
     }
