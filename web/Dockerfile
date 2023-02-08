@@ -13,5 +13,5 @@ RUN yarn build
 
 # Stage 2: Run
 FROM nginx:stable-alpine
-COPY nginx.conf /etc/nginx/conf.d/replace-nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /replace/dist/replace-web /usr/share/nginx/html
