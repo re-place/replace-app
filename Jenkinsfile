@@ -26,8 +26,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                docker.image(${ECR_FRONTEND}).push('latest')
-                docker.image(${ECR_BACKEND}).push('latest')
+                echo 'push image into ECR repository'
+                //docker.image(${ECR_FRONTEND}).push('latest')
+                //docker.image(${ECR_BACKEND}).push('latest')
             }
         }
         stage('Run') {
