@@ -64,10 +64,6 @@ fun Application.applicationModule() {
         databaseConfig = databaseConfig
     )
 
-//    if (environment.developmentMode) {
-//        devSeeder()
-//    }
-
     authenticationModule()
 
     routing {

@@ -15,10 +15,12 @@ import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.OAuthServerSettings
+import io.ktor.server.auth.Principal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.auth.principal
+import io.ktor.server.auth.session
 import io.ktor.server.config.tryGetString
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
@@ -34,6 +36,8 @@ import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -42,6 +46,7 @@ import replace.dto.toDto
 import replace.model.User
 import replace.model.Users
 import java.io.File
+import kotlin.time.Duration.Companion.minutes
 
 fun Application.authenticationModule() {
     val httpClient = HttpClient(CIO) {
@@ -61,7 +66,20 @@ fun Application.authenticationModule() {
         }
     }
     authentication {
-        oauth {
+        session<UserSession>("internal-session") {
+            validate { session ->
+                if (Clock.System.now().minus(session.createdAt) > 10.minutes) {
+                    session
+                } else {
+                    null
+                }
+            }
+
+            challenge {
+                call.respondText("Not authenticated", status = HttpStatusCode.Unauthorized)
+            }
+        }
+        oauth("microsoft-oauth") {
             val callback = this@authenticationModule.environment.config.tryGetString("ktor.oauth.callback")
                 ?: throw IllegalStateException("Missing OAuth callback URL")
             urlProvider = { callback }
@@ -153,7 +171,9 @@ data class UserSession(
     val state: String,
     val token: String,
     val email: String,
-)
+) : Principal {
+    val createdAt: Instant = Clock.System.now()
+}
 
 @Serializable
 data class MicrosoftUserInfo(
