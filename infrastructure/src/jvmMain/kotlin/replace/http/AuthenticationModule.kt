@@ -62,7 +62,9 @@ fun Application.authenticationModule() {
     }
     authentication {
         oauth {
-            urlProvider = { "http://localhost:8000/api/session/callback" }
+            val callback = this@authenticationModule.environment.config.tryGetString("ktor.oauth.callback")
+                ?: throw IllegalStateException("Missing OAuth callback URL")
+            urlProvider = { callback }
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "microsoft",
@@ -121,11 +123,8 @@ fun Application.authenticationModule() {
                 )
 
                 println("Creating session $session")
-
                 call.sessions.set(session)
-
-                println("Setting session token to ${principal.accessToken}")
-                call.respondRedirect("http://localhost:4200/dashboard")
+                call.respondRedirect("/reservation/my-bookings")
             }
         }
     }

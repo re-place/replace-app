@@ -17,10 +17,13 @@ services:
       - "REPLACE.DATABASE.URL=jdbc:postgresql://db:5432/replace-app"
       - "REPLACE.DATABASE.USER=postgres"
       - "REPLACE.DATABASE.PASSWORD=postgres"
+      - "REPLACE.OAUTH.CALLBACK=http://localhost:8000/api/session/callback"
+      - "REPLACE.OAUTH.CLIENT_ID=..."
+      - "REPLACE.OAUTH.CLIENT_SECRET..."
     expose:
       - 80
     labels:
-      - "traefik.http.routers.backend.rule=(Host(`omicron`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
     depends_on:
       - db
@@ -30,7 +33,7 @@ services:
     expose:
       - 80
     labels:
-      - "traefik.http.routers.frontend.rule=(Host(`omicron`) && PathPrefix(`/`))"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
 
   proxy:

@@ -1,3 +1,4 @@
+
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpEventType, HttpErrorResponse } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
@@ -22,8 +23,7 @@ export class NotAuthenticatedRedirect implements HttpInterceptor {
                     }
 
                     this.authService.currentUser = null
-                    window.location.href = "http://localhost:8000/api/session/login"
-                    // this.router.navigateByUrl("http://localhost:8000/api/session/login")
+                    window.location.href = "/api/session/login"
 
                     return event
                 },
@@ -37,9 +37,7 @@ export class NotAuthenticatedRedirect implements HttpInterceptor {
                     }
 
                     this.authService.currentUser = null
-                    window.location.href = "http://localhost:8000/api/session/login"
-
-                    // this.router.navigateByUrl("/session/login")
+                    window.location.href = "/api/session/login"
                 },
             }),
         )
