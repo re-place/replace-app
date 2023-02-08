@@ -22,6 +22,11 @@ pipeline {
                 docker { image 'liquibase/liquibase:latest' }
             }
             steps {
+                // script {
+                //     docker.withServer('ssh://test.local') {
+                //         sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USER} --password=${REPLACE_DATABASE_PASSWORD}'
+                //     }
+                // }
                 echo 'not working yet'
                 //sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USER} --password=${REPLACE_DATABASE_PASSWORD}'
             }
@@ -42,9 +47,10 @@ pipeline {
             steps {
                 script {
                     docker.withServer('ssh://test.local') {
-                        sh 'docker-compose up --detach --pull always --remove-orphans'
+                        sh 'docker compose up --detach --pull always --remove-orphans'
                     }
                 }
+                //echo 'not running yet'
             }
         }
     }
