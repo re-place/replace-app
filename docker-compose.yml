@@ -14,6 +14,7 @@ services:
     labels:
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=8085"
 
   replace-frontend:
     image: ${REPLACE_ECR_FRONTEND}:latest
