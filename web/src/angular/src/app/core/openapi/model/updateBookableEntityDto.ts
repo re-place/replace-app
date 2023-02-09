@@ -17,5 +17,7 @@ export interface UpdateBookableEntityDto {
     floorId?: string;
     parentId?: string;
     typeId?: string;
+    posX?: number;
+    posY?: number;
 }
 

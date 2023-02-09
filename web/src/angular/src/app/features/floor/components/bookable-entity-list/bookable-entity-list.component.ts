@@ -9,18 +9,22 @@ import { BookableEntityDto } from "src/app/core/openapi"
 })
 export class BookableEntityListComponent {
     @Input() bookableEntities: BookableEntityDto[] | undefined
+    @Input() selectedBookableEntity: BookableEntityDto | undefined
 
-    @Output() edit = new EventEmitter<BookableEntityDto>()
+    @Output() selectedBookableEntityChange = new EventEmitter<BookableEntityDto>()
     @Output() create = new EventEmitter<void>()
 
+    public get selectedEntities() {
+        return this.selectedBookableEntity === undefined ? [] : [this.selectedBookableEntity]
+    }
+
+    public set selectedEntities(selected: BookableEntityDto[]) {
+        this.selectedBookableEntityChange.emit(selected.at(0))
+    }
+
     columns = [
-        { key: "id", label: "ID" },
         { key: "name", label: "Name" },
     ]
-
-    public onEdit(bookableEntity: BookableEntityDto) {
-        this.edit.emit(bookableEntity)
-    }
 
     public onCreate() {
         this.create.emit()

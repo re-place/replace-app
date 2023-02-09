@@ -10,6 +10,9 @@ data class BookableEntityDto(
 
     val name: String,
 
+    val posX: Int,
+    val posY: Int,
+
     val floorId: String,
 
     val parentId: String? = null,
@@ -43,6 +46,8 @@ fun BookableEntity.toDto(with: List<KProperty1<BookableEntity, *>> = emptyList()
     return BookableEntityDto(
         id = id.value,
         name = name,
+        posX = posX,
+        posY = posY,
         floorId = floorId.value,
         parentId = parentId?.value,
         typeId = typeId?.value,

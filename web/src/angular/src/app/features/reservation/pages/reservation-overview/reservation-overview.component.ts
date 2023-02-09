@@ -27,7 +27,7 @@ export class ReservationOverviewComponent implements OnInit {
     getBookings() {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        this.apiService.apiBookingByDateGet(today.toISOString()).subscribe({
+        this.apiService.apiBookingByParamsGet(today.toISOString()).subscribe({
             next: response => {
                 this.bookings = response
                 this.getSites()
