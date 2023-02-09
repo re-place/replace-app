@@ -1,0 +1,39 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-01-20_12-43-06_add_position_columns_to_bookable_entities_table",
+        "author": "re-place",
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "bookable_entities",
+              "columns": [
+                {
+                  "column": {
+                    "name": "pos_x",
+                    "type": "int",
+                    "defaultValueNumeric": 0,
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "pos_y",
+                    "type": "int",
+                    "defaultValueNumeric": 0,
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }]
+}
+

@@ -4,6 +4,7 @@ import { NgModule, Optional, SkipSelf } from "@angular/core"
 
 import { AuthGuard } from "./guards/auth.guard"
 import { NotAuthenticatedRedirect } from "./interceptors/not-authenticated-redirect.interceptor"
+import { BASE_PATH } from "./openapi"
 
 @NgModule({
     declarations: [],
@@ -14,7 +15,12 @@ import { NotAuthenticatedRedirect } from "./interceptors/not-authenticated-redir
             useClass: NotAuthenticatedRedirect,
             multi: true,
         },
-        AuthGuard],
+        AuthGuard,
+        {
+            provide: BASE_PATH,
+            useValue: "",
+        },
+    ],
 })
 export class CoreModule {
     constructor(@Optional() @SkipSelf() coreModule: CoreModule | null) {

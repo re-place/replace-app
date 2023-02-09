@@ -1,9 +1,10 @@
 import { Component, ContentChild, Input, TemplateRef } from "@angular/core"
 
-type Colors = "primary"
+type Colors = "primary" | "red"
 
 const buttonStyles: Record<Colors, string> = {
     primary: "text-green-500  hover:text-green-700 hover:bg-black/5",
+    red: "text-red-500 hover:text-red-700 hover:bg-black/5",
 }
 
 @Component({

@@ -13,4 +13,8 @@ data class UpdateBookableEntityDto(
     val parentId: String? = null,
 
     val typeId: String? = null,
+
+    val posX: Int,
+
+    val posY: Int,
 )

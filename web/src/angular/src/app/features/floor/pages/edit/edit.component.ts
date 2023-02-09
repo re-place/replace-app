@@ -46,6 +46,18 @@ export class EditComponent implements OnDestroy {
         })
     }
 
+    public get selectedEntity(): BookableEntityDto | undefined {
+        if (this.editingBookableEntity?.id !== undefined) {
+            return this.bookableEntities.data?.find((entity) => entity.id === this.editingBookableEntity?.id)
+        }
+
+        return undefined
+    }
+
+    public set selectedEntity(entity: BookableEntityDto | undefined) {
+        this.editingBookableEntity = { ...entity }
+    }
+
     public get files(): FileUploadDto[] {
         const planFile = this.form?.data.planFile
 
@@ -66,6 +78,7 @@ export class EditComponent implements OnDestroy {
 
     public async onSubmit() {
         await this.form?.submit((data) => this.api.apiFloorPut(data))
+        this.snackBar.open("Stockwerk erfolgreich aktualisiert", "OK", { duration: 1000 })
         this.floor.refresh()
     }
 
@@ -74,40 +87,64 @@ export class EditComponent implements OnDestroy {
     }
 
     public onEditBookableEntity(bookableEntity?: BookableEntityDto) {
-        this.editingBookableEntity = bookableEntity
+        this.editingBookableEntity = { ...bookableEntity}
     }
 
     public onCreateBookableEntity() {
-        this.editingBookableEntity = { name: "", type: undefined }
+        this.editingBookableEntity = {
+            name: "",
+            type: undefined,
+            posX: 0,
+            posY: 0,
+        }
     }
 
-    public onSubmitBookableEntity(bookableEntity: BookableEntityDto) {
+    public onSubmitBookableEntity() {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
         this.bookableEntities.loading(true)
 
-        const form = new Form(bookableEntity)
+        const form = new Form(this.editingBookableEntity)
         form.useSnackbar(this.snackBar)
 
-        if (bookableEntity.id === undefined) {
+        if (this.editingBookableEntity.id === undefined) {
             form.submit((data) => this.api.apiBookableEntityPost({
                 ...data,
                 floorId: this.floor.data?.id,
             })).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined
+                this.snackBar.open("Erfolgreich erstellt", "OK", { duration: 1000 })
             })
 
             return
         }
 
-        if (bookableEntity.id !== undefined) {
+        if (this.editingBookableEntity.id !== undefined) {
             form.submit((data) => this.api.apiBookableEntityPut({
                 ...data,
                 floorId: this.floor.data?.id,
             })).then(() => {
                 this.bookableEntities.refresh()
                 this.editingBookableEntity = undefined
+                this.snackBar.open("Erfolgreich aktualisiert", "OK", { duration: 1000 })
             })
         }
+    }
+
+    public onCancelEditingBookableEntity() {
+        this.editingBookableEntity = undefined
+    }
+
+    public onDragBookableEntity(event: { entity: BookableEntityDto, deltaX: number, deltaY: number}) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity.posX = (this.editingBookableEntity.posX ?? 0) + event.deltaX
+        this.editingBookableEntity.posY = (this.editingBookableEntity.posY ?? 0) + event.deltaY
     }
 
     public get initialFiles(): string[] {
@@ -128,5 +165,36 @@ export class EditComponent implements OnDestroy {
 
     public onFilesUploaded(files: FileUploadDto[]) {
         this.files = files
+    }
+
+    public onSelectedEntityPosXUpdate(posX: number) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, posX }
+    }
+
+    public onSelectedEntityPosYUpdate(posY: number) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, posY }
+    }
+
+    public onDeleteEntity(id: string) {
+        this.api.apiBookableEntityIdDelete(id).subscribe({
+            next: () => {
+                if (this.editingBookableEntity?.id === id) {
+                    this.editingBookableEntity = undefined
+                }
+                this.bookableEntities.refresh()
+                this.snackBar.open("Erfolgreich gelöscht", "OK", { duration: 1000 })
+            },
+            error: (error) => {
+                this.snackBar.open(error.message, "OK")
+            },
+        })
     }
 }
