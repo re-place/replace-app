@@ -7,10 +7,10 @@ import { UserLayoutComponent } from "./shared/layouts/user-layout/user-layout.co
 import type { Routes } from "@angular/router"
 
 const routes: Routes = [
-    {
-        path: "login",
-        loadChildren: () => import("./features/login/login.module").then((m) => m.LoginModule),
-    },
+    // {
+    //     path: "login",
+    //     loadChildren: () => import("./features/login/login.module").then((m) => m.LoginModule),
+    // },
     {
         path: "",
         redirectTo: "/reservation/my-bookings",

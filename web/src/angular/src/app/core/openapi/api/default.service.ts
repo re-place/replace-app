@@ -41,8 +41,7 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from "../variables"
     providedIn: "root",
 })
 export class DefaultService {
-
-    protected basePath = "http://localhost:4200"
+    protected basePath = ""
     public defaultHeaders = new HttpHeaders()
     public configuration = new Configuration()
     public encoder: HttpParameterCodec
@@ -2031,5 +2030,4 @@ export class DefaultService {
             },
         )
     }
-
 }

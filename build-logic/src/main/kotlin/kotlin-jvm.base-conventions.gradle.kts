@@ -12,6 +12,11 @@ extensions.getByName<KotlinMultiplatformExtension>("kotlin").apply {
     }
 }
 
+extensions.getByName<JavaPluginExtension>("java").apply {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     "jvmMainImplementation"(kotlin("reflect"))
 }

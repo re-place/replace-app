@@ -15,18 +15,18 @@ export class AuthGuard implements CanActivate {
         state: RouterStateSnapshot,
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         return this.auth.isAuthenticated().then((isAuthenticated: boolean) => {
-            if (isAuthenticated) {
-                return true
-            }
+            // if (isAuthenticated) {
+            //     return true
+            // }
 
-            this.router.navigateByUrl("/login", {
-                replaceUrl: true,
-                state: {
-                    intendedUrl: state.url,
-                },
-            })
-
-            return false
+            // this.router.navigateByUrl("/session/login", {
+            //     replaceUrl: true,
+            //     state: {
+            //         intendedUrl: state.url,
+            //     },
+            // })
+            // window.location.href = "http://localhost:8000/api/session/login"
+            return true
         })
     }
 }

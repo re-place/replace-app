@@ -17,14 +17,13 @@ import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
-import org.jetbrains.exposed.sql.transactions.transaction
+import replace.Replace
 import replace.datastore.LocalFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
-import replace.model.User
-import replace.model.Users
-import replace.plugin.SinglePageApplication
 
 fun Application.applicationModule() {
+    println("Starting backend...")
+
     install(CORS) {
         anyHost() // TODO: Don't do this in production
         allowHeader(HttpHeaders.ContentType)
@@ -48,7 +47,7 @@ fun Application.applicationModule() {
     install(TegralOpenApiKtor) {
         title = "Replace API"
         description = "API for the Replace application"
-        version = "2022.1-SNAPSHOT"
+        version = Replace.version
     }
 
     install(TegralSwaggerUiKtor)
@@ -65,17 +64,7 @@ fun Application.applicationModule() {
         databaseConfig = databaseConfig
     )
 
-    if (environment.developmentMode) {
-        devSeeder()
-    }
-
-    sessionModule()
     authenticationModule()
-
-    install(SinglePageApplication) {
-        folderPath = "static"
-        ignoreIfContains = Regex("^/api.*$")
-    }
 
     routing {
         openApiEndpoint("/openapi")
@@ -93,25 +82,6 @@ fun Application.applicationModule() {
     )
 
     deleteOldTemporaryFileUploadsJob.dispatch()
-}
 
-fun devSeeder() {
-    transaction {
-        val message = "Seeding Dev User! (This should only happen in dev). Username: user, Password: password"
-        println()
-        println("-".repeat(message.length))
-        println(message)
-        println("-".repeat(message.length))
-        println()
-        val devUser = User.find { Users.username eq "user" }.firstOrNull()
-
-        if (devUser == null) {
-            User.new {
-                username = "user"
-                password = "password"
-                firstname = "John"
-                lastname = "Doe"
-            }
-        }
-    }
+    println("Backend started!")
 }
