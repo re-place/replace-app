@@ -47,6 +47,9 @@ pipeline {
             // when {
             //     branch 'master'
             // }
+            environment {
+                REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
+            }
             steps {
                 script {
                     docker.withServer('ssh://test.local') {
