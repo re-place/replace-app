@@ -18,10 +18,14 @@ plugins {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.2")
+    implementation("io.ktor:ktor-serialization-gson:2.2.2")
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-domain"))
     jvmMainImplementation(libs.kotlinx.coroutines)
     jvmMainImplementation(libs.kotlinx.serialization)
+    jvmMainImplementation(libs.ktor.client.cio)
+    jvmMainImplementation(libs.ktor.client.content.negotiation)
     jvmMainImplementation(libs.ktor.serialization)
     jvmMainImplementation(libs.ktor.server.auth)
     jvmMainImplementation(libs.ktor.server.content.negotiation)
