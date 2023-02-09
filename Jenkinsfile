@@ -11,6 +11,7 @@ pipeline {
         }
         stage('Backend') {
             steps {
+                cp './infrastructure/src/jvmMain/resources/application_env.conf' './infrastructure/src/jvmMain/resources/application.conf'
                 sh './gradlew -PktorImage=${REPLACE_ECR_BACKEND} publishImageToLocalRegistry'
             }
         }
