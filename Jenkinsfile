@@ -18,6 +18,9 @@ pipeline {
             // when {
             //     branch 'master'
             // }
+            environment {
+                REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
+            }
             agent {
                 docker { image 'liquibase/liquibase:latest' }
             }
@@ -28,7 +31,7 @@ pipeline {
                 //     }
                 // }
                 // echo 'not working yet'
-                sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USER} --password=${REPLACE_DATABASE_PASSWORD}'
+                sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USR} --password=${REPLACE_DATABASE_PSW}'
             }
         }
         stage('Push into ecr-Repository') {

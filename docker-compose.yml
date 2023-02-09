@@ -6,11 +6,11 @@ services:
       - "REPLACE_DATABASE_URL=${REPLACE_DATABASE_URL}"
       - "REPLACE_DATABASE_USER=${REPLACE_DATABASE_USER}"
       - "REPLACE_DATABASE_PASSWORD=${REPLACE_DATABASE_PASSWORD}"
-      - "REPLACE_OAUTH_CALLBACK=http://localhost:8000/api/session/callback"
+      - "REPLACE_OAUTH_CALLBACK=http://localhost/api/session/callback"
       - "REPLACE_OAUTH_CLIENT_ID=${REPLACE_OAUTH_CLIENTID}"
       - "REPLACE_OAUTH_CLIENT_SECRET=${REPLACE_OAUTH_SECRET}"
     expose:
-      - 8080
+      - 8085
     labels:
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
@@ -18,7 +18,7 @@ services:
   replace-frontend:
     image: ${REPLACE_ECR_FRONTEND}:latest
     expose:
-      - 8080
+      - 8085
     labels:
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
@@ -28,11 +28,11 @@ services:
     command:
 #      - "--log.level=DEBUG"
       - "--api.insecure=true"
+      - "--api.dashboard=false"
       - "--providers.docker"
-      - "--entrypoints.web.address=:8080"
-      - "--entrypoints.api=:8081"
+      - "--entrypoints.web.address=:8085"
     ports:
-      - "80:8080"
+      - "8085:8085"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
