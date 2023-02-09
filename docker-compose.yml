@@ -10,11 +10,11 @@ services:
       - "REPLACE_OAUTH_CLIENT_ID=${REPLACE_OAUTH_CLIENTID}"
       - "REPLACE_OAUTH_CLIENT_SECRET=${REPLACE_OAUTH_SECRET}"
     expose:
-      - 8080
+      - 80
     labels:
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
-      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+      - "traefik.http.services.backend.loadbalancer.server.port=80"
 
   replace-frontend:
     image: ${REPLACE_ECR_FRONTEND}:latest
