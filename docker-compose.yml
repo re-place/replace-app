@@ -18,7 +18,7 @@ services:
   replace-frontend:
     image: ${REPLACE_ECR_FRONTEND}:latest
     expose:
-      - 8085
+      - 80
     labels:
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
