@@ -3,12 +3,12 @@ services:
   replace-backend:
     image: ${REPLACE_ECR_BACKEND}:latest
     environment:
-      - "REPLACE.DATABASE.URL=${REPLACE_DATABASE_URL}"
-      - "REPLACE.DATABASE.USER=${REPLACE_DATABASE_USER}"
-      - "REPLACE.DATABASE.PASSWORD=${REPLACE_DATABASE_PASSWORD}"
-      - "REPLACE.OAUTH.CALLBACK=http://localhost:8000/api/session/callback"
-      - "REPLACE.OAUTH.CLIENT_ID=..."
-      - "REPLACE.OAUTH.CLIENT_SECRET..."
+      - "REPLACE_DATABASE_URL=${REPLACE_DATABASE_URL}"
+      - "REPLACE_DATABASE_USER=${REPLACE_DATABASE_USER}"
+      - "REPLACE_DATABASE_PASSWORD=${REPLACE_DATABASE_PASSWORD}"
+      - "REPLACE_OAUTH_CALLBACK=http://localhost:8000/api/session/callback"
+      - "REPLACE_OAUTH_CLIENT_ID=${REPLACE_OAUTH_CLIENTID}"
+      - "REPLACE_OAUTH_CLIENT_SECRET=${REPLACE_OAUTH_SECRET}"
     expose:
       - 8080
     labels:
@@ -30,9 +30,9 @@ services:
       - "--api.insecure=true"
       - "--providers.docker"
       - "--entrypoints.web.address=:8080"
+      - "--entrypoints.api=:8081"
     ports:
       - "80:8080"
-#      - "8080:8080" // Uncomment this line to access the Traefik dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
