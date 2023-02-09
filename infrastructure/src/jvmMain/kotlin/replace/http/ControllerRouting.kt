@@ -17,7 +17,7 @@ fun Application.routeControllers(
     fileStorage: FileStorage
 ) {
     routing {
-        authenticate {
+        authenticate("internal-session") {
             registerBookableEntityRoutes()
             registerBookableEntityTypeRoutes()
             registerBookingRoutes()

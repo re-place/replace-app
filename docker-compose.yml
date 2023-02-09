@@ -3,13 +3,16 @@ services:
   replace-backend:
     image: ${REPLACE_ECR_BACKEND}:latest
     environment:
-      - "REPLACE_DATABASE_URL=${REPLACE_DATABASE_URL}"
-      - "REPLACE_DATABASE_USER=${REPLACE_DATABASE_USER}"
-      - "REPLACE_DATABASE_PASSWORD=${REPLACE_DATABASE_PASSWORD}"
+      - "REPLACE.DATABASE.URL=${REPLACE_DATABASE_URL}"
+      - "REPLACE.DATABASE.USER=${REPLACE_DATABASE_USER}"
+      - "REPLACE.DATABASE.PASSWORD=${REPLACE_DATABASE_PASSWORD}"
+      - "REPLACE.OAUTH.CALLBACK=http://localhost:8000/api/session/callback"
+      - "REPLACE.OAUTH.CLIENT_ID=..."
+      - "REPLACE.OAUTH.CLIENT_SECRET..."
     expose:
       - 8080
     labels:
-      - "traefik.http.routers.backend.rule=(Host(`omicron`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
 
   replace-frontend:
@@ -17,7 +20,7 @@ services:
     expose:
       - 8080
     labels:
-      - "traefik.http.routers.frontend.rule=(Host(`omicron`) && PathPrefix(`/`))"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
 
   proxy:
