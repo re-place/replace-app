@@ -15,9 +15,9 @@ pipeline {
             }
         }
         stage('Update Database') {
-            // when {
-            //     branch 'master'
-            // }
+            when {
+                branch 'master'
+            }
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
@@ -25,28 +25,22 @@ pipeline {
                 docker { image 'liquibase/liquibase:latest' }
             }
             steps {
-                // script {
-                //     docker.withServer('ssh://test.local') {
-                //         sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USER} --password=${REPLACE_DATABASE_PASSWORD}'
-                //     }
-                // }
-                // echo 'not working yet'
                 sh 'liquibase update --changelog-file=/infrastructure/src/jvmMain/resources/db/changelog-root.json --url=${REPLACE_DATABASE_URL} --username=${REPLACE_DATABASE_USR} --password=${REPLACE_DATABASE_PSW}'
             }
         }
         stage('Push into ecr-Repository') {
-            // when {
-            //     branch 'master'
-            // }
+            when {
+                branch 'master'
+            }
             steps {
                 sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
                 sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
             }
         }
         stage('Run') {
-            // when {
-            //     branch 'master'
-            // }
+            when {
+                branch 'master'
+            }
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
