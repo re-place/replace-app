@@ -21,14 +21,18 @@
 ### Setup
 
 - Clone Repo
-- Database settings are Applied through environment variables. Depending on which setup you are using, you have to set following variables specified in `/infrastructure/src/jvmMain/resources/application.conf`
+- Settings are applied per default though `/infrastructure/src/jvmMain/resources/application.conf`, these include Database and OAuth configuration. A example is provided in `/infrastructure/src/jvmMain/resources/application-env.conf`, which is used for building the application
 - If you want to contribute to the project run `./gradlew addKtlintCheckGitPreCommitHook` beforehand
 - execute `yarn install` in `/web/src/angular` to install frontend packages
 
 ### Run
 
-- run `./gradlew runFatJar` to start backend
+- run `./gradlew runShadow` to start backend
 - run `yarn start` in `/web/src/angular` to start frontend
+
+### DevOps
+
+- The application is built using Jenkins and Docker. Traefik is used as reverse proxy to serve the application.
 
 ### Notes
 

@@ -55,8 +55,9 @@ application {
 ktor {
     docker {
         jreVersion.set(JreVersion.JRE_17)
-        localImageName.set("replace-backend")
-        imageTag.set("latest")
+        project.findProperty("ktorImage")?.also {
+            localImageName.set(it.toString())
+        }
     }
 }
 
@@ -85,7 +86,8 @@ liquibase {
                 throw IllegalArgumentException("Config file does not exist")
             }
 
-            val config = ConfigFactory.parseString(File("infrastructure/src/jvmMain/resources/application.conf").readText())
+            val config =
+                ConfigFactory.parseString(File("infrastructure/src/jvmMain/resources/application.conf").readText())
 
             val dbUrl = config.getString("ktor.db.url") ?: throw IllegalArgumentException("Database URL not set")
             val dbUser = config.getString("ktor.db.user") ?: ""
@@ -121,7 +123,7 @@ tasks {
             migrationFile.writeText(newText)
         }
     }
-    register("fresh",) {
+    register("fresh") {
         dependsOn("dropAll")
         dependsOn("update")
     }
