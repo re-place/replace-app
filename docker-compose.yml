@@ -28,7 +28,6 @@ services:
     command:
 #      - "--log.level=DEBUG"
       - "--api.insecure=true"
-      - "--api.dashboard=false"
       - "--providers.docker"
       - "--entrypoints.web.address=:8085"
     ports:
