@@ -12,13 +12,15 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationOverviewComponent } from "./pages/reservation-overview/reservation-overview.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
-import { MaterialModule } from "../../material/material.module"
+import { MaterialModule } from "../../material/material.module";
+import { EntityMapComponent } from './components/entity-map/entity-map.component'
 
 
 @NgModule({
     declarations: [
         ReservationComponent,
         ReservationOverviewComponent,
+        EntityMapComponent,
     ],
     imports: [
         CommonModule,

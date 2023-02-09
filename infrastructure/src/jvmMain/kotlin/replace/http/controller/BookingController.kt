@@ -44,12 +44,14 @@ fun Route.registerBookingRoutes() {
             it.toDto()
         }
 
-        get("/byDate") {
+        get("/byParams") {
             executeUseCase {
                 withUserSession {
                     val start = call.parameters["start"]
                     val end = call.parameters["end"]
-                    GetBookingUseCase.execute(start, end, it.userId)
+                    val bookableEntityId = call.parameters["bookableEntityId"]
+
+                    GetBookingUseCase.execute(start, end, bookableEntityId, it.userId)
                 }
             }
         } describe {
@@ -60,6 +62,11 @@ fun Route.registerBookingRoutes() {
             }
             "end" queryParameter {
                 description = "The end timestamp"
+                required = false
+                schema(typeOf<String>())
+            }
+            "bookableEntityId" queryParameter {
+                description = "The id of a bookable entity"
                 required = false
                 schema(typeOf<String>())
             }

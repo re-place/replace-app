@@ -21,6 +21,8 @@ object CreateBookableEntityUseCase {
                 floorId = EntityID(bookableEntityDto.floorId, Floors)
                 parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
                 typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntityTypes) }
+                posX = bookableEntityDto.posX
+                posY = bookableEntityDto.posY
             }
 
             bookableEntity.toDto()

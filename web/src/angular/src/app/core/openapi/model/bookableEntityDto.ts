@@ -16,6 +16,8 @@ import { BookableEntityTypeDto } from './bookableEntityTypeDto';
 export interface BookableEntityDto { 
     id?: string;
     name?: string;
+    posX?: number;
+    posY?: number;
     floorId?: string;
     parentId?: string;
     typeId?: string;

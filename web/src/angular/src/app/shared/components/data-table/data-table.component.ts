@@ -10,12 +10,11 @@ export class DataTableComponent {
     @Input() public data: any[] | undefined
     @Input() public columns: { key: string; label: string }[] = []
     @Input() public selectable: "single" | "multiple" | "none" = "none"
+    @Input() public selected: any[] = []
 
-    @Output() public readonly selectChange = new EventEmitter<any[]>()
+    @Output() public readonly selectedChange = new EventEmitter<any[]>()
 
     @ContentChild(TemplateRef) public templateRef: TemplateRef<any> | undefined
-
-    public selected: any[] = []
 
     get dataToDisplay() {
         return this.data ?? []
@@ -37,16 +36,17 @@ export class DataTableComponent {
         }
 
         if (this.selected.includes(row)) {
-            this.selected = this.selected.filter((selected) => selected !== row)
-            this.selectChange.emit(this.selected)
+            this.selectedChange.emit(this.selected.filter((selected) => selected !== row))
             return
         }
 
         if (this.selectable === "single") {
-            this.selected = []
+            this.selectedChange.emit([row])
         }
 
-        this.selected.push(row)
+        if (this.selectable === "multiple") {
+            this.selectedChange.emit([...this.selected, row])
+        }
     }
 
     public isSelected(row: any) {

@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router"
 export class CrudLayoutComponent {
     @Input() title!: string
     @Input() createRoute: string | null = null
+    @Input() wFull = false
 
     constructor(private readonly router: Router, private readonly activatedRoute: ActivatedRoute) {}
 

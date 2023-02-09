@@ -1,4 +1,4 @@
-<crud-layout [title]="title">
+<crud-layout [title]="title" [wFull]="true">
     <crud-card (save)="onSubmit()" [saveText]="'speichern'">
         <loading-state [loading]="form === undefined">
             <ng-template>
@@ -26,24 +26,41 @@
     </crud-card>
     <card>
         <h2 class="text-lg font-medium">Buchbare Objekte</h2>
-        <loading-state [loading]="bookableEntities.loading()" class="flex h-96">
-            <ng-template>
-                <bookable-entity-list
-                    class="grow"
-                    [bookableEntities]="bookableEntities.data"
-                    (edit)="onEditBookableEntity($event)"
-                    (create)="onCreateBookableEntity()"
-                >
-                </bookable-entity-list>
-                <div *ngIf="editingBookableEntity !== undefined" class="border-l-2 border-gray-300 mx-4 my-8"></div>
-                <create-or-update-bookable-entity
-                    class="min-w-56"
-                    *ngIf="editingBookableEntity !== undefined"
-                    [bookableEntity]="editingBookableEntity"
-                    (submitBookableEntity)="onSubmitBookableEntity($event)"
-                >
-                </create-or-update-bookable-entity>
-            </ng-template>
-        </loading-state>
+        <div class="flex gap-4">
+            <entity-map
+                class="h-[40rem] block bg-gray-100 rounded-md p-2 grow"
+                [entities]="bookableEntities.data ?? []"
+                [backgroundImage]="floor.data?.planFile"
+                [selectedEntity]="editingBookableEntity"
+                (selectedEntityChange)="selectedEntity = $event"
+                (entityDrag)="onDragBookableEntity($event)"
+            >
+            </entity-map>
+            <create-or-update-bookable-entity
+                class="w-80 border-x-2 border-gray-300 p-2"
+                *ngIf="editingBookableEntity !== undefined"
+                [id]="editingBookableEntity.id"
+                [(name)]="editingBookableEntity.name"
+                [posX]="editingBookableEntity.posX"
+                [posY]="editingBookableEntity.posY"
+                (submitBookableEntity)="onSubmitBookableEntity()"
+                (cancel)="onCancelEditingBookableEntity()"
+                (posXChange)="onSelectedEntityPosXUpdate($event)"
+                (posYChange)="onSelectedEntityPosYUpdate($event)"
+                (delete)="onDeleteEntity($event)"
+            >
+            </create-or-update-bookable-entity>
+            <loading-state [loading]="bookableEntities.loading()">
+                <ng-template>
+                    <bookable-entity-list
+                        class="mt-4 w-60 block"
+                        [bookableEntities]="bookableEntities.data"
+                        [(selectedBookableEntity)]="selectedEntity"
+                        (create)="onCreateBookableEntity()"
+                    >
+                    </bookable-entity-list>
+                </ng-template>
+            </loading-state>
+        </div>
     </card>
 </crud-layout>

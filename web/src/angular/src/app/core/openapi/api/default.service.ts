@@ -11,112 +11,92 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext
-        }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+    HttpResponse, HttpEvent, HttpParameterCodec, HttpContext,
+}       from "@angular/common/http"
+import { Inject, Injectable, Optional }                      from "@angular/core"
+import { Observable }                                        from "rxjs"
 
-// @ts-ignore
-import { BookableEntityDto } from '../model/bookableEntityDto';
-// @ts-ignore
-import { BookableEntityTypeDto } from '../model/bookableEntityTypeDto';
-// @ts-ignore
-import { BookingDto } from '../model/bookingDto';
-// @ts-ignore
-import { CreateBookableEntityDto } from '../model/createBookableEntityDto';
-// @ts-ignore
-import { CreateBookableEntityTypeDto } from '../model/createBookableEntityTypeDto';
-// @ts-ignore
-import { CreateBookingDto } from '../model/createBookingDto';
-// @ts-ignore
-import { CreateFloorDto } from '../model/createFloorDto';
-// @ts-ignore
-import { CreateSiteDto } from '../model/createSiteDto';
-// @ts-ignore
-import { FloorDto } from '../model/floorDto';
-// @ts-ignore
-import { SiteDto } from '../model/siteDto';
-// @ts-ignore
-import { TemporaryFileUploadDto } from '../model/temporaryFileUploadDto';
-// @ts-ignore
-import { UpdateBookableEntityDto } from '../model/updateBookableEntityDto';
-// @ts-ignore
-import { UpdateFloorDto } from '../model/updateFloorDto';
-// @ts-ignore
-import { UpdateSiteDto } from '../model/updateSiteDto';
-// @ts-ignore
-import { UserDto } from '../model/userDto';
-
-// @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
-
+import { Configuration }                                     from "../configuration"
+import { CustomHttpParameterCodec }                          from "../encoder"
+import { BookableEntityDto } from "../model/bookableEntityDto"
+import { BookableEntityTypeDto } from "../model/bookableEntityTypeDto"
+import { BookingDto } from "../model/bookingDto"
+import { CreateBookableEntityDto } from "../model/createBookableEntityDto"
+import { CreateBookableEntityTypeDto } from "../model/createBookableEntityTypeDto"
+import { CreateBookingDto } from "../model/createBookingDto"
+import { CreateFloorDto } from "../model/createFloorDto"
+import { CreateSiteDto } from "../model/createSiteDto"
+import { FloorDto } from "../model/floorDto"
+import { SiteDto } from "../model/siteDto"
+import { TemporaryFileUploadDto } from "../model/temporaryFileUploadDto"
+import { UpdateBookableEntityDto } from "../model/updateBookableEntityDto"
+import { UpdateFloorDto } from "../model/updateFloorDto"
+import { UpdateSiteDto } from "../model/updateSiteDto"
+import { UserDto } from "../model/userDto"
+import { BASE_PATH, COLLECTION_FORMATS }                     from "../variables"
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: "root",
 })
 export class DefaultService {
-
-    protected basePath = "";
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new Configuration();
-    public encoder: HttpParameterCodec;
+    protected basePath = ""
+    public defaultHeaders = new HttpHeaders()
+    public configuration = new Configuration()
+    public encoder: HttpParameterCodec
 
     constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string|string[], @Optional() configuration: Configuration) {
         if (configuration) {
-            this.configuration = configuration;
+            this.configuration = configuration
         }
-        if (typeof this.configuration.basePath !== 'string') {
+        if (typeof this.configuration.basePath !== "string") {
             if (Array.isArray(basePath) && basePath.length > 0) {
-                basePath = basePath[0];
+                basePath = basePath[0]
             }
 
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
+            if (typeof basePath !== "string") {
+                basePath = this.basePath
             }
-            this.configuration.basePath = basePath;
+            this.configuration.basePath = basePath
         }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec()
     }
 
 
-    // @ts-ignore
     private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
         if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
+            httpParams = this.addToHttpParamsRecursive(httpParams, value)
         } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+            httpParams = this.addToHttpParamsRecursive(httpParams, value, key)
         }
-        return httpParams;
+        return httpParams
     }
 
     private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
         if (value == null) {
-            return httpParams;
+            return httpParams
         }
 
         if (typeof value === "object") {
             if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
+                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key))
             } else if (value instanceof Date) {
                 if (key != null) {
-                    httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+                    httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10))
                 } else {
-                   throw Error("key may not be null if value is Date");
+                    throw Error("key may not be null if value is Date")
                 }
             } else {
                 Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
+                    httpParams, value[k], key != null ? `${key}.${k}` : k))
             }
         } else if (key != null) {
-            httpParams = httpParams.append(key, value);
+            httpParams = httpParams.append(key, value)
         } else {
-            throw Error("key may not be null if value is not object or array");
+            throw Error("key may not be null if value is not object or array")
         }
-        return httpParams;
+        return httpParams
     }
 
     /**
@@ -124,53 +104,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<BookableEntityDto>>;
-    public apiBookableEntityGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<BookableEntityDto>>>;
-    public apiBookableEntityGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<BookableEntityDto>>>;
-    public apiBookableEntityGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookableEntityDto>>;
+    public apiBookableEntityGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookableEntityDto>>>;
+    public apiBookableEntityGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookableEntityDto>>>;
+    public apiBookableEntityGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity`;
-        return this.httpClient.request<Array<BookableEntityDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/bookable-entity"
+        return this.httpClient.request<Array<BookableEntityDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -179,56 +159,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiBookableEntityIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookableEntityIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookableEntityIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookableEntityIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookableEntityIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookableEntityIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookableEntityIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookableEntityIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -237,56 +217,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookableEntityDto>;
-    public apiBookableEntityIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
-    public apiBookableEntityIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
-    public apiBookableEntityIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityDto>;
+    public apiBookableEntityIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
+    public apiBookableEntityIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
+    public apiBookableEntityIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookableEntityIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookableEntityIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<BookableEntityDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/bookable-entity/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<BookableEntityDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -295,63 +275,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookableEntityDto>;
-    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
-    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
-    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityDto>;
+    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
+    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
+    public apiBookableEntityPost(createBookableEntityDto?: CreateBookableEntityDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity`;
-        return this.httpClient.request<BookableEntityDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/bookable-entity"
+        return this.httpClient.request<BookableEntityDto>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createBookableEntityDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -360,63 +340,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookableEntityDto>;
-    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
-    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
-    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityDto>;
+    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityDto>>;
+    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityDto>>;
+    public apiBookableEntityPut(updateBookableEntityDto?: UpdateBookableEntityDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity`;
-        return this.httpClient.request<BookableEntityDto>('put', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/bookable-entity"
+        return this.httpClient.request<BookableEntityDto>("put", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: updateBookableEntityDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -424,53 +404,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypeGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<BookableEntityTypeDto>>;
-    public apiBookableEntityTypeGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<BookableEntityTypeDto>>>;
-    public apiBookableEntityTypeGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<BookableEntityTypeDto>>>;
-    public apiBookableEntityTypeGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypeGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookableEntityTypeDto>>;
+    public apiBookableEntityTypeGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookableEntityTypeDto>>>;
+    public apiBookableEntityTypeGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookableEntityTypeDto>>>;
+    public apiBookableEntityTypeGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity-type`;
-        return this.httpClient.request<Array<BookableEntityTypeDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/bookable-entity-type"
+        return this.httpClient.request<Array<BookableEntityTypeDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -479,56 +459,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypeIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiBookableEntityTypeIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookableEntityTypeIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookableEntityTypeIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookableEntityTypeIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookableEntityTypeIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookableEntityTypeIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookableEntityTypeIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -537,56 +517,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypeIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookableEntityTypeDto>;
-    public apiBookableEntityTypeIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
-    public apiBookableEntityTypeIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
-    public apiBookableEntityTypeIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypeIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityTypeDto>;
+    public apiBookableEntityTypeIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
+    public apiBookableEntityTypeIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
+    public apiBookableEntityTypeIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookableEntityTypeIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookableEntityTypeIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<BookableEntityTypeDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/bookable-entity-type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<BookableEntityTypeDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -595,129 +575,134 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookableEntityTypeDto>;
-    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
-    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
-    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookableEntityTypeDto>;
+    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookableEntityTypeDto>>;
+    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookableEntityTypeDto>>;
+    public apiBookableEntityTypePost(createBookableEntityTypeDto?: CreateBookableEntityTypeDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/bookable-entity-type`;
-        return this.httpClient.request<BookableEntityTypeDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/bookable-entity-type"
+        return this.httpClient.request<BookableEntityTypeDto>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createBookableEntityTypeDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
      * @param start The start timestamp
      * @param end The end timestamp
+     * @param bookableEntityId The id of a bookable entity
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingByDateGet(start?: string, end?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<BookingDto>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
-    public apiBookingByDateGet(start?: string, end?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookingDto>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
+    public apiBookingByParamsGet(start?: string, end?: string, bookableEntityId?: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder})
         if (start !== undefined && start !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>start, 'start');
+            localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>start, "start")
         }
         if (end !== undefined && end !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>end, 'end');
+            localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>end, "end")
+        }
+        if (bookableEntityId !== undefined && bookableEntityId !== null) {
+            localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>bookableEntityId, "bookableEntityId")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/booking/byDate`;
-        return this.httpClient.request<Array<BookingDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/booking/byParams"
+        return this.httpClient.request<Array<BookingDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -725,53 +710,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<BookingDto>>;
-    public apiBookingGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
-    public apiBookingGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
-    public apiBookingGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookingGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<BookingDto>>;
+    public apiBookingGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<BookingDto>>>;
+    public apiBookingGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<BookingDto>>>;
+    public apiBookingGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/booking`;
-        return this.httpClient.request<Array<BookingDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/booking"
+        return this.httpClient.request<Array<BookingDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -780,56 +765,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiBookingIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiBookingIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiBookingIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiBookingIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiBookingIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiBookingIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiBookingIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookingIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookingIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -838,56 +823,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookingDto>;
-    public apiBookingIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
-    public apiBookingIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
-    public apiBookingIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookingIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookingDto>;
+    public apiBookingIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
+    public apiBookingIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
+    public apiBookingIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiBookingIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiBookingIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<BookingDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/booking/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<BookingDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -896,63 +881,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BookingDto>;
-    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
-    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
-    public apiBookingPost(createBookingDto?: CreateBookingDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<BookingDto>;
+    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<BookingDto>>;
+    public apiBookingPost(createBookingDto?: CreateBookingDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<BookingDto>>;
+    public apiBookingPost(createBookingDto?: CreateBookingDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/booking`;
-        return this.httpClient.request<BookingDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/booking"
+        return this.httpClient.request<BookingDto>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createBookingDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -961,45 +946,45 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFileIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<Blob>;
-    public apiFileIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<HttpResponse<Blob>>;
-    public apiFileIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<HttpEvent<Blob>>;
-    public apiFileIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<any> {
+    public apiFileIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
+    public apiFileIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
+    public apiFileIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
+    public apiFileIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiFileIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiFileIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "*",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let localVarPath = `/api/file/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/file/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: "blob",
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1008,56 +993,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<FloorDto>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
-    public apiFloorFloorIdBookableEntityGet(floorId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<FloorDto>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
+    public apiFloorFloorIdBookableEntityGet(floorId: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (floorId === null || floorId === undefined) {
-            throw new Error('Required parameter floorId was null or undefined when calling apiFloorFloorIdBookableEntityGet.');
+            throw new Error("Required parameter floorId was null or undefined when calling apiFloorFloorIdBookableEntityGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor/${this.configuration.encodeParam({name: "floorId", value: floorId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/bookable-entity`;
-        return this.httpClient.request<Array<FloorDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "floorId", value: floorId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/bookable-entity`
+        return this.httpClient.request<Array<FloorDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1065,53 +1050,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<FloorDto>>;
-    public apiFloorGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
-    public apiFloorGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
-    public apiFloorGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiFloorGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<FloorDto>>;
+    public apiFloorGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<FloorDto>>>;
+    public apiFloorGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<FloorDto>>>;
+    public apiFloorGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor`;
-        return this.httpClient.request<Array<FloorDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/floor"
+        return this.httpClient.request<Array<FloorDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1120,56 +1105,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiFloorIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiFloorIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiFloorIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiFloorIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiFloorIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiFloorIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiFloorIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiFloorIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiFloorIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1178,56 +1163,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<FloorDto>;
-    public apiFloorIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
-    public apiFloorIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
-    public apiFloorIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiFloorIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<FloorDto>;
+    public apiFloorIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
+    public apiFloorIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
+    public apiFloorIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiFloorIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiFloorIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<FloorDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/floor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<FloorDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1236,63 +1221,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<FloorDto>;
-    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
-    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
-    public apiFloorPost(createFloorDto?: CreateFloorDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<FloorDto>;
+    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
+    public apiFloorPost(createFloorDto?: CreateFloorDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
+    public apiFloorPost(createFloorDto?: CreateFloorDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor`;
-        return this.httpClient.request<FloorDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/floor"
+        return this.httpClient.request<FloorDto>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createFloorDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1301,63 +1286,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<FloorDto>;
-    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
-    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
-    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<FloorDto>;
+    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<FloorDto>>;
+    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<FloorDto>>;
+    public apiFloorPut(updateFloorDto?: UpdateFloorDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/floor`;
-        return this.httpClient.request<FloorDto>('put', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/floor"
+        return this.httpClient.request<FloorDto>("put", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: updateFloorDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1365,53 +1350,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<SiteDto>>;
-    public apiSiteGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
-    public apiSiteGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
-    public apiSiteGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiSiteGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<SiteDto>>;
+    public apiSiteGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
+    public apiSiteGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
+    public apiSiteGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site`;
-        return this.httpClient.request<Array<SiteDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/site"
+        return this.httpClient.request<Array<SiteDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1420,56 +1405,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiSiteIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiSiteIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiSiteIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiSiteIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiSiteIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiSiteIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiSiteIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiSiteIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiSiteIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1478,56 +1463,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<SiteDto>;
-    public apiSiteIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
-    public apiSiteIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
-    public apiSiteIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiSiteIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<SiteDto>;
+    public apiSiteIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
+    public apiSiteIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
+    public apiSiteIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiSiteIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiSiteIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<SiteDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<SiteDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1536,63 +1521,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<SiteDto>;
-    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
-    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
-    public apiSitePost(createSiteDto?: CreateSiteDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<SiteDto>;
+    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
+    public apiSitePost(createSiteDto?: CreateSiteDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
+    public apiSitePost(createSiteDto?: CreateSiteDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site`;
-        return this.httpClient.request<SiteDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/site"
+        return this.httpClient.request<SiteDto>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createSiteDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1601,63 +1586,63 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<SiteDto>;
-    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
-    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
-    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<SiteDto>;
+    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<SiteDto>>;
+    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<SiteDto>>;
+    public apiSitePut(updateSiteDto?: UpdateSiteDto, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+            "application/json",
+        ]
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes)
         if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+            localVarHeaders = localVarHeaders.set("Content-Type", httpContentTypeSelected)
         }
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site`;
-        return this.httpClient.request<SiteDto>('put', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/site"
+        return this.httpClient.request<SiteDto>("put", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: updateSiteDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1666,56 +1651,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSiteSiteIdFloorGet(siteId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<SiteDto>>;
-    public apiSiteSiteIdFloorGet(siteId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
-    public apiSiteSiteIdFloorGet(siteId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
-    public apiSiteSiteIdFloorGet(siteId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<SiteDto>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<SiteDto>>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<SiteDto>>>;
+    public apiSiteSiteIdFloorGet(siteId: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (siteId === null || siteId === undefined) {
-            throw new Error('Required parameter siteId was null or undefined when calling apiSiteSiteIdFloorGet.');
+            throw new Error("Required parameter siteId was null or undefined when calling apiSiteSiteIdFloorGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/site/${this.configuration.encodeParam({name: "siteId", value: siteId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/floor`;
-        return this.httpClient.request<Array<SiteDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/site/${this.configuration.encodeParam({name: "siteId", value: siteId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/floor`
+        return this.httpClient.request<Array<SiteDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1724,55 +1709,55 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTemporaryFileUploadIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public apiTemporaryFileUploadIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public apiTemporaryFileUploadIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public apiTemporaryFileUploadIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public apiTemporaryFileUploadIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiTemporaryFileUploadIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiTemporaryFileUploadIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<any>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1781,45 +1766,45 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTemporaryFileUploadIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<Blob>;
-    public apiTemporaryFileUploadIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<HttpResponse<Blob>>;
-    public apiTemporaryFileUploadIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<HttpEvent<Blob>>;
-    public apiTemporaryFileUploadIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*', context?: HttpContext}): Observable<any> {
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<Blob>;
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpResponse<Blob>>;
+    public apiTemporaryFileUploadIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<HttpEvent<Blob>>;
+    public apiTemporaryFileUploadIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "*", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiTemporaryFileUploadIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiTemporaryFileUploadIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "*",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/temporary-file-upload/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: "blob",
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1827,53 +1812,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTemporaryFileUploadPost(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<TemporaryFileUploadDto>>;
-    public apiTemporaryFileUploadPost(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<TemporaryFileUploadDto>>>;
-    public apiTemporaryFileUploadPost(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<TemporaryFileUploadDto>>>;
-    public apiTemporaryFileUploadPost(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiTemporaryFileUploadPost(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<TemporaryFileUploadDto>>;
+    public apiTemporaryFileUploadPost(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<TemporaryFileUploadDto>>>;
+    public apiTemporaryFileUploadPost(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<TemporaryFileUploadDto>>>;
+    public apiTemporaryFileUploadPost(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/temporary-file-upload`;
-        return this.httpClient.request<Array<TemporaryFileUploadDto>>('post', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/temporary-file-upload"
+        return this.httpClient.request<Array<TemporaryFileUploadDto>>("post", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1881,53 +1866,53 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiUserGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<UserDto>>;
-    public apiUserGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<UserDto>>>;
-    public apiUserGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<UserDto>>>;
-    public apiUserGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiUserGet(observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<Array<UserDto>>;
+    public apiUserGet(observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<Array<UserDto>>>;
+    public apiUserGet(observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<Array<UserDto>>>;
+    public apiUserGet(observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/user`;
-        return this.httpClient.request<Array<UserDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = "/api/user"
+        return this.httpClient.request<Array<UserDto>>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1936,56 +1921,56 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiUserIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<boolean>;
-    public apiUserIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public apiUserIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public apiUserIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext}): Observable<any> {
+    public apiUserIdDelete(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<boolean>;
+    public apiUserIdDelete(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public apiUserIdDelete(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public apiUserIdDelete(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "text/plain", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiUserIdDelete.');
+            throw new Error("Required parameter id was null or undefined when calling apiUserIdDelete.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "text/plain",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<boolean>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<boolean>("delete", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 
     /**
@@ -1994,55 +1979,55 @@ export class DefaultService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiUserIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<UserDto>;
-    public apiUserIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<UserDto>>;
-    public apiUserIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<UserDto>>;
-    public apiUserIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public apiUserIdGet(id: string, observe?: "body", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<UserDto>;
+    public apiUserIdGet(id: string, observe?: "response", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpResponse<UserDto>>;
+    public apiUserIdGet(id: string, observe?: "events", reportProgress?: boolean, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<HttpEvent<UserDto>>;
+    public apiUserIdGet(id: string, observe: any = "body", reportProgress = false, options?: {httpHeaderAccept?: "application/json", context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling apiUserIdGet.');
+            throw new Error("Required parameter id was null or undefined when calling apiUserIdGet.")
         }
 
-        let localVarHeaders = this.defaultHeaders;
+        let localVarHeaders = this.defaultHeaders
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                "application/json",
+            ]
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts)
         }
         if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+            localVarHeaders = localVarHeaders.set("Accept", localVarHttpHeaderAcceptSelected)
         }
 
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        let localVarHttpContext: HttpContext | undefined = options && options.context
         if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
+            localVarHttpContext = new HttpContext()
         }
 
 
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        let responseType_: "text" | "json" | "blob" = "json"
         if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
+            if (localVarHttpHeaderAcceptSelected.startsWith("text")) {
+                responseType_ = "text"
             } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
+                responseType_ = "json"
             } else {
-                responseType_ = 'blob';
+                responseType_ = "blob"
             }
         }
 
-        let localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<UserDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        const localVarPath = `/api/user/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`
+        return this.httpClient.request<UserDto>("get", `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+                observe,
+                reportProgress,
+            },
+        )
     }
 }

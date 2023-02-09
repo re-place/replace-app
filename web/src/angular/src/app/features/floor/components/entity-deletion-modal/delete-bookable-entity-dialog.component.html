@@ -1,0 +1,30 @@
+<div class="p-4">
+    <h2 class="font-medium text-lg mb-2">{{ data.name }} löschen</h2>
+    <loading-state [loading]="bookings.loading()" class="block">
+        <ng-template>
+            <div>
+                Sind Sie sicher, dass Sie <span class="font-medium text-lg">{{ data.name }}</span> löschen möchten? <br />
+                Das Objekt wird aus
+                <span class="font-medium text-red-500 text-lg">
+                    {{ bookings.data?.length ?? 0 }}
+                </span>
+                Buchungen entfernt.
+            </div>
+            <div *ngIf="(bookings.data?.length ?? 0) > 0" class="mt-4">
+                Diese Buchungen sind betroffen:
+                <ul class="mt-2">
+                    <li *ngFor="let booking of bookings.data" class="border rounded-md border-gray-300 p-2">
+                        {{ booking.user?.firstname  }} {{ booking.user?.lastname }} <br />
+                        <span class="text-sm text-gray-500">{{ dateFormat(booking.start) }} - {{ dateFormat(booking.end) }}</span>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
+    </loading-state>
+    <div class="flex gap-2 mt-4">
+        <button mat-raised-button mat-dialog-close cdkFocusInitial [mat-dialog-close]="false" color="white" class="ml-auto">
+            Abbrechen
+        </button>
+        <button mat-raised-button [mat-dialog-close]="true" color="warn" [disabled]="bookings.loading()">Löschen</button>
+    </div>
+</div>
