@@ -16,9 +16,15 @@ pipeline {
             }
         }
         stage('Update Database') {
+<<<<<<< HEAD
             when {
                 expression { GIT_BRANCH == 'origin/master' }
             }
+=======
+            // when {
+            //     branch 'master'
+            // }
+>>>>>>> d492275 (Configuration of Callback)
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
@@ -30,18 +36,30 @@ pipeline {
             }
         }
         stage('Push into ecr-Repository') {
+<<<<<<< HEAD
             when {
                 expression { GIT_BRANCH == 'origin/master' }
             }
+=======
+            // when {
+            //     branch 'master'
+            // }
+>>>>>>> d492275 (Configuration of Callback)
             steps {
                 sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
                 sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
             }
         }
         stage('Run') {
+<<<<<<< HEAD
             when {
                 expression { GIT_BRANCH == 'origin/master' }
             }
+=======
+            // when {
+            //     branch 'master'
+            // }
+>>>>>>> d492275 (Configuration of Callback)
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
