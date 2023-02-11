@@ -31,7 +31,7 @@ ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = 
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
 liquibase-picocli = { module = "info.picocli:picocli", version.ref = "liquibase-picocli" }
-logging-api = "org.slf4j:slf4j-api:1.7.36"
+logging-api = "org.slf4j:slf4j-api:2.0.6"
 logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
