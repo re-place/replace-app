@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
-import { MatTableDataSource } from "@angular/material/table"
 
 import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { toLocaleDateTimeString } from "src/app/util/DateTime"
 
 @Component({
     selector: "reservation-overview",
@@ -11,12 +11,19 @@ import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/open
     ],
 })
 export class ReservationOverviewComponent implements OnInit {
-    dataSource: MatTableDataSource<any> = new MatTableDataSource()
-    displayedColumns = ["site", "floor", "entity", "start", "end", "actions"]
-
     bookings: BookingDto[] = []
     floors: FloorDto[] = []
     sites: SiteDto[] = []
+
+    tableData: any[] = []
+
+    public dataColumns = [
+        { key: "site", label: "Standort", getter: (booking: any) => booking.site.name },
+        { key: "floor", label: "Stockwerk", getter: (booking: any) => booking.floor.name },
+        { key: "entities", label: "Objekte", getter: (booking: any) => booking.entities },
+        { key: "start", label: "Anfang", getter: (booking: any) => toLocaleDateTimeString(booking.start) },
+        { key: "end", label: "Ende", getter: (booking: any) => toLocaleDateTimeString(booking.end) },
+    ]
 
     constructor(private readonly apiService: DefaultService, private readonly snackBar: MatSnackBar) { }
 
@@ -77,7 +84,8 @@ export class ReservationOverviewComponent implements OnInit {
             row.site = this.sites.find(site => site.id == row.floor.siteId)
             rows.push(row)
         })
-        this.dataSource = new MatTableDataSource(rows)
+
+        this.tableData = rows
     }
 
     deleteBooking(element: any) {
@@ -91,5 +99,4 @@ export class ReservationOverviewComponent implements OnInit {
             },
         })
     }
-
 }
