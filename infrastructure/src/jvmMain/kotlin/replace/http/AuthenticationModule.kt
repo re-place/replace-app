@@ -158,7 +158,7 @@ fun Application.authenticationModule() {
 
                 println("Creating session $session")
                 call.sessions.set(session)
-                call.respondRedirect("/reservation/my-bookings")
+                call.respondRedirect("/")
             }
         }
     }
