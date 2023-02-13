@@ -6,7 +6,7 @@ COPY $BASE_PATH/package.json .
 COPY $BASE_PATH/yarn.lock .
 COPY $BASE_PATH/.yarnrc.yml .
 COPY $BASE_PATH/.yarn/ .
-RUN ls -la .
+RUN ls -la ./.
 RUN corepack enable
 RUN corepack prepare yarn@stable --activate
 RUN yarn install
