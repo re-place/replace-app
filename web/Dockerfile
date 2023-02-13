@@ -10,7 +10,6 @@ RUN corepack enable
 RUN corepack prepare yarn@stable --activate
 RUN yarn install
 COPY $BASE_PATH/. .
-RUN ls -la .
 RUN yarn build
 
 # Stage 2: Run
