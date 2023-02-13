@@ -5,7 +5,7 @@ WORKDIR /replace
 COPY $BASE_PATH/package.json .
 COPY $BASE_PATH/yarn.lock .
 COPY $BASE_PATH/.yarnrc.yml .
-COPY $BASE_PATH/.yarn .
+COPY $BASE_PATH/.yarn/ .
 RUN corepack enable
 RUN corepack prepare yarn@stable --activate
 RUN yarn install
