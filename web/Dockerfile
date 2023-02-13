@@ -2,7 +2,7 @@
 FROM node:18-alpine3.17 as build
 ENV BASE_PATH=src/angular
 WORKDIR /replace
-RUN ls -la .
+RUN ls -la ../
 COPY $BASE_PATH/package.json .
 COPY $BASE_PATH/yarn.lock .
 COPY $BASE_PATH/.yarnrc.yml .
