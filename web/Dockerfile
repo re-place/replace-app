@@ -1,7 +1,7 @@
 # Stage 1: Build
 FROM node:18-alpine3.17 as build
 ENV BASE_PATH=src/angular
-RUN ls -la /$BASE_PATH
+RUN ls -la .
 WORKDIR /replace
 COPY $BASE_PATH/package.json .
 COPY $BASE_PATH/yarn.lock .
