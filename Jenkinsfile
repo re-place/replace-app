@@ -16,9 +16,9 @@ pipeline {
             }
         }
         stage('Update Database') {
-            when {
-                expression { GIT_BRANCH == 'origin/master' }
-            }
+            // when {
+            //     branch 'master'
+            // }
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
@@ -30,18 +30,18 @@ pipeline {
             }
         }
         stage('Push into ecr-Repository') {
-            when {
-                expression { GIT_BRANCH == 'origin/master' }
-            }
+            // when {
+            //     branch 'master'
+            // }
             steps {
                 sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
                 sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
             }
         }
         stage('Run') {
-            when {
-                expression { GIT_BRANCH == 'origin/master' }
-            }
+            // when {
+            //     branch 'master'
+            // }
             environment {
                 REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
             }
