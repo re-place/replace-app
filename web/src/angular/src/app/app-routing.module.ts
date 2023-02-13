@@ -13,7 +13,7 @@ const routes: Routes = [
     // },
     {
         path: "",
-        redirectTo: "/reservation/my-bookings",
+        redirectTo: "/reservation",
         pathMatch: "full",
     },
     {

@@ -9,11 +9,12 @@ import { MatInputModule } from "@angular/material/input"
 import { MatSelectModule } from "@angular/material/select"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
+import { EntityMapComponent } from "./components/entity-map/entity-map.component"
 import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationOverviewComponent } from "./pages/reservation-overview/reservation-overview.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
-import { MaterialModule } from "../../material/material.module";
-import { EntityMapComponent } from './components/entity-map/entity-map.component'
+import { MaterialModule } from "../../material/material.module"
+import { SharedModule } from "src/app/shared/shared.module"
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { EntityMapComponent } from './components/entity-map/entity-map.component
         ReactiveFormsModule,
         MaterialModule,
         MatCheckboxModule,
+        SharedModule,
     ],
 })
 export class ReservationModule { }

@@ -8,7 +8,7 @@ import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } fro
 })
 export class DataTableComponent {
     @Input() public data: any[] | undefined
-    @Input() public columns: { key: string; label: string }[] = []
+    @Input() public columns: { key: string; label: string, getter?: (item: any) => any }[] = []
     @Input() public selectable: "single" | "multiple" | "none" = "none"
     @Input() public selected: any[] = []
 

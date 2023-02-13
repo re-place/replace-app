@@ -73,9 +73,29 @@ fun Application.authenticationModule() {
             }
         }
         oauth("microsoft-oauth") {
+
             val callback = this@authenticationModule.environment.config.tryGetString("ktor.oauth.callback")
                 ?: throw IllegalStateException("Missing OAuth callback URL")
             urlProvider = { callback }
+
+            client = httpClient
+
+            if (this@authenticationModule.environment.developmentMode) {
+                providerLookup = {
+                    OAuthServerSettings.OAuth2ServerSettings(
+                        name = "mock lab",
+                        authorizeUrl = "https://oauth.mocklab.io/oauth/authorize",
+                        accessTokenUrl = "https://oauth.mocklab.io/oauth/token",
+                        requestMethod = HttpMethod.Post,
+                        clientId = "test-client-id",
+                        clientSecret = "test-client-secret",
+                        defaultScopes = listOf("email", "offline_access", "openid", "profile", "User.Read"),
+                    )
+                }
+
+                return@oauth
+            }
+
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "microsoft",
@@ -89,7 +109,6 @@ fun Application.authenticationModule() {
                     defaultScopes = listOf("email", "offline_access", "openid", "profile", "User.Read"),
                 )
             }
-            client = httpClient
         }
     }
 
@@ -108,9 +127,13 @@ fun Application.authenticationModule() {
             get("/api/session/callback") {
                 val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
 
-                val userInfo = httpClient.get("https://graph.microsoft.com/v1.0/me") {
-                    header("Authorization", "Bearer ${principal.accessToken}")
-                }.body<MicrosoftUserInfo>()
+                val userInfo = if (this@authenticationModule.developmentMode) {
+                    MicrosoftUserInfo("", "Max Mustermann", "Max", "Mustermann", "max@musterman@example.com")
+                } else {
+                    httpClient.get("https://graph.microsoft.com/v1.0/me") {
+                        header("Authorization", "Bearer ${principal.accessToken}")
+                    }.body<MicrosoftUserInfo>()
+                }
 
                 // find user in db
 
@@ -135,19 +158,21 @@ fun Application.authenticationModule() {
 
                 println("Creating session $session")
                 call.sessions.set(session)
-                call.respondRedirect("/reservation/my-bookings")
+                call.respondRedirect("/")
             }
         }
     }
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.withUserSession(block: suspend (UserSession) -> Unit) {
+suspend fun PipelineContext<Unit, ApplicationCall>.withUserSession(block: suspend (UserSession) -> Any): Any {
     val session = call.sessions.get<UserSession>()
     if (session === null) {
         call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
     } else {
-        block(session)
+        return block(session)
     }
+
+    return Unit
 }
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
