@@ -1,0 +1,39 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-02-14_21-06-31_create-file-storage-table",
+        "author": "re-place",
+        "changes": {
+          "createTable": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id",
+                  "type": "varchar(65535)",
+                  "constraints": {
+                    "nullable": false,
+                    "primaryKey": true,
+                    "primaryKeyName": "pk_file_storage_id",
+                    "unique": true
+                  }
+                }
+              },
+              {
+                "column": {
+                  "name": "data",
+                  "type": "bytea",
+                  "constraints": {
+                    "nullable": false
+                  }
+                }
+              }
+            ],
+            "schemaName": "public",
+            "tableName": "file_storage"
+          }
+        }
+      }
+    }]
+}
+
