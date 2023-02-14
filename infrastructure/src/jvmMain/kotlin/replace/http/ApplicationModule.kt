@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import replace.Replace
-import replace.datastore.LocalFileStorage
+import replace.datastore.DBFileStorage
 import replace.job.DeleteOldTemporaryFileUploadsJob
 
 fun Application.applicationModule() {
@@ -71,7 +71,7 @@ fun Application.applicationModule() {
         swaggerUiEndpoint("/swagger", "/openapi")
     }
 
-    val storage = LocalFileStorage()
+    val storage = DBFileStorage()
 
     routeControllers(storage)
 

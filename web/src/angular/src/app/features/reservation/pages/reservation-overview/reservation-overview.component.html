@@ -1,6 +1,6 @@
 <crud-layout title="Meine Buchungen">
     <crud-card>
-        <div class="overflow-scroll scroll">
+        <div class="overflow-auto">
             <loading-state [loading]="sites === undefined">
                 <ng-template>
                     <data-table [data]="tableData" [columns]="dataColumns">
