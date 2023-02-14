@@ -33,6 +33,8 @@ fun Route.registerFileRoutes(fileStorage: FileStorage) {
                 return@get
             }
 
+            val mime = file.mime ?: ContentType.Application.OctetStream.toString()
+
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Inline.withParameter(
@@ -40,7 +42,10 @@ fun Route.registerFileRoutes(fileStorage: FileStorage) {
                 ).toString()
             )
 
-            val mime = file.mime ?: ContentType.Application.OctetStream.toString()
+            call.response.header(
+                HttpHeaders.CacheControl,
+                "max-age=7776000" // 90 days
+            )
 
             call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(file.path).readBytes() }
         } describe {
