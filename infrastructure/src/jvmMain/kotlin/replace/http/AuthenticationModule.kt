@@ -139,9 +139,7 @@ fun Application.authenticationModule() {
 
                 val user = transaction {
                     User.find { Users.email eq userInfo.email }.firstOrNull()
-                        ?.also { println("Found user with email ${it.email} in DB") }
                 } ?: transaction {
-                    println("Creating user with email ${userInfo.email}")
                     User.new {
                         email = userInfo.email
                         firstname = userInfo.firstName
@@ -156,7 +154,6 @@ fun Application.authenticationModule() {
                     userInfo.email
                 )
 
-                println("Creating session $session")
                 call.sessions.set(session)
                 call.respondRedirect("/")
             }
