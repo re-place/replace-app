@@ -21,6 +21,9 @@ module.exports = {
         },
         secondary: "#f5f5f5",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+      },
     },
   },
   plugins: [
