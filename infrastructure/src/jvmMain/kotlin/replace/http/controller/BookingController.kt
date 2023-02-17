@@ -50,8 +50,11 @@ fun Route.registerBookingRoutes() {
                     val start = call.parameters["start"]
                     val end = call.parameters["end"]
                     val bookableEntityId = call.parameters["bookableEntityId"]
+                    val floorId = call.parameters["floorId"]
 
-                    GetBookingUseCase.execute(start, end, bookableEntityId, it.userId)
+                    val my = call.parameters["my"]?.toBoolean()
+
+                    GetBookingUseCase.execute(my, it.userId, floorId, bookableEntityId, start, end)
                 }
             }
         } describe {
@@ -69,6 +72,16 @@ fun Route.registerBookingRoutes() {
                 description = "The id of a bookable entity"
                 required = false
                 schema(typeOf<String>())
+            }
+            "floorId" queryParameter {
+                description = "The id of a floor"
+                required = false
+                schema(typeOf<String>())
+            }
+            "my" queryParameter {
+                description = "If true, only bookings of the current user are returned"
+                required = false
+                schema(typeOf<Boolean>())
             }
             200 response {
                 description = "The bookings by Date from User"

@@ -1,0 +1,45 @@
+
+<div class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="openTimeSelector()">
+    <div class="relative">
+        <div class="text-lg text-gray-500 min-w-[20rem] text-right">
+            {{ [start, end] | localeDateTimeRange:dateTimeFormat }}
+        </div>
+        <div *ngIf="isSelectingTime" class="absolute top-0 right-0 w-96 shadow-2xl bg-white rounded-md cursor-default z-10 p-2" (click)="onClickInside()">
+            <div class="flex items-center -mb-4">
+                <div class="text-lg text-gray-700 ml-2 mt-2">Zeitraum</div>
+                <div class="text-xs text-gray-400 ml-auto mr-2">{{ isComplexView ? "Erweitert" : "Einfach" }}</div>
+                <mat-slide-toggle color="primary" [(ngModel)]="isComplexView"></mat-slide-toggle>
+            </div>
+            <mat-calendar  *ngIf="!isComplexView" [minDate]="now" [(selected)]="start"></mat-calendar>
+            <mat-calendar [minDate]="now" *ngIf="isComplexView" [selected]="dateRange" (selectedChange)="onSelectedChange($event)"></mat-calendar>
+            <mat-button-toggle-group *ngIf="!isComplexView" class="w-full" [(value)]="selectedTimePeriod">
+                <mat-button-toggle class="grow" value="day">Ganztags</mat-button-toggle>
+                <mat-button-toggle class="grow" value="morning">Vormittags</mat-button-toggle>
+                <mat-button-toggle class="grow" value="afternoon">Nachmittags</mat-button-toggle>
+            </mat-button-toggle-group>
+            <div *ngIf="isComplexView" class="px-4">
+                <div class="flex text-gray-500 items-center mb-2">
+                    <div >
+                        Startzeit
+                    </div>
+                    <div class="ml-auto mr-1">
+                        {{ start | localeDate }},
+                    </div>
+                    <time-picker [min]="startMinTime" [max]="end" [(date)]="start"></time-picker>
+                </div>
+                <div class="flex text-gray-500 items-center">
+                    <div>
+                        Endzeit
+                    </div>
+                    <div class="ml-auto mr-1">
+                        {{ end | localeDate }},
+                    </div>
+                    <time-picker [min]="start" [(date)]="end"></time-picker>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-xs text-gray-400 flex items-center">
+        <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1 ml-auto" [inline]="false">schedule</mat-icon> Zeitraum
+    </div>
+</div>

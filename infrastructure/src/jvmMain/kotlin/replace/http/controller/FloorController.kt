@@ -14,6 +14,7 @@ import io.ktor.server.routing.route
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
+import replace.dto.BookableEntityDto
 import replace.dto.CreateFloorDto
 import replace.dto.FloorDto
 import replace.dto.UpdateFloorDto
@@ -69,7 +70,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
             200 response {
                 description = "The bookable entities for the floor"
                 json {
-                    schema<List<FloorDto>>()
+                    schema<List<BookableEntityDto>>()
                 }
             }
         }

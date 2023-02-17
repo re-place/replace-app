@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, OnInit} from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
 import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
@@ -33,7 +33,7 @@ export class ReservationOverviewComponent implements OnInit {
     getBookings() {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        this.apiService.apiBookingByParamsGet(today.toISOString()).subscribe({
+        this.apiService.apiBookingByParamsGet(today.toISOString(), undefined, undefined, undefined, true).subscribe({
             next: response => {
                 this.bookings = response
                 this.getSites()

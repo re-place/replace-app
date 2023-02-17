@@ -1,0 +1,7 @@
+<div class="flex flex-wrap gap-8">
+    <bookable-entities-list-item
+        *ngFor="let entity of availableEntities"
+        [entity]="entity"
+        (entitySelected)="onEntitySelection(entity)"
+    ></bookable-entities-list-item>
+</div>

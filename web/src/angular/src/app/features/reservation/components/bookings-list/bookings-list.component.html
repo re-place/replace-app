@@ -1,0 +1,7 @@
+<div class="flex flex-col gap-2 overflow-auto p-1 h-full">
+    <bookings-list-item *ngFor="let booking of bookings" [booking]="booking" [fullInterval]="interval">
+    </bookings-list-item>
+    <div *ngIf="bookings.length === 0" class="text-center text-gray-400">
+        Keine Buchungen in dem ausgewählten Zeitraum vorhanden.
+    </div>
+</div>

@@ -5,7 +5,6 @@ import * as FilePondPluginFileValidateType from "filepond-plugin-file-validate-t
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import { FilePondModule, registerPlugin } from "ngx-filepond"
 
-import { MaterialModule } from "../material/material.module"
 import { CardComponent } from "./components/card/card.component"
 import { CrudCardComponent } from "./components/crud-card/crud-card.component"
 import { CrudLayoutComponent } from "./components/crud-layout/crud-layout.component"
@@ -14,6 +13,7 @@ import { EmptyStateComponent } from "./components/empty-state/empty-state.compon
 import { FileUploadComponent } from "./components/file-upload/file-upload.component"
 import { LoadingStateComponent } from "./components/loading-state/loading-state.component"
 import { TextButtonComponent } from "./components/text-button/text-button.component"
+import { TimePickerComponent } from "./components/time-picker/time-picker.component"
 import { UserCardComponent } from "./components/user-card/user-card.component"
 import { ActionsDirective } from "./directives/actions.directive"
 import { ExtraDirective } from "./directives/extra.directive"
@@ -21,6 +21,12 @@ import { FooterDirective } from "./directives/footer.directive"
 import { HeaderDirective } from "./directives/header.directive"
 import { IconDirective } from "./directives/icon.directive"
 import { UserLayoutComponent } from "./layouts/user-layout/user-layout.component"
+import { LocaleDateTimeRangePipe } from "./pipes/locale-date-time-range.pipe"
+import { LocaleDateTimePipe } from "./pipes/locale-date-time.pipe"
+import { LocaleDatePipe } from "./pipes/locale-date.pipe"
+import { LocaleListPipe } from "./pipes/locale-list.pipe"
+import { LocaleTimePipe } from "./pipes/locale-time.pipe"
+import { MaterialModule } from "../material/material.module"
 
 // Register the plugin
 registerPlugin(FilePondPluginImagePreview)
@@ -45,6 +51,12 @@ registerPlugin(FilePondPluginFileValidateType)
         ActionsDirective,
         IconDirective,
         FileUploadComponent,
+        LocaleDateTimePipe,
+        LocaleDatePipe,
+        LocaleTimePipe,
+        LocaleListPipe,
+        LocaleDateTimeRangePipe,
+        TimePickerComponent,
     ],
     exports: [
         UserCardComponent,
@@ -62,6 +74,12 @@ registerPlugin(FilePondPluginFileValidateType)
         ActionsDirective,
         IconDirective,
         FileUploadComponent,
+        LocaleDateTimePipe,
+        LocaleDatePipe,
+        LocaleTimePipe,
+        LocaleListPipe,
+        LocaleDateTimeRangePipe,
+        TimePickerComponent,
     ],
     imports: [CommonModule, MaterialModule, RouterModule, FilePondModule],
 })

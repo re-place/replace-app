@@ -1,118 +1,58 @@
 import {Component, OnInit} from "@angular/core"
-import {FormControl, FormGroup} from "@angular/forms"
 import {MatSnackBar} from "@angular/material/snack-bar"
-import {NGX_MAT_DATE_FORMATS, NgxMatDateFormats} from "@angular-material-components/datetime-picker"
 
 import { Entity } from "../../components/entity-map/entity-map.component"
-import {BookableEntityDto, BookingDto, CreateBookingDto, DefaultService, FloorDto, SiteDto} from "src/app/core/openapi"
+import { Interval } from "../../components/time-selector/time-selector.component"
+import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { DataLoader } from "src/app/util"
+import { useLocalStorage } from "src/app/util/LocalStorage"
 
-
-const INTL_DATE_INPUT_FORMAT = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hourCycle: "h23",
-    hour: "2-digit",
-    minute: "2-digit",
-}
-
-const MAT_DATE_FORMATS: NgxMatDateFormats = {
-    parse: {
-        dateInput: INTL_DATE_INPUT_FORMAT,
-    },
-    display: {
-        dateInput: INTL_DATE_INPUT_FORMAT,
-        monthYearLabel: { year: "numeric", month: "short" },
-        dateA11yLabel: { year: "numeric", month: "long", day: "numeric" },
-        monthYearA11yLabel: { year: "numeric", month: "long" },
-    },
-}
 @Component({
     selector: "reservation",
     templateUrl: "./reservation.component.html",
     styles: [],
-    providers: [{ provide: NGX_MAT_DATE_FORMATS, useValue: MAT_DATE_FORMATS }],
 })
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
-    selectedSite?: SiteDto
-
     floors: FloorDto[] = []
-    selectedFloor?: FloorDto
 
-    bookableEntities: BookableEntityDto[] = []
-    selectedEntities: BookableEntityDto[] = []
+    private _storedSiteId = useLocalStorage<string>("selectedSite")
+    private _storedFloorId = useLocalStorage<string>("selectedFloor")
 
-    allBookings: BookingDto[] = []
-    bookings: BookingDto[] = []
+    private _selectingSite = false
+    private _selectingFloor = false
+    private _selectingTime = false
 
-    minDate = new Date()
-    timeFormControl = new FormGroup({
-        startDate: new FormControl(new Date()),
-        endDate: new FormControl(new Date()),
-    })
+    private _start = new Date()
+    private _end = new Date()
+
+    bookableEntities: Entity[] = []
+
+    bookedEntities: Set<string> = new Set()
+
+    public bookings: DataLoader<BookingDto[]>   = new DataLoader(
+        () => {
+            const floorId = this.selectedFloor?.id
+            const start = this._start.toISOString()
+            const end = this._end.toISOString()
+
+            if (floorId === undefined) {
+                return Promise.resolve([])
+            }
+
+            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, true)
+        },
+    )
 
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) {
+        this.bookings.subscribe((data) => {
+            this.bookedEntities
+                = new Set(data.flatMap((booking) => booking?.bookedEntities?.map((entity) => entity.id)) as string[])
 
-        this.timeFormControl.get("startDate")?.valueChanges.subscribe((startDate) => {
-            if (startDate === null) {
-                return
-            }
-
-            const endDateControl = this.timeFormControl.get("endDate")
-
-            if (endDateControl === null || endDateControl === undefined) {
-                return
-            }
-
-            const endDate = endDateControl.value
-
-            if (endDate === null || endDate === undefined) {
-                return
-            }
-
-            if (
-                startDate > endDate
-            ) {
-                endDate.setFullYear(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
-
-                endDateControl.reset()
-                endDateControl.setValue(endDate)
-            }
-            this.getBookings()
-
-        })
-
-        this.timeFormControl.get("endDate")?.valueChanges.subscribe((endDate) => {
-            if (endDate === null) {
-                return
-            }
-
-            const startDateControl = this.timeFormControl.get("startDate")
-
-            if (startDateControl === null || startDateControl === undefined) {
-                return
-            }
-
-            const startDate = startDateControl.value
-
-            if (startDate === null || startDate === undefined) {
-                return
-            }
-
-            if (
-                startDate > endDate
-            ) {
-                startDate.setFullYear(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
-
-                startDateControl.reset()
-                startDateControl.setValue(startDate)
-            }
-            this.getBookings()
-
+            this.updateAvailability()
         })
     }
 
@@ -120,87 +60,46 @@ export class ReservationComponent implements OnInit {
         this.apiService.apiSiteGet().subscribe({
             next: response => {
                 this.sites = response
-                this.alphaSort(this.sites)
-                this.setDefaults()
             },
             error: () => {
                 this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
             },
         })
-    }
 
-    // Set default to Darmstadt for the first version
-
-    setDefaults() {
-        this.selectedSite = this.sites.find(site => site.name == "Darmstadt")
-        this.getFloors()
-
-        const startDate = new Date(new Date().setHours(0,0,0))
-        const endDate = new Date(new Date().setHours(23,59,0))
-
-        this.timeFormControl.reset()
-        this.timeFormControl.get("startDate")?.setValue(startDate)
-        this.timeFormControl.get("endDate")?.setValue(endDate)
-    }
-
-    get mapEntities(): Entity[] {
-        return this.bookableEntities.map(entity => ({
-            available: !this.isBooked(entity.id),
-            selected: this.selectedEntities.some(selectedEntity => selectedEntity.id == entity.id),
-            entity,
-        }))
-    }
-
-    set mapEntities(entities: Entity[]) {
-        this.selectedEntities = entities.filter(entity => entity.selected).map(entity => entity.entity)
-    }
-
-    getBookings() {
-        const start = this.timeFormControl.get("startDate")?.value?.toISOString() ?? new Date().toISOString()
-        const end = this.timeFormControl.get("endDate")?.value?.toISOString() ?? new Date().toISOString()
-
-        this.apiService.apiBookingByParamsGet(start, end).subscribe({
-            next: result => {
-                this.bookings = result
-            },
-            error: err => {
-                console.log(err)
-                this.showErrorSnackbar("Buchungen konnten nicht abgefragt werden")
-            },
-        })
-    }
-
-    getFloors() {
-        this.selectedFloor = undefined
-        this.selectedEntities = []
-        if(this.selectedSite?.id == undefined) return
-
-        this.apiService.apiSiteSiteIdFloorGet(this.selectedSite.id).subscribe({
+        this.apiService.apiFloorGet().subscribe({
             next: response => {
                 this.floors = response
-                if(this.floors.length == 1) {
-                    this.selectedFloor = this.floors[0]
-                    this.getBookableEntities()
-                    return
-                }
-                this.alphaSort(this.floors)
+                this.refreshBookableEntities()
+                this.bookings.refresh()
             },
             error: () => {
-                this.showErrorSnackbar("Stockwerke für den Standort konnten nicht abgefragt werden")
+                this.showErrorSnackbar("Stockwerke konnten nicht abgefragt werden")
             },
         })
 
+        this._start.setHours(8, 0, 0, 0)
+        this._start.setDate(this._start.getDate() + 1)
+        this._end.setHours(18, 0, 0, 0)
+        this._end.setDate(this._end.getDate() + 1)
     }
 
-    getBookableEntities() {
-        this.selectedEntities = []
-        const selectedFloorId = this.selectedFloor?.id
-        if(selectedFloorId === undefined) return
 
-        this.apiService.apiFloorFloorIdBookableEntityGet(selectedFloorId).subscribe({
+    showErrorSnackbar(message: string) {
+        this.snackBar.open(message, "error", { duration: 3000 })
+    }
+
+    refreshBookableEntities() {
+        if (this.selectedFloor === undefined) {
+            return
+        }
+
+        this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id ?? "").subscribe({
             next: response => {
-                this.bookableEntities = response
-                this.alphaSort(this.bookableEntities)
+                this.bookableEntities = response.map((entity): Entity => ({
+                    available: true,
+                    selected: false,
+                    entity,
+                }))
             },
             error: () => {
                 this.showErrorSnackbar("Buchbare Objekte konnten nicht abgefragt werden")
@@ -208,65 +107,140 @@ export class ReservationComponent implements OnInit {
         })
     }
 
-    updateSelectedEntities(entity: BookableEntityDto, checked: boolean) {
-        if(checked) {
-            this.selectedEntities.push(entity)
-        } else {
-            this.selectedEntities = this.selectedEntities.filter(ent => ent != entity)
+    updateAvailability() {
+        const entities = this.bookableEntities
+
+        for (const entity of entities) {
+            entity.available = !this.bookedEntities.has(entity.entity.id ?? "")
+        }
+
+        this.bookableEntities = [...entities]
+    }
+
+    get selectedSite() {
+        if (this._storedSiteId.value === undefined) return undefined
+
+        return this.sites.find(site => site.id === this._storedSiteId.value)
+    }
+
+    set selectedSite(site: SiteDto | undefined) {
+        if (site?.id !== this._storedSiteId.value) {
+            this._storedFloorId.value = undefined
+        }
+
+        this._storedSiteId.value = site?.id
+        this._selectingSite = false
+    }
+
+    get selectedFloor() {
+        if (this._storedFloorId.value === undefined) return undefined
+
+        return this.selectableFloors.find(floor => floor.id === this._storedFloorId.value)
+    }
+
+    set selectedFloor(floor: FloorDto | undefined) {
+        this._storedFloorId.value = floor?.id
+        this._selectingFloor = false
+
+        this.refreshBookableEntities()
+        this.bookings.refresh()
+    }
+
+    get siteTagClasses() {
+        if (this.selectedSite === undefined) {
+            return ""
+        }
+
+        return "hover:text-gray-400 cursor-pointer"
+    }
+
+    get floorTagClasses() {
+        if (this.selectedFloor === undefined) {
+            return ""
+        }
+
+        return "hover:text-gray-400 cursor-pointer"
+    }
+
+    get isSelectingSite() {
+        return this.selectedSite === undefined || this._selectingSite
+    }
+
+    set isSelectingSite(value: boolean) {
+        this._selectingSite = value
+        if (value) {
+            this.isSelectingFloor = false
         }
     }
 
-    sendBooking() {
-        const ids: string[] = this.selectedEntities.map(entity => entity.id??"")
-        if(ids == undefined || ids.length < 1) {
-            this.showErrorSnackbar("Kein Arbeitsplatz ausgewählt")
+    get isSelectingTime() {
+        return this._selectingTime
+    }
+
+    set isSelectingTime(value: boolean) {
+        this._selectingTime = value
+    }
+
+    get isSelectingFloor() {
+        return this.selectedFloor === undefined || this._selectingFloor
+    }
+
+    set isSelectingFloor(value: boolean) {
+        this._selectingFloor = value
+
+        if (value) {
+            this.isSelectingSite = false
+        }
+    }
+
+    get selectableFloors() {
+        const site = this.selectedSite
+
+        if (site === undefined) {
+            return []
+        }
+
+        return this.floors.filter(floor => floor.siteId === site.id)
+    }
+
+    get interval() {
+        return {
+            start: this._start,
+            end: this._end,
+        }
+    }
+
+    set interval(interval: Interval) {
+        this._start = interval.start
+        this._end = interval.end
+        this.bookings.refresh()
+    }
+
+    get disabled() {
+        return this.selectedFloor === undefined || this.bookableEntities.filter(entity => entity.selected).length === 0
+    }
+
+    onSubmit() {
+        const floorId = this.selectedFloor?.id
+        const start = this._start.toISOString()
+        const end = this._end.toISOString()
+        const entities = this.bookableEntities.filter(entity => entity.selected).map(entity => entity.entity.id as string)
+
+        if (floorId === undefined) {
             return
         }
 
-        const bookingDto: CreateBookingDto = {
-            start: this.timeFormControl.value.startDate?.toISOString(),
-            end: this.timeFormControl.value.endDate?.toISOString(),
-            bookedEntityIds: ids,
-        }
-        this.apiService.apiBookingPost(bookingDto).subscribe({
+        this.apiService.apiBookingPost({
+            start,
+            end,
+            bookedEntityIds: entities,
+        }).subscribe({
             next: () => {
-                this.snackBar.open("Arbeitsplatz gebucht!", "ok", { duration: 3000 })
-                this.selectedSite = undefined
-                this.selectedFloor = undefined
-                this.selectedEntities = []
-                this.getBookings()
+                this.bookings.refresh()
             },
-            error: error => {
-                switch(error.status) {
-                case 400:
-                    this.showErrorSnackbar("Arbeitsplatz ist nicht verfügbar")
-                    break
-                default:
-                    this.showErrorSnackbar("Arbeitsplatz konnte nicht gebucht werden")
-                    break
-                }
+            error: () => {
+                this.showErrorSnackbar("Buchung konnte nicht erstellt werden")
             },
         })
     }
-
-    isBooked(id?: string) {
-        if(id === undefined) return true
-        return this.bookings.some(booking => booking.bookedEntities?.some(dto => dto.id === id))
-    }
-
-    alphaSort(arr: any[]) {
-        arr.sort((a,b) => {
-            if(a?.name == undefined || b?.name == undefined) return -1
-            return a.name > b.name ? 1 : -1
-        })
-    }
-
-    showErrorSnackbar(message: string) {
-        this.snackBar.open(message, "error", { duration: 3000 })
-    }
-
-    dateFilter: (date: Date | null) => boolean =
-        (date: Date | null) => {
-            return !(!date || date.getDay() == 0 || date.getDay() == 6)
-        }
 }

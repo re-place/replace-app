@@ -8,6 +8,8 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookingDto
 import replace.dto.toDto
+import replace.model.BookableEntities
+import replace.model.BookableEntity
 import replace.model.BookedEntities
 import replace.model.BookedEntity
 import replace.model.Booking
@@ -16,10 +18,12 @@ import java.time.Instant
 
 object GetBookingUseCase {
     suspend fun execute(
+        my: Boolean?,
+        userId: String,
+        floorId: String?,
+        bookableEntityId: String?,
         start: String?,
         end: String?,
-        bookableEntityId: String?,
-        userId: String?,
     ): List<BookingDto> {
         val startInst = start?.let { Instant.parse(it) }
         val endInst = end?.let { Instant.parse(it) }
@@ -28,22 +32,33 @@ object GetBookingUseCase {
 
             val query = Bookings.selectAll()
 
-            startInst?.let {
-                query.andWhere { Bookings.end greaterEq timestampLiteral(it) }
+            my?.let {
+                if (it) {
+                    query.andWhere { Bookings.user_id eq userId }
+                } else {
+                    query.andWhere { Bookings.user_id neq userId }
+                }
             }
 
-            endInst?.let {
-                query.andWhere { Bookings.start lessEq timestampLiteral(it) }
-            }
+            floorId?.let {
+                val bookableEntities = BookableEntity.find { BookableEntities.floor_id eq it }.map { it.id }
+                val bookedEntities = BookedEntity.find { BookedEntities.bookable_entity_id inList bookableEntities }
 
-            userId?.let {
-                query.andWhere { Bookings.user_id eq it }
+                query.andWhere { Bookings.id inList bookedEntities.map { it.bookingId } }
             }
 
             bookableEntityId?.let {
                 val bookedEntities = BookedEntity.find { BookedEntities.bookable_entity_id eq it }
 
                 query.andWhere { Bookings.id inList bookedEntities.map { it.bookingId } }
+            }
+
+            startInst?.let {
+                query.andWhere { Bookings.end greaterEq timestampLiteral(it) }
+            }
+
+            endInst?.let {
+                query.andWhere { Bookings.start lessEq timestampLiteral(it) }
             }
 
             val bookings = query.where?.let { Booking.find { it } } ?: Booking.all()

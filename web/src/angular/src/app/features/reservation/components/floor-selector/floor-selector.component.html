@@ -1,0 +1,19 @@
+<div>
+    <h2 class="text-xl font-medium text-gray-700">
+        Bitte wählen sie ein Stockwerk aus
+    </h2>
+    <div class="grid grid-cols-2 grid-flow-row gap-8 mt-2">
+        <div
+            *ngFor="let floor of floors"
+            class="group p-4 relative flex items-center justify-center rounded-md shadow-md hover:shadow-lg h-64 cursor-pointer text-gray-400 hover:shadow-primary-300 hover:text-primary-500"
+            (click)="onFloorSelection(floor)"
+        >
+            <img *ngIf="floor.planFile" class="absolute object-cover h-full w-full" loading="lazy" [src]="floor.planFile.url" alt="Bild des Stockwerkes">
+            <div class="bg-white/50 h-full w-full absolute"></div>
+            <div class="h-full w-full absolute bg-gradient-radial from-white via-transparent to-transparent group-hover:via-white/50"></div>
+            <div class="text-5xl z-10 font-medium">
+                {{ floor.name }}
+            </div>
+        </div>
+    </div>
+</div>
