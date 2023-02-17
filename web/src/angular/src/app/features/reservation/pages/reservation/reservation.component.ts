@@ -117,6 +117,7 @@ export class ReservationComponent implements OnInit {
 
         for (const entity of entities) {
             entity.available = !this.bookedEntities.has(entity.entity.id ?? "")
+            entity.selected = false
         }
 
         this.bookableEntities = [...entities]
