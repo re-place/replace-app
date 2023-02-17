@@ -67,4 +67,8 @@ export class BookingsListItemComponent {
     get leftBorderStyle() {
         return `border-color: ${this.color}`
     }
+
+    get leftBackgroundStyle() {
+        return `background-color: ${this.color}`
+    }
 }

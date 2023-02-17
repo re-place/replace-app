@@ -13,8 +13,8 @@
             </div>
             <mat-calendar  *ngIf="!isComplexView" [minDate]="now" [(selected)]="start"></mat-calendar>
             <mat-calendar [minDate]="now" *ngIf="isComplexView" [selected]="dateRange" (selectedChange)="onSelectedChange($event)"></mat-calendar>
-            <mat-button-toggle-group *ngIf="!isComplexView" class="w-full" [(value)]="selectedTimePeriod">
-                <mat-button-toggle class="grow" value="day">Ganztags</mat-button-toggle>
+            <mat-button-toggle-group *ngIf="!isComplexView" class="text-sm sm:text-base w-full" [(value)]="selectedTimePeriod">
+                <mat-button-toggle class="grow" class="grow" value="day">Ganztags</mat-button-toggle>
                 <mat-button-toggle class="grow" value="morning">Vormittags</mat-button-toggle>
                 <mat-button-toggle class="grow" value="afternoon">Nachmittags</mat-button-toggle>
             </mat-button-toggle-group>

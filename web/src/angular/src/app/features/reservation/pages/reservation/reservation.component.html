@@ -36,7 +36,7 @@
         <floor-selector *ngIf="!isSelectingSite && isSelectingFloor" [floors]="selectableFloors" (floorSelected)="selectedFloor = $event"></floor-selector>
         <card *ngIf="!isSelectingSite && !isSelectingFloor && selectedSite !== undefined && selectedFloor !== undefined">
             <div class="flex flex-col xl:flex-row">
-                <div class="order-3 xl:order-1 grow h-96 rounded-md bg-gray-100 p-1">
+                <div class="order-3 xl:order-1 grow h-64 sm:h-96 rounded-md bg-gray-100 p-1">
                     <entity-map [(entities)]="bookableEntities" [backgroundImage]="selectedFloor.planFile"></entity-map>
                 </div>
                 <div class="order-1 mb-4 xl:mb-0 xl:w-64 xl:ml-5 xl:h-96">
