@@ -250,6 +250,7 @@ export class ReservationComponent implements OnInit {
         }).subscribe({
             next: () => {
                 this.bookings.refresh()
+                this.snackBar.open("Erfolgreich gebucht", "OK", { duration: 3000 })
             },
             error: () => {
                 this.showErrorSnackbar("Buchung konnte nicht erstellt werden")

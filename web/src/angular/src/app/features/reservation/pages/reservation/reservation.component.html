@@ -51,7 +51,7 @@
         <div class="hidden sm:flex justify-end">
             <button class="!p-8 !text-3xl" [disabled]="disabled" mat-raised-button color="primary" (click)="onSubmit()">Buchen</button>
         </div>
-        <div class="mb-24 sm:mb-0"></div>
+        <div class="mb-48 sm:mb-0"></div>
     </div>
     <div class="fixed sm:hidden bottom-28 right-[7.5rem] flex justify-end w-auto gap-4">
         <div class="z-10 p-4 bg-primary-700 flex justify-center items-center gap-2 text-white rounded-full" (click)="isSelectingSite=true">
@@ -62,7 +62,7 @@
         </div>
     </div>
     <div class="fixed sm:hidden bottom-8 right-8 z-10">
-        <button class="!p-4 !py-8 !text-3xl" [disabled]="disabled" mat-raised-button color="primary">
+        <button class="!p-4 !py-8 !text-3xl" [disabled]="disabled" mat-raised-button color="primary" (click)="onSubmit()">
             Buchen
         </button>
     </div>
