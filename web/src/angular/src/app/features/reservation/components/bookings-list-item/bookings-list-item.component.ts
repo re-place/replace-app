@@ -45,7 +45,7 @@ export class BookingsListItemComponent {
             return 100
         }
 
-        return Math.max(Math.floor((this.bookingEndTime.getTime() - this.fullInterval.start.getTime()) / this.space * 100), 100)
+        return Math.min(Math.floor((this.bookingEndTime.getTime() - this.fullInterval.start.getTime()) / this.space * 100), 100)
     }
 
     get width() {
