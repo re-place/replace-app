@@ -61,7 +61,6 @@ export class BookingsListItemComponent {
     }
 
     get bottomBorderStyle() {
-        console.log(this.space)
         return `width: ${this.width}%; margin-left: ${this.startPosition}%`
     }
 

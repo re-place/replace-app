@@ -174,10 +174,12 @@ export class TimeSelectorComponent {
         this.clickWasInside = true
     }
 
-    onClickOutside() {
+    onClickOutside(event?: Event) {
         if (!this.isSelectingTime) {
             return
         }
+
+        event?.stopPropagation()
 
         this.isSelectingTimeChange.emit(false)
     }

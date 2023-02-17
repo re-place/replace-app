@@ -9,7 +9,6 @@ import { Circle, Fill, Stroke, Style } from "ol/style"
 
 import { BookableEntityDto, FileDto } from "src/app/core/openapi"
 import { ImageLoader } from "src/app/util/ImageLoader"
-import generateRandomColor from "src/app/util/Random"
 
 export type Entity = {
     available: boolean

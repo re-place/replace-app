@@ -44,6 +44,11 @@ export class ReservationComponent implements OnInit {
         },
     )
 
+    public mobileDateTimeFormat: Intl.DateTimeFormatOptions = {
+        dateStyle: "short",
+        timeStyle: "short",
+    }
+
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
@@ -178,6 +183,13 @@ export class ReservationComponent implements OnInit {
     }
 
     set isSelectingTime(value: boolean) {
+        if (this.selectedFloor === undefined || this.selectedSite === undefined) {
+            return
+        }
+
+        this.isSelectingSite = false
+        this.isSelectingFloor = false
+
         this._selectingTime = value
     }
 
