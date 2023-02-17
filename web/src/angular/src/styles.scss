@@ -50,3 +50,35 @@ $theme: mat.define-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Material Calendar styling
+
+.mat-calendar-body-selected {
+    background: #68AC30;
+}
+
+.mat-calendar-body-in-range::before {
+    background: #68AC3066;
+}
+
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    background: #68AC3066;
+}
+
+.mat-mdc-slide-toggle.mat-primary {
+    --mdc-switch-selected-focus-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-handle-color: #3F6C1F;
+    --mdc-switch-selected-hover-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-pressed-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-focus-handle-color: #68AC30;
+    --mdc-switch-selected-hover-handle-color: #68AC30;
+    --mdc-switch-selected-pressed-handle-color: #68AC30;
+    --mdc-switch-selected-focus-track-color: #A9DD79;
+    --mdc-switch-selected-hover-track-color: #A9DD79;
+    --mdc-switch-selected-pressed-track-color: #A9DD79;
+    --mdc-switch-selected-track-color: #A9DD79;
+  }
+
+.mat-mdc-raised-button:not(:disabled) {
+    --mdc-protected-button-label-text-color: #fff;
+}
