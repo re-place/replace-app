@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import {Component, OnInit} from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
 import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
@@ -7,8 +7,7 @@ import { toLocaleDateTimeString } from "src/app/util/DateTime"
 @Component({
     selector: "reservation-overview",
     templateUrl: "./reservation-overview.component.html",
-    styles: [
-    ],
+    styles: [],
 })
 export class ReservationOverviewComponent implements OnInit {
     bookings: BookingDto[] = []
@@ -34,7 +33,7 @@ export class ReservationOverviewComponent implements OnInit {
     getBookings() {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        this.apiService.apiBookingByParamsGet(today.toISOString()).subscribe({
+        this.apiService.apiBookingByParamsGet(today.toISOString(), undefined, undefined, undefined, true).subscribe({
             next: response => {
                 this.bookings = response
                 this.getSites()
@@ -80,8 +79,9 @@ export class ReservationOverviewComponent implements OnInit {
                 return
             const entity = booking.bookedEntities[0]
             row.entities = booking.bookedEntities.map(ent => ent.name).join(", ")
-            row.floor = this.floors.find(floor => floor.id == entity.floorId)
-            row.site = this.sites.find(site => site.id == row.floor.siteId)
+            const floor = this.floors.find(floor => floor.id == entity.floorId)
+            row.floor = floor?.name
+            row.site = this.sites.find(site => site.id == floor?.siteId)?.name
             rows.push(row)
         })
 

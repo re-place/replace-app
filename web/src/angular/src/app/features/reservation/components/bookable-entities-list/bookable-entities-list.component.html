@@ -1,0 +1,11 @@
+<div class="grid grid-cols-2 sm:flex flex-wrap gap-4 sm:gap-8">
+    <bookable-entities-list-item
+        *ngFor="let entity of availableEntities"
+        [entity]="entity"
+        (entitySelected)="onEntitySelection(entity)"
+    ></bookable-entities-list-item>
+</div>
+
+<div *ngIf="availableEntities.length === 0" class="text-center text-gray-400">
+    Es befinden leider keine freie Arbeitsplätze in dem ausgewählten Zeitraum.
+</div>

@@ -1,7 +1,84 @@
 /* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+@include mat.core();
+
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+
+$andrena-plalette: (
+    50: #F3FBEA,
+    100: #E4F5D2,
+    200: #CBEBAB,
+    300: #A9DD79,
+    400: #8ACB50,
+    500: #68AC30,
+    600: #518C24,
+    700: #3F6C1F,
+    800: #34561E,
+    900: #2E4A1D,
+    contrast: (
+        50: #374151,
+        100: #374151,
+        200: #374151,
+        300: #374151,
+        400: #374151,
+        500: #374151,
+        600: #374151,
+        700: #fff,
+        800: #fff,
+        900: #fff,
+    ),
+);
+
+$primary: mat.define-palette($andrena-plalette);
+
+$accent: mat.define-palette($andrena-plalette);
+
+$theme: mat.define-light-theme((
+    color: (
+        primary: $primary,
+        accent: $accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+));
+
+@include mat.core-theme($theme);
+@include mat.button-theme($theme);
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Material Calendar styling
+
+.mat-calendar-body-selected {
+    background: #68AC30;
+}
+
+.mat-calendar-body-in-range::before {
+    background: #68AC3066;
+}
+
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    background: #68AC3066;
+}
+
+.mat-mdc-slide-toggle.mat-primary {
+    --mdc-switch-selected-focus-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-handle-color: #3F6C1F;
+    --mdc-switch-selected-hover-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-pressed-state-layer-color: #3F6C1F;
+    --mdc-switch-selected-focus-handle-color: #68AC30;
+    --mdc-switch-selected-hover-handle-color: #68AC30;
+    --mdc-switch-selected-pressed-handle-color: #68AC30;
+    --mdc-switch-selected-focus-track-color: #A9DD79;
+    --mdc-switch-selected-hover-track-color: #A9DD79;
+    --mdc-switch-selected-pressed-track-color: #A9DD79;
+    --mdc-switch-selected-track-color: #A9DD79;
+  }
+
+.mat-mdc-raised-button:not(:disabled) {
+    --mdc-protected-button-label-text-color: #fff;
+}

@@ -1,0 +1,16 @@
+<div>
+    <h2 class="text-xl font-medium text-gray-700">
+        Bitte wählen sie ein Gebäude aus
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-4 xl:gap-8 mt-2">
+        <div
+            *ngFor="let site of sites"
+            class="p-4 flex items-center justify-center rounded-md shadow-md hover:shadow-lg h-32 md:h-48 xl:h-64 cursor-pointer text-gray-400 hover:shadow-primary-300 hover:text-primary-500"
+            (click)="onSiteSelection(site)"
+        >
+            <div class="text-5xl font-semibold">
+                {{ site.name }}
+            </div>
+        </div>
+    </div>
+</div>

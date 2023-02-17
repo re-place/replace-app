@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from "@angular/core"
-import { Feature, Map, View } from "ol"
+import { Feature, Map as OlMap, View } from "ol"
 import { Point } from "ol/geom"
 import ImageLayer from "ol/layer/Image"
 import VectorLayer from "ol/layer/Vector"
@@ -12,28 +12,15 @@ import { ImageLoader } from "src/app/util/ImageLoader"
 
 export type Entity = {
     available: boolean
-    entity: BookableEntityDto
     selected: boolean
+    entity: BookableEntityDto
 }
-
-const disabledStyle = new Style({
-    image: new Circle({
-        radius: 8,
-        fill: new Fill({
-            color: "#DBEAFE",
-        }),
-        stroke: new Stroke({
-            color: "#9CA3AF",
-            width: 2,
-        }),
-    }),
-})
 
 const selectedStyle = new Style({
     image: new Circle({
-        radius: 8,
+        radius: 10,
         fill: new Fill({
-            color: "#EF4444",
+            color: "#68ac30",
         }),
         stroke: new Stroke({
             color: "rgba(255, 255, 255, 1)",
@@ -55,15 +42,27 @@ const availableStyle = new Style({
     }),
 })
 
+const disabledStyle = new Style({
+    image: new Circle({
+        radius: 6,
+        fill: new Fill({
+            color: "#DBEAFE",
+        }),
+        stroke: new Stroke({
+            color: "#9CA3AF",
+            width: 2,
+        }),
+    }),
+})
+
 @Component({
-    selector: "entity-map [entities] [backgroundImage]",
+    selector: "entity-map [backgroundImage]",
     templateUrl: "./entity-map.component.html",
-    styles: [
-    ],
+    styles: [],
 })
 export class EntityMapComponent implements OnInit, OnChanges {
 
-    @Input() entities!: Entity[]
+    @Input() entities: Entity[] = []
 
     @Input() backgroundImage: FileDto | undefined | null
 
@@ -94,7 +93,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
         },
     })
 
-    private map: Map | undefined
+    private map: OlMap | undefined
     private readonly imageLoader: ImageLoader = new ImageLoader()
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -168,8 +167,8 @@ export class EntityMapComponent implements OnInit, OnChanges {
         this.map = this.createMap()
     }
 
-    private createMap(): Map {
-        const map = new Map({
+    private createMap(): OlMap {
+        const map = new OlMap({
             target: "map",
             layers: [
                 this.imageLayer,
@@ -202,9 +201,8 @@ export class EntityMapComponent implements OnInit, OnChanges {
             }
 
             const entity = this.entities[entityIndex]
-            const newEntities = [...this.entities]
-            newEntities.splice(entityIndex, 1, { ...entity, selected: !entity.selected })
-            this.entitiesChange.emit(newEntities)
+            entity.selected = !entity.selected
+            this.entitiesChange.emit([...this.entities])
         })
 
         map.on("pointermove", (event) => {

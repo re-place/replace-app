@@ -24,7 +24,7 @@ export class UserLayoutComponent implements OnInit {
             icon: "dashboard",
         },
         {
-            title: "Reservation",
+            title: "Buchen",
             route: "/reservation",
             icon: "calendar_today",
         },
