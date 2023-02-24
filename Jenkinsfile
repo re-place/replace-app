@@ -50,10 +50,10 @@ pipeline {
             steps {
                 script {
                     if(GIT_BRANCH == 'origin/master'){
-                        ECR_TAG = '${TEST_TAG}'
+                        IMAGE_TAG = 'latest'
                     }
                     if(GIT_BRANCH == 'origin/dev'){
-                        ECR_TAG = '${STAGING_TAG}'
+                        IMAGE_TAG = 'staging'
                     }
                 }
 
@@ -79,6 +79,7 @@ pipeline {
                         REPLACE_OAUTH_CALLBACK = '${TEST_OAUTH_CALLBACK}'
                         REPLACE_OAUTH_CLIENT_ID = '${TEST_OAUTH_CLIENTID}'
                         REPLACE_OAUTH_CLIENT_SECRET = '${TEST_OAUTH_SECRET}'
+                        IMAGE_TAG = 'latest'
                     }
                     if(GIT_BRANCH == 'origin/dev'){
                         REPLACE_DATABASE_URL = '${STAGING_DATABASE_URL}'
@@ -87,6 +88,7 @@ pipeline {
                         REPLACE_OAUTH_CALLBACK = '${STAGING_OAUTH_CALLBACK}'
                         REPLACE_OAUTH_CLIENT_ID = '${STAGING_OAUTH_CLIENTID}'
                         REPLACE_OAUTH_CLIENT_SECRET = '${STAGING_OAUTH_SECRET}'
+                        IMAGE_TAG = 'staging'
                     }
                 }
 
