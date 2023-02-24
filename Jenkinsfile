@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_TAG = GIT_BRANCH == 'origin/master' ? 'latest' : GIT_BRANCH == 'origin/dev' ? 'staging' : GIT_BRANCH
-        REPLACE_DOCKER_ENV = GIT_BRANCH == 'origin/master' ? 'ssh://test.local' : 'ssh://staging.local'
-        REPLACE_DATABASE_URL = GIT_BRANCH == 'origin/master' ? '${TEST_DATABASE_URL}' : '${STAGING_DATABASE_URL}'
-        REPLACE_OAUTH_CALLBACK = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_CALLBACK}' : '${STAGING_OAUTH_CALLBACK}'
-        REPLACE_OAUTH_CLIENT_ID = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_CLIENTID}' : '${STAGING_OAUTH_CLIENTID}'
-        REPLACE_OAUTH_CLIENT_SECRET = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_SECRET}' : '${STAGING_OAUTH_SECRET}'
+        // IMAGE_TAG = '''GIT_BRANCH == 'origin/master' ? 'latest' : GIT_BRANCH == 'origin/dev' ? 'staging' : GIT_BRANCH'''
+        // REPLACE_DOCKER_ENV = GIT_BRANCH == 'origin/master' ? 'ssh://test.local' : 'ssh://staging.local'
+        // REPLACE_DATABASE_URL = GIT_BRANCH == 'origin/master' ? '${TEST_DATABASE_URL}' : '${STAGING_DATABASE_URL}'
+        // REPLACE_OAUTH_CALLBACK = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_CALLBACK}' : '${STAGING_OAUTH_CALLBACK}'
+        // REPLACE_OAUTH_CLIENT_ID = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_CLIENTID}' : '${STAGING_OAUTH_CLIENTID}'
+        // REPLACE_OAUTH_CLIENT_SECRET = GIT_BRANCH == 'origin/master' ? '${TEST_OAUTH_SECRET}' : '${STAGING_OAUTH_SECRET}'
     }
 
     stages {
