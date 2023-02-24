@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        TEST = 'Test'
         // IMAGE_TAG = '''GIT_BRANCH == 'origin/master' ? 'latest' : GIT_BRANCH == 'origin/dev' ? 'staging' : GIT_BRANCH'''
         // REPLACE_DOCKER_ENV = GIT_BRANCH == 'origin/master' ? 'ssh://test.local' : 'ssh://staging.local'
         // REPLACE_DATABASE_URL = GIT_BRANCH == 'origin/master' ? '${TEST_DATABASE_URL}' : '${STAGING_DATABASE_URL}'
