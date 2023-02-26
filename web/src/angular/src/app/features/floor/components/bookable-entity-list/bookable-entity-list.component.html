@@ -1,6 +1,12 @@
 <div class="h-full flex flex-col overflow-y-auto">
-    <data-table [data]="bookableEntities" [columns]="columns" [(selected)]="selectedEntities" selectable="single">
-    </data-table>
+    <data-table
+        [data]="bookableEntities"
+        [columns]="columns"
+        [(selected)]="selectedEntities"
+        selectable="single"
+        [reorderable]="true"
+        (newOrder)="updateOrder($event)"
+        ></data-table>
     <div *ngIf="bookableEntities?.length === 0" class="grow flex items-center justify-center">
         <empty-state>
             <ng-template [icon]>

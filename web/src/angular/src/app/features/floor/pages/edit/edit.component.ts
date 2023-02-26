@@ -197,4 +197,8 @@ export class EditComponent implements OnDestroy {
             },
         })
     }
+
+    public saveOrder(event: string[]) {
+
+    }
 }

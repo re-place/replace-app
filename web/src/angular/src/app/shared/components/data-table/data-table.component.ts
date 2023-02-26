@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } from "@angular/core"
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop"
+import { Component, ContentChild, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core"
+import { MatTable } from "@angular/material/table"
 
 @Component({
     selector: "data-table",
@@ -11,13 +13,21 @@ export class DataTableComponent {
     @Input() public columns: { key: string; label: string, getter?: (item: any) => any }[] = []
     @Input() public selectable: "single" | "multiple" | "none" = "none"
     @Input() public selected: any[] = []
+    @Input() public reorderable = false
 
     @Output() public readonly selectedChange = new EventEmitter<any[]>()
+    @Output() public readonly newOrder = new EventEmitter<string[]>()
 
     @ContentChild(TemplateRef) public templateRef: TemplateRef<any> | undefined
 
+    @ViewChild(MatTable) table!: MatTable<any>
+    
     get dataToDisplay() {
         return this.data ?? []
+    }
+
+    set dataToDisplay(data: any[]) {
+        this.data = data
     }
 
     get columnsToDisplay() {
@@ -55,5 +65,12 @@ export class DataTableComponent {
         }
 
         return this.selected.includes(row)
+    }
+
+    public onDrop(event: CdkDragDrop<any>) {
+        if(!this.reorderable || this.data === undefined) return
+        moveItemInArray(this.data, event.previousIndex, event.currentIndex)
+        this.table.renderRows()
+        this.newOrder.emit(this.data.map(row => row.id))
     }
 }

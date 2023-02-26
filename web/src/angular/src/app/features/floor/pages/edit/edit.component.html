@@ -57,6 +57,7 @@
                         [bookableEntities]="bookableEntities.data"
                         [(selectedBookableEntity)]="selectedEntity"
                         (create)="onCreateBookableEntity()"
+                        (newOrder)="saveOrder($event)"
                     >
                     </bookable-entity-list>
                 </ng-template>
