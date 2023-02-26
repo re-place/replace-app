@@ -26,10 +26,6 @@ export class DataTableComponent {
         return this.data ?? []
     }
 
-    set dataToDisplay(data: any[]) {
-        this.data = data
-    }
-
     get columnsToDisplay() {
         const columns = this.columns.map((column) => column.key)
 
