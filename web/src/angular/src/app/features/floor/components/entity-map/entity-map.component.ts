@@ -69,7 +69,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
         }),
     })
 
-    private map: Map | undefined
+    public map: Map | undefined
     private readonly imageLoader: ImageLoader = new ImageLoader()
 
     private readonly dragInteraction = new DragInteraction({
@@ -180,6 +180,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
     private createMap(): Map {
         const map = new Map({
             target: "map",
+            controls: [],
             layers: [
                 this.imageLayer,
                 this.unselectedEntityLayer,
