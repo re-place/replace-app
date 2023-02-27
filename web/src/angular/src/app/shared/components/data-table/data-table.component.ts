@@ -16,7 +16,7 @@ export class DataTableComponent {
     @Input() public reorderable = false
 
     @Output() public readonly selectedChange = new EventEmitter<any[]>()
-    @Output() public readonly newOrder = new EventEmitter<string[]>()
+    @Output() public readonly newOrder = new EventEmitter<void>()
 
     @ContentChild(TemplateRef) public templateRef: TemplateRef<any> | undefined
 
@@ -67,6 +67,6 @@ export class DataTableComponent {
         if(!this.reorderable || this.data === undefined) return
         moveItemInArray(this.data, event.previousIndex, event.currentIndex)
         this.table.renderRows()
-        this.newOrder.emit(this.data.map(row => row.id))
+        this.newOrder.emit()
     }
 }

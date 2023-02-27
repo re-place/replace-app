@@ -198,7 +198,7 @@ export class EditComponent implements OnDestroy {
         })
     }
 
-    public saveOrder(event: string[]) {
+    public saveOrder() {
         let apiError = false
         this.bookableEntities.data?.forEach((entity, i) => {
             if(apiError) return
@@ -210,7 +210,7 @@ export class EditComponent implements OnDestroy {
                     console.log(err)
                     apiError = true
                     this.snackBar.open("Reihenfolge konnte nicht gespeichert werden.", "error", {duration: 3000})
-                }
+                },
             })
         })
     }

@@ -13,7 +13,7 @@ export class BookableEntityListComponent {
 
     @Output() selectedBookableEntityChange = new EventEmitter<BookableEntityDto>()
     @Output() create = new EventEmitter<void>()
-    @Output() newOrder = new EventEmitter<string[]>()
+    @Output() newOrder = new EventEmitter<void>()
 
     public get selectedEntities() {
         return this.selectedBookableEntity === undefined ? [] : [this.selectedBookableEntity]
@@ -31,7 +31,7 @@ export class BookableEntityListComponent {
         this.create.emit()
     }
     
-    public updateOrder(event: string[]) {
-        this.newOrder.emit(event) 
+    public updateOrder() {
+        this.newOrder.emit() 
     }
 }

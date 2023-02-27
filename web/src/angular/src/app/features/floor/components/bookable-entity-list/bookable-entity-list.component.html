@@ -5,7 +5,7 @@
         [(selected)]="selectedEntities"
         selectable="single"
         [reorderable]="true"
-        (newOrder)="updateOrder($event)"
+        (newOrder)="updateOrder()"
         ></data-table>
     <div *ngIf="bookableEntities?.length === 0" class="grow flex items-center justify-center">
         <empty-state>
