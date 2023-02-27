@@ -199,6 +199,19 @@ export class EditComponent implements OnDestroy {
     }
 
     public saveOrder(event: string[]) {
-
+        let apiError = false
+        this.bookableEntities.data?.forEach((entity, i) => {
+            if(apiError) return
+            this.api.apiBookableEntityPut({
+                ...entity,
+                index: i,
+            }).subscribe({
+                error: err => {
+                    console.log(err)
+                    apiError = true
+                    this.snackBar.open("Reihenfolge konnte nicht gespeichert werden.", "error", {duration: 3000})
+                }
+            })
+        })
     }
 }

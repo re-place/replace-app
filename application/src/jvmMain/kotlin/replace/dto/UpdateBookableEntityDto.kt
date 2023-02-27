@@ -17,4 +17,6 @@ data class UpdateBookableEntityDto(
     val posX: Int,
 
     val posY: Int,
+
+    val index: Int,
 )

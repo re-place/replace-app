@@ -18,6 +18,7 @@ export interface BookableEntityDto {
     name?: string;
     posX?: number;
     posY?: number;
+    index?: number;
     floorId?: string;
     parentId?: string;
     typeId?: string;

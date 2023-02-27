@@ -11,6 +11,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
@@ -58,7 +59,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
         get("/{floorId}/bookable-entity") {
             val floorId = call.parameters["floorId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            val bookableEntityDtos = transaction { BookableEntity.find(BookableEntities.floor_id eq floorId).map { it.toDto() } }
+            val bookableEntityDtos = transaction { BookableEntity.find(BookableEntities.floor_id eq floorId).orderBy(BookableEntities.index to SortOrder.ASC).map { it.toDto() } }
 
             call.respond(bookableEntityDtos)
         } describe {
