@@ -18,7 +18,7 @@ plugins {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-content-negotiation:2.2.2")
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
     implementation("io.ktor:ktor-serialization-gson:2.2.2")
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-domain"))
