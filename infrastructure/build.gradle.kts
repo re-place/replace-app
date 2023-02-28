@@ -58,6 +58,9 @@ ktor {
         project.findProperty("ktorImage")?.also {
             localImageName.set(it.toString())
         }
+        project.findProperty("ktorTag")?.also {
+            imageTag.set(it.toString())
+        }
     }
 }
 

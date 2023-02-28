@@ -1,26 +1,36 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_TAG = "${GIT_BRANCH == 'master' ? 'latest' : GIT_BRANCH == 'dev' ? 'staging' : GIT_BRANCH}"
+        REPLACE_DOCKER_ENV = "${GIT_BRANCH == 'master' ? 'ssh://test.local' : 'ssh://staging.local'}"
+        REPLACE_DATABASE_URL = "${GIT_BRANCH == 'master' ? TEST_DATABASE_URL : STAGING_DATABASE_URL}"
+        REPLACE_OAUTH_CALLBACK = "${GIT_BRANCH == 'master' ? TEST_OAUTH_CALLBACK : STAGING_OAUTH_CALLBACK}"
+        REPLACE_OAUTH_CLIENTID = "${GIT_BRANCH == 'master' ? TEST_OAUTH_CLIENTID : STAGING_OAUTH_CLIENTID}"
+        REPLACE_OAUTH_SECRET = "${GIT_BRANCH == 'master' ? TEST_OAUTH_SECRET : STAGING_OAUTH_SECRET}"
+        CREDENTIALS = "${GIT_BRANCH == 'master' ? 'TEST_DATABASE_CREDENTIALS' : 'STAGING_DATABASE_CREDENTIALS'}"
+    }
+
     stages {
         stage('Frontend') {
             steps {
                 dir('web') {
-                    sh 'docker build -t ${REPLACE_ECR_FRONTEND} .'
+                    sh 'docker build -t ${REPLACE_ECR_FRONTEND}:${IMAGE_TAG} .'
                 }
             }
         }
         stage('Backend') {
             steps {
                 sh 'cp ./infrastructure/src/jvmMain/resources/application_env.conf ./infrastructure/src/jvmMain/resources/application.conf'
-                sh './gradlew -PktorImage=${REPLACE_ECR_BACKEND} publishImageToLocalRegistry'
+                sh './gradlew -PktorImage=${REPLACE_ECR_BACKEND} -PktorTag=${IMAGE_TAG} publishImageToLocalRegistry'
             }
         }
         stage('Update Database') {
             when {
-                expression { GIT_BRANCH == 'origin/master' }
+                expression { GIT_BRANCH == 'master' || GIT_BRANCH == 'dev' }
             }
             environment {
-                REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
+                REPLACE_DATABASE = credentials("${CREDENTIALS}")
             }
             agent {
                 docker { image 'liquibase/liquibase:latest' }
@@ -31,23 +41,23 @@ pipeline {
         }
         stage('Push into ecr-Repository') {
             when {
-                expression { GIT_BRANCH == 'origin/master' }
+                expression { GIT_BRANCH == 'master' || GIT_BRANCH == 'dev' }
             }
             steps {
-                sh 'docker push ${REPLACE_ECR_FRONTEND}:latest'
-                sh 'docker push ${REPLACE_ECR_BACKEND}:latest'
+                sh 'docker push ${REPLACE_ECR_FRONTEND}:${IMAGE_TAG}'
+                sh 'docker push ${REPLACE_ECR_BACKEND}:${IMAGE_TAG}'
             }
         }
         stage('Run') {
             when {
-                expression { GIT_BRANCH == 'origin/master' }
+                expression { GIT_BRANCH == 'master' || GIT_BRANCH == 'dev' }
             }
             environment {
-                REPLACE_DATABASE = credentials('DATABASE_CREDENTIALS')
+                REPLACE_DATABASE = credentials("${CREDENTIALS}")
             }
             steps {
-                script {
-                    docker.withServer('ssh://test.local') {
+                script {    
+                    docker.withServer("${REPLACE_DOCKER_ENV}") {
                         sh 'docker compose stop'
                         sh 'docker compose up --detach --pull always --remove-orphans'
                     }
