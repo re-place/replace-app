@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_TAG = "${GIT_BRANCH == 'master' ? 'latest' : GIT_BRANCH == 'dev' ? 'staging' : GIT_BRANCH}"
-        REPLACE_DOCKER_ENV = "${GIT_BRANCH == 'master' ? 'ssh://test.local' : 'ssh://staging.local'}"
-        REPLACE_DATABASE_URL = "${GIT_BRANCH == 'master' ? TEST_DATABASE_URL : STAGING_DATABASE_URL}"
-        REPLACE_OAUTH_CALLBACK = "${GIT_BRANCH == 'master' ? TEST_OAUTH_CALLBACK : STAGING_OAUTH_CALLBACK}"
-        REPLACE_OAUTH_CLIENTID = "${GIT_BRANCH == 'master' ? TEST_OAUTH_CLIENTID : STAGING_OAUTH_CLIENTID}"
-        REPLACE_OAUTH_SECRET = "${GIT_BRANCH == 'master' ? TEST_OAUTH_SECRET : STAGING_OAUTH_SECRET}"
-        CREDENTIALS = "${GIT_BRANCH == 'master' ? 'TEST_DATABASE_CREDENTIALS' : 'STAGING_DATABASE_CREDENTIALS'}"
+        IMAGE_TAG = "${GIT_BRANCH == 'master' ? 'staging' : GIT_BRANCH == 'dev' ? 'latest' : GIT_BRANCH}"
+        REPLACE_DOCKER_ENV = "${GIT_BRANCH == 'master' ? 'ssh://staging.local' : 'ssh://test.local'}"
+        REPLACE_DATABASE_URL = "${GIT_BRANCH == 'master' ? STAGING_DATABASE_URL : TEST_DATABASE_URL}"
+        REPLACE_OAUTH_CALLBACK = "${GIT_BRANCH == 'master' ? STAGING_OAUTH_CALLBACK : TEST_OAUTH_CALLBACK}"
+        REPLACE_OAUTH_CLIENTID = "${GIT_BRANCH == 'master' ? STAGING_OAUTH_CLIENTID : TEST_OAUTH_CLIENTID}"
+        REPLACE_OAUTH_SECRET = "${GIT_BRANCH == 'master' ? STAGING_OAUTH_SECRET : TEST_OAUTH_SECRET}"
+        CREDENTIALS = "${GIT_BRANCH == 'master' ? 'STAGING_DATABASE_CREDENTIALS' : 'TEST_DATABASE_CREDENTIALS'}"
     }
 
     stages {
