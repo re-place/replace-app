@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_TAG = "${GIT_BRANCH == 'master' ? 'latest' : GIT_BRANCH == 'jenkins-staging' ? 'staging' : GIT_BRANCH}"
+        IMAGE_TAG = "${GIT_BRANCH == 'master' ? 'latest' : GIT_BRANCH == 'dev' ? 'staging' : GIT_BRANCH}"
         REPLACE_DOCKER_ENV = "${GIT_BRANCH == 'master' ? 'ssh://test.local' : 'ssh://staging.local'}"
         REPLACE_DATABASE_URL = "${GIT_BRANCH == 'master' ? TEST_DATABASE_URL : STAGING_DATABASE_URL}"
         REPLACE_OAUTH_CALLBACK = "${GIT_BRANCH == 'master' ? TEST_OAUTH_CALLBACK : STAGING_OAUTH_CALLBACK}"
