@@ -10,13 +10,9 @@ import io.ktor.server.response.respondText
 import io.ktor.util.pipeline.PipelineContext
 import java.lang.IllegalArgumentException
 
-suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.executeUseCase(useCase: () -> T) {
+suspend inline fun PipelineContext<Unit, ApplicationCall>.executeUseCase(useCase: () -> Unit) {
     try {
-        val result = useCase()
-
-        if (result !is Unit) {
-            return call.respond(result)
-        }
+        useCase()
 
         if (call.isHandled) {
             return

@@ -32,7 +32,7 @@ fun Route.registerSiteRoutes() {
 
         post<CreateSiteDto> {
             executeUseCase {
-                CreateSiteUseCase.execute(it)
+                call.respond(CreateSiteUseCase.execute(it))
             }
         } describe {
             description = "Creates a new site"
@@ -51,7 +51,7 @@ fun Route.registerSiteRoutes() {
 
         put<UpdateSiteDto> {
             executeUseCase {
-                UpdateSiteUseCase.execute(it)
+                call.respond(UpdateSiteUseCase.execute(it))
             }
         } describe {
             description = "Updates a site"

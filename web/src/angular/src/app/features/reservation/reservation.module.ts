@@ -21,7 +21,8 @@ import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationOverviewComponent } from "./pages/reservation-overview/reservation-overview.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
 import { MaterialModule } from "../../material/material.module"
-import { SharedModule } from "src/app/shared/shared.module"
+import { SharedModule } from "src/app/shared/shared.module";
+import { BookingMapComponent } from './components/booking-map/booking-map.component'
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { SharedModule } from "src/app/shared/shared.module"
         BookingsListItemComponent,
         BookableEntitiesListComponent,
         BookableEntitiesListItemComponent,
+        BookingMapComponent,
     ],
     imports: [
         CommonModule,
