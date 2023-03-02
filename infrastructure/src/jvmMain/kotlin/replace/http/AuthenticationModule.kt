@@ -163,15 +163,14 @@ fun Application.authenticationModule() {
     }
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.withUserSession(block: suspend (UserSession) -> Any): Any {
+suspend fun <T> PipelineContext<Unit, ApplicationCall>.withUserSession(block: suspend (UserSession) -> T): T? {
     val session = call.sessions.get<UserSession>()
-    if (session === null) {
+    return if (session === null) {
         call.respondText("Not logged in", status = HttpStatusCode.Unauthorized)
+        null
     } else {
-        return block(session)
+        block(session)
     }
-
-    return Unit
 }
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
