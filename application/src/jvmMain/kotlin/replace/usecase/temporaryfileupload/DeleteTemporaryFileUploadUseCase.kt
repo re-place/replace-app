@@ -2,6 +2,7 @@ package replace.usecase.temporaryfileupload
 
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
+import replace.model.File
 import replace.model.TemporaryFile
 
 object DeleteTemporaryFileUploadUseCase {
