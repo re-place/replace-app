@@ -22,7 +22,8 @@ import { ReservationOverviewComponent } from "./pages/reservation-overview/reser
 import { ReservationRoutingModule } from "./reservation-routing.module"
 import { MaterialModule } from "../../material/material.module"
 import { SharedModule } from "src/app/shared/shared.module";
-import { BookingMapComponent } from './components/booking-map/booking-map.component'
+import { BookingMapComponent } from './components/booking-map/booking-map.component';
+import { DeleteMyBookingDialogComponent } from './components/delete-my-booking-dialog/delete-my-booking-dialog.component'
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { BookingMapComponent } from './components/booking-map/booking-map.compon
         BookableEntitiesListComponent,
         BookableEntitiesListItemComponent,
         BookingMapComponent,
+        DeleteMyBookingDialogComponent,
     ],
     imports: [
         CommonModule,

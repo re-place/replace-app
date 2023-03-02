@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core"
+import { MatDialog } from "@angular/material/dialog"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
+import { DeleteMyBookingDialogComponent } from "../../components/delete-my-booking-dialog/delete-my-booking-dialog.component"
 import { BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 
 export type Booking = {
@@ -36,7 +38,11 @@ export class ReservationOverviewComponent implements OnInit {
         timeStyle: "short",
     }
 
-    constructor(private readonly apiService: DefaultService, private readonly snackBar: MatSnackBar) { }
+    constructor(
+        private readonly apiService: DefaultService,
+        private readonly snackBar: MatSnackBar,
+        private readonly dialog: MatDialog,
+    ) { }
 
     ngOnInit(): void {
         this.loadBookings()
@@ -156,16 +162,29 @@ export class ReservationOverviewComponent implements OnInit {
         }))
     }
 
-    deleteBooking(element: BookingDto) {
-        this.apiService.apiBookingIdDelete(element.id as string).subscribe({
-            next: response => {
-                this.snackBar.open("Buchung gelöscht", "ok", {duration: 4000})
-                this.loadBookings()
+    deleteBooking(element: Booking) {
+        this.dialog.open(DeleteMyBookingDialogComponent, {
+            data: {
+                id: element.id,
+                from: element.start,
+                to: element.end,
             },
-            error: err => {
-                this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
-            },
+        }).afterClosed().subscribe(result => {
+            if (result !== true) {
+                return
+            }
+
+            this.apiService.apiBookingIdDelete(element.id).subscribe({
+                next: response => {
+                    this.snackBar.open("Buchung gelöscht", "ok", {duration: 4000})
+                    this.loadBookings()
+                },
+                error: err => {
+                    this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
+                },
+            })
         })
+
     }
 
     toNameList(entities: BookableEntityDto[]): string {
