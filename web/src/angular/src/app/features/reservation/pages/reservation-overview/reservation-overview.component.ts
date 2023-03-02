@@ -1,10 +1,9 @@
-import {Component, OnInit} from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
-import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
-import { BookableEntities } from "src/app/core/openapi/model/bookableEntities"
+import { BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 
-type Booking = {
+export type Booking = {
     id: string
     start: Date
     end: Date
@@ -12,7 +11,7 @@ type Booking = {
     site: SiteDto
     floor: FloorDto
 
-    bookedEntities: BookableEntities[]
+    bookedEntities: BookableEntityDto[]
 }
 
 @Component({
@@ -71,7 +70,7 @@ export class ReservationOverviewComponent implements OnInit {
                 end: new Date(booking.end as string),
                 site,
                 floor,
-                bookedEntities: booking.bookedEntities as BookableEntities[],
+                bookedEntities: booking.bookedEntities as BookableEntityDto[],
             }
         })
             .filter((booking): booking is Exclude<typeof booking, undefined> => booking !== undefined)
@@ -167,5 +166,9 @@ export class ReservationOverviewComponent implements OnInit {
                 this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
             },
         })
+    }
+
+    toNameList(entities: BookableEntityDto[]): string {
+        return entities.map(entity => entity.name).join(", ")
     }
 }
