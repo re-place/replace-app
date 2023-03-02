@@ -35,12 +35,10 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
 
         post<CreateFloorDto> {
             executeUseCase {
-                val result = CreateFloorUseCase.execute(
+                CreateFloorUseCase.execute(
                     it,
                     fileStorage,
                 )
-
-                call.respond(result)
             }
         } describe {
             description = "Creates a new floor"
@@ -79,7 +77,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
 
         put<UpdateFloorDto> {
             executeUseCase {
-                call.respond(UpdateFloorUseCase.execute(it, fileStorage))
+                UpdateFloorUseCase.execute(it, fileStorage)
             }
         } describe {
             description = "Updates a floor"

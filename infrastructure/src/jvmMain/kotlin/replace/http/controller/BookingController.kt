@@ -54,8 +54,7 @@ fun Route.registerBookingRoutes() {
 
                     val my = call.parameters["my"]?.toBoolean()
 
-                    val result = GetBookingUseCase.execute(my, it.userId, floorId, bookableEntityId, start, end)
-                    call.respond(result)
+                    GetBookingUseCase.execute(my, it.userId, floorId, bookableEntityId, start, end)
                 }
             }
         } describe {
@@ -95,7 +94,7 @@ fun Route.registerBookingRoutes() {
         post<CreateBookingDto> { dto ->
             executeUseCase {
                 withUserSession {
-                    call.respond(CreateBookingUseCase.execute(dto, it.userId))
+                    CreateBookingUseCase.execute(dto, it.userId)
                 }
             }
         } describe {

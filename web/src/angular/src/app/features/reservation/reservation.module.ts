@@ -11,8 +11,10 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
 import { BookableEntitiesListComponent } from "./components/bookable-entities-list/bookable-entities-list.component"
 import { BookableEntitiesListItemComponent } from "./components/bookable-entities-list-item/bookable-entities-list-item.component"
+import { BookingMapComponent } from "./components/booking-map/booking-map.component"
 import { BookingsListComponent } from "./components/bookings-list/bookings-list.component"
 import { BookingsListItemComponent } from "./components/bookings-list-item/bookings-list-item.component"
+import { DeleteMyBookingDialogComponent } from "./components/delete-my-booking-dialog/delete-my-booking-dialog.component"
 import { EntityMapComponent } from "./components/entity-map/entity-map.component"
 import { FloorSelectorComponent } from "./components/floor-selector/floor-selector.component"
 import { SiteSelectorComponent } from "./components/site-selector/site-selector.component"
@@ -21,9 +23,7 @@ import { ReservationComponent } from "./pages/reservation/reservation.component"
 import { ReservationOverviewComponent } from "./pages/reservation-overview/reservation-overview.component"
 import { ReservationRoutingModule } from "./reservation-routing.module"
 import { MaterialModule } from "../../material/material.module"
-import { SharedModule } from "src/app/shared/shared.module";
-import { BookingMapComponent } from './components/booking-map/booking-map.component';
-import { DeleteMyBookingDialogComponent } from './components/delete-my-booking-dialog/delete-my-booking-dialog.component'
+import { SharedModule } from "src/app/shared/shared.module"
 
 
 @NgModule({
