@@ -1,11 +1,11 @@
 [versions]
 exposed = "0.41.1"
 kotlin = "1.8.0"
-ktor = "2.2.2"
+ktor = "2.2.4"
 liquibase = "2.1.1"
 liquibase-core = "4.19.0"
 liquibase-picocli = "4.7.0"
-log4j = "2.19.0"
+log4j = "2.20.0"
 postgresql = "42.5.1"
 tegral = "0.0.3"
 
@@ -44,5 +44,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.0.0"
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
-node = "com.github.node-gradle.node:3.5.0"
 ktor = { id = "io.ktor.plugin", version.ref = "ktor"}
