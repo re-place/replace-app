@@ -1,7 +1,7 @@
 [versions]
 exposed = "0.41.1"
 kotlin = "1.8.0"
-ktor = "2.2.2"
+ktor = "2.2.4"
 liquibase = "2.1.1"
 liquibase-core = "4.19.0"
 liquibase-picocli = "4.7.0"
