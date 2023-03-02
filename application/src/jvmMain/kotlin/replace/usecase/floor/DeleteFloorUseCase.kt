@@ -1,39 +1,44 @@
 package replace.usecase.floor
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.model.BookableEntities
 import replace.model.BookableEntity
 import replace.model.Floor
+import replace.usecase.file.DeleteFileUseCase
 
 object DeleteFloorUseCase {
     suspend fun execute(
-        floor_id: String,
+        floorId: String,
         fileStorage: FileStorage
     ) {
-        return transaction {
-            val floor = Floor.findById(floor_id)
+        val floor = transaction {
+            Floor.findById(floorId)
+        } ?: return
 
-            checkNotNull(floor) { "Floor with id ${floor_id} not found" }
+        val bookableEntities = transaction {
+            BookableEntity.find(BookableEntities.floor_id eq floorId).toList()
+        }
 
+        bookableEntities.toList().forEach {
+            DeleteAllBookingsOfFloorUseCase.execute(it.id.value)
+        }
 
-            val bookableEntities = BookableEntity.find(BookableEntities.floor_id eq floor_id)
+        transaction {
+            BookableEntities.deleteWhere { BookableEntities.floor_id eq floorId }
+        }
 
-            for( bookablentity in bookableEntities){
-//                   DeleteAllBookingsOfFloorUseCase.execute(bookablentity.id.value)
-                 print("##########")
-                bookablentity.delete()
-            }
-
-            //Floor
+        transaction {
             floor.delete()
+        }
 
-            //PlanFile
-           floor.planFileId?.let {
-               //DeleteFileUseCase.execute(it.value, fileStorage )
-               print("deletefile..")
-           }
+        newSuspendedTransaction {
+            floor.planFileId?.let {
+                DeleteFileUseCase.execute(it.value, fileStorage)
+            }
         }
     }
 }
