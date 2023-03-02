@@ -33,7 +33,7 @@ import java.util.UUID
 fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
     route("/api/temporary-file-upload") {
         post {
-            executeUseCase {
+            executeUseCase<Unit> {
                 val multipart = call.receiveMultipart()
                 val temporaryFileUploadDtos = mutableListOf<TemporaryFileUploadDto>()
 
@@ -106,7 +106,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
         }
 
         delete<Routing.ById> { route ->
-            executeUseCase {
+            executeUseCase<Unit> {
                 DeleteTemporaryFileUploadUseCase.execute(route.id, fileStorage)
                 return@delete call.respond(HttpStatusCode.NoContent)
             }

@@ -10,11 +10,11 @@ import io.ktor.server.response.respondText
 import io.ktor.util.pipeline.PipelineContext
 import java.lang.IllegalArgumentException
 
-suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.executeUseCase(useCase: () -> T) {
+suspend inline fun <reified T : Any?> PipelineContext<Unit, ApplicationCall>.executeUseCase(useCase: () -> T) {
     try {
         val result = useCase()
 
-        if (result !is Unit) {
+        if (result !is Unit && result != null) {
             return call.respond(result)
         }
 
@@ -49,6 +49,9 @@ suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.exec
             status = HttpStatusCode.InternalServerError
         )
     } catch (e: Exception) {
-        call.respondText("[${e::class}]: An internal error occurred: ${e.message} \n ${e.stackTrace.joinToString("\n")}", status = HttpStatusCode.InternalServerError)
+        call.respondText(
+            "[${e::class}]: An internal error occurred: ${e.message} \n ${e.stackTrace.joinToString("\n")}",
+            status = HttpStatusCode.InternalServerError
+        )
     }
 }
