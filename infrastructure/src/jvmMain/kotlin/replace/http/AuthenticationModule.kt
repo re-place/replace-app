@@ -100,9 +100,9 @@ fun Application.authenticationModule() {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "microsoft",
                     authorizeUrl = this@authenticationModule.environment.config.tryGetString("ktor.oauth.authorizeUrl")
-                    ?: throw IllegalStateException("Missing OAuth authorize Url"),
+                        ?: throw IllegalStateException("Missing OAuth authorize Url"),
                     accessTokenUrl = this@authenticationModule.environment.config.tryGetString("ktor.oauth.accessTokenUrl")
-                    ?: throw IllegalStateException("Missing OAuth access token Url"),
+                        ?: throw IllegalStateException("Missing OAuth access token Url"),
                     requestMethod = HttpMethod.Post,
                     clientId = this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientId")
                         ?: throw IllegalStateException("Missing OAuth client ID"),
