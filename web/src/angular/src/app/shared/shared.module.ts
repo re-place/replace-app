@@ -15,6 +15,7 @@ import { LoadingStateComponent } from "./components/loading-state/loading-state.
 import { TextButtonComponent } from "./components/text-button/text-button.component"
 import { TimePickerComponent } from "./components/time-picker/time-picker.component"
 import { UserCardComponent } from "./components/user-card/user-card.component"
+import { ZoomControlComponent } from "./components/zoom-control/zoom-control.component"
 import { ActionsDirective } from "./directives/actions.directive"
 import { ExtraDirective } from "./directives/extra.directive"
 import { FooterDirective } from "./directives/footer.directive"
@@ -57,6 +58,8 @@ registerPlugin(FilePondPluginFileValidateType)
         LocaleTimePipe,
         LocaleListPipe,
         LocaleDateTimeRangePipe,
+        TimePickerComponent,
+        ZoomControlComponent,
     ],
     exports: [
         UserCardComponent,
@@ -80,6 +83,8 @@ registerPlugin(FilePondPluginFileValidateType)
         LocaleTimePipe,
         LocaleListPipe,
         LocaleDateTimeRangePipe,
+        TimePickerComponent,
+        ZoomControlComponent,
     ],
     imports: [CommonModule, MaterialModule, RouterModule, FilePondModule],
 })
