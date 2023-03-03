@@ -33,11 +33,6 @@ export class ReservationOverviewComponent implements OnInit {
         dateStyle: "full",
     }
 
-    dateTimeFormat: Intl.DateTimeFormatOptions = {
-        dateStyle: "short",
-        timeStyle: "short",
-    }
-
     constructor(
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
@@ -55,30 +50,32 @@ export class ReservationOverviewComponent implements OnInit {
             return []
         }
 
-        return bookings.map(booking => {
-            const floor = this.floors?.get(booking.bookedEntities?.at(0)?.floorId ?? "")
+        return bookings
+            .filter(booking => booking.bookedEntities?.length ?? 0 > 0)
+            .map(booking => {
+                const floor = this.floors?.get(booking.bookedEntities?.at(0)?.floorId ?? "")
 
-            if (floor === undefined) {
-                console.error("Floor not found", booking.bookedEntities?.at(0)?.floorId)
-                return undefined
-            }
+                if (floor === undefined) {
+                    console.error("Floor not found", booking.bookedEntities?.at(0)?.floorId)
+                    return undefined
+                }
 
-            const site = this.sites?.get(floor.siteId as string)
+                const site = this.sites?.get(floor.siteId as string)
 
-            if (site === undefined) {
-                console.error("Site not found", floor.siteId)
-                return undefined
-            }
+                if (site === undefined) {
+                    console.error("Site not found", floor.siteId)
+                    return undefined
+                }
 
-            return {
-                id: booking.id as string,
-                start: new Date(booking.start as string),
-                end: new Date(booking.end as string),
-                site,
-                floor,
-                bookedEntities: booking.bookedEntities as BookableEntityDto[],
-            }
-        })
+                return {
+                    id: booking.id as string,
+                    start: new Date(booking.start as string),
+                    end: new Date(booking.end as string),
+                    site,
+                    floor,
+                    bookedEntities: booking.bookedEntities as BookableEntityDto[],
+                }
+            })
             .filter((booking): booking is Exclude<typeof booking, undefined> => booking !== undefined)
     }
 
@@ -185,9 +182,5 @@ export class ReservationOverviewComponent implements OnInit {
             })
         })
 
-    }
-
-    toNameList(entities: BookableEntityDto[]): string {
-        return entities.map(entity => entity.name).join(", ")
     }
 }

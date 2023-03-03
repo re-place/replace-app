@@ -10,30 +10,7 @@
                 <div class="h-[2px] grow bg-gray-300 2xl:bg-inherit 2xl:bg-gradient-to-l from-transparent via-gray-300 to-gray-300"></div>
             </div>
             <div class="max-w-7xl self-center w-full flex flex-col xl:text-xl gap-8">
-                <card *ngFor="let booking of group.bookings">
-                    <div class="flex flex-col xl:flex-row h-96 items-start relative">
-                        <div class="grid grid-cols-[auto_1fr] grid-flow-row gap-2 items-center pr-12 xl:pr-0">
-                            <mat-icon class="!h-5 !w-5 text-[1.25rem]">schedule</mat-icon>
-                            <div>{{ booking.start | localeDateTime:dateTimeFormat }} - {{ booking.end | localeDateTime:dateTimeFormat }}</div>
-                            <mat-icon class="!h-5 !w-5 text-[1.25rem]">location_city</mat-icon>
-                            <div>{{ booking.site.name }}</div>
-                            <mat-icon class="!h-5 !w-5 text-[1.25rem]">account_tree</mat-icon>
-                            <div>{{ booking.floor.name }}</div>
-                            <mat-icon class="!h-5 !w-5 text-[1.25rem]">meeting_room</mat-icon>
-                            <div>{{ toNameList(booking.bookedEntities) }}</div>
-                        </div>
-                        <div class="pt-4 xl:pt-0 xl:ml-auto xl:pl-4  grow self-stretch">
-                            <booking-map class="w-full h-full" [booking]="booking"></booking-map>
-                        </div>
-                        <button
-                            type="button"
-                            class="absolute top-2 right-2 rounded-full bg-white h-8 w-8 border-red-500 border-2 text-red-500 hover:border-red-400 hover:text-red-400"
-                            (click)="deleteBooking(booking)"
-                        >
-                            <mat-icon class="!h-7 !w-7 text-[1.75rem]">delete</mat-icon>
-                        </button>
-                    </div>
-                </card>
+                <booking-card *ngFor="let booking of group.bookings" [booking]="booking" (delete)="deleteBooking($event)"></booking-card>
             </div>
         </div>
     </div>
