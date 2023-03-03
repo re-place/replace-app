@@ -7,6 +7,7 @@ import replace.datastore.FileStorage
 import replace.model.BookableEntities
 import replace.model.BookableEntity
 import replace.model.Floor
+import replace.usecase.booking.DeleteEmptyBookingsUseCase
 import replace.usecase.file.DeleteFileUseCase
 
 object DeleteFloorUseCase {
@@ -37,5 +38,7 @@ object DeleteFloorUseCase {
         floor.planFileId?.let {
             DeleteFileUseCase.execute(it.value, fileStorage)
         }
+
+        DeleteEmptyBookingsUseCase.execute()
     }
 }
