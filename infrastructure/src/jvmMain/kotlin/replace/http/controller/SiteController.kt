@@ -2,17 +2,12 @@ package replace.http.controller
 
 import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import replace.datastore.FileStorage
 import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
 import replace.dto.UpdateSiteDto
@@ -22,10 +17,20 @@ import replace.model.Floor
 import replace.model.Floors
 import replace.model.Site
 import replace.usecase.site.CreateSiteUseCase
+import replace.usecase.site.DeleteSiteUseCase
 import replace.usecase.site.UpdateSiteUseCase
 
-fun Route.registerSiteRoutes() {
+fun Route.registerSiteRoutes(fileStorage: FileStorage) {
     route("/api/site") {
+
+        delete("/{siteId}"){
+            val siteId = call.parameters["siteId"]
+            executeUseCase{
+                if (siteId != null) {
+                    DeleteSiteUseCase.execute(siteId, fileStorage)
+                }
+            }
+        }
         routeRepository(Site.Companion) {
             it.toDto()
         }
