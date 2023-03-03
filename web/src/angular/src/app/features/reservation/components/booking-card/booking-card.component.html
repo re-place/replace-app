@@ -1,6 +1,6 @@
 <card>
     <div class="flex flex-col xl:flex-row items-start relative overflow-hidden transition-[height]" [class]="open ? 'h-96' : 'h-40'">
-        <div class="grid grid-cols-[auto_1fr] grid-flow-row gap-2 items-center pr-12 xl:pr-0">
+        <div class="grid grid-cols-[auto_1fr] grid-flow-row gap-2 items-center pr-20 xl:pr-0">
             <mat-icon class="!h-5 !w-5 text-[1.25rem]">schedule</mat-icon>
             <div>{{ booking.start | localeDateTime:dateTimeFormat }} - {{ booking.end | localeDateTime:dateTimeFormat }}</div>
             <mat-icon class="!h-5 !w-5 text-[1.25rem]">location_city</mat-icon>
@@ -11,7 +11,7 @@
             <div>{{ toNameList(booking.bookedEntities) }}</div>
         </div>
         <div class="pt-4 xl:pt-0 xl:ml-auto xl:pl-4 grow self-stretch">
-            <booking-map class="block w-full h-full min-h-[9rem] xl:min-h-[24rem]" [booking]="booking"></booking-map>
+            <booking-map class="block w-full h-56 xl:h-full xl:min-h-[24rem]" [booking]="booking"></booking-map>
         </div>
         <button
             type="button"
