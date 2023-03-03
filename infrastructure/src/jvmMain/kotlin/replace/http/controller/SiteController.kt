@@ -2,10 +2,16 @@ package replace.http.controller
 
 import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.put
+import io.ktor.server.routing.route
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.dto.CreateSiteDto
@@ -23,9 +29,9 @@ import replace.usecase.site.UpdateSiteUseCase
 fun Route.registerSiteRoutes(fileStorage: FileStorage) {
     route("/api/site") {
 
-        delete("/{siteId}"){
+        delete("/{siteId}") {
             val siteId = call.parameters["siteId"]
-            executeUseCase{
+            executeUseCase {
                 if (siteId != null) {
                     DeleteSiteUseCase.execute(siteId, fileStorage)
                 }

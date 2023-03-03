@@ -1,7 +1,6 @@
 package replace.usecase.site
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.model.Floor
@@ -14,26 +13,20 @@ object DeleteSiteUseCase {
         siteId: String,
         fileStorage: FileStorage
     ) {
-        val site = transaction{
+        val site = transaction {
             Site.findById(siteId)
-        }?:return
+        } ?: return
 
         val floors = transaction {
-            Floor.find (Floors.site_id eq siteId).toList()
+            Floor.find(Floors.site_id eq siteId).toList()
         }
 
-        newSuspendedTransaction {
-            floors.forEach {
-                DeleteFloorUseCase.execute(it.id.value, fileStorage)
-            }
-            deleteSite(site)
+        floors.forEach {
+            DeleteFloorUseCase.execute(it.id.value, fileStorage)
         }
 
-        newSuspendedTransaction {
-            deleteSite(site)
+        transaction {
+            site.delete()
         }
-    }
-    fun deleteSite(site: Site){
-        site.delete()
     }
 }

@@ -2,7 +2,6 @@ package replace.usecase.floor
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
 import replace.model.BookableEntities
@@ -35,10 +34,8 @@ object DeleteFloorUseCase {
             floor.delete()
         }
 
-        newSuspendedTransaction {
-            floor.planFileId?.let {
-                DeleteFileUseCase.execute(it.value, fileStorage)
-            }
+        floor.planFileId?.let {
+            DeleteFileUseCase.execute(it.value, fileStorage)
         }
     }
 }
