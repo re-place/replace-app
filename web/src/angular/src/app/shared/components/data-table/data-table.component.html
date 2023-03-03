@@ -1,4 +1,5 @@
-<table mat-table [dataSource]="dataToDisplay">
+<table mat-table [dataSource]="dataToDisplay"
+    cdkDropList [cdkDropListData]="dataToDisplay" (cdkDropListDropped)="onDrop($event)">
     <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
         <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
         <td mat-cell *matCellDef="let row">{{ column.getter?.(row) ?? row[column.key] }}</td>
@@ -16,5 +17,6 @@
         class="border-y border-transparent"
         (click)="select(myRowData)"
         [ngClass]="[selectable !== 'none' ? 'hover:!bg-gray-50 cursor-pointer' : '', isSelected(myRowData) ? '!bg-gray-100' : '']"
+        cdkDrag="reorderable" [cdkDragDisabled]="!reorderable"
     ></tr>
 </table>

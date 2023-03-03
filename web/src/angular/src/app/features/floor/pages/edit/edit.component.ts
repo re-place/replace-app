@@ -96,6 +96,7 @@ export class EditComponent implements OnDestroy {
             type: undefined,
             posX: 0,
             posY: 0,
+            index: this.bookableEntities.data?.length ?? 0,
         }
     }
 
@@ -191,6 +192,21 @@ export class EditComponent implements OnDestroy {
                 }
                 this.bookableEntities.refresh()
                 this.snackBar.open("Erfolgreich gelöscht", "OK", { duration: 1000 })
+            },
+            error: (error) => {
+                this.snackBar.open(error.message, "OK")
+            },
+        })
+    }
+
+    public saveOrder() {
+        this.api.apiBookableEntityOrderPut({
+            floorId: this.floor.data?.id,
+            bookableEntityIds: this.bookableEntities.data?.map((entity) => entity.id as string) ?? [],
+        }).subscribe({
+            next: () => {
+                this.bookableEntities.refresh()
+                this.snackBar.open("Erfolgreich aktualisiert", "OK", { duration: 1000 })
             },
             error: (error) => {
                 this.snackBar.open(error.message, "OK")

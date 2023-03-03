@@ -22,6 +22,7 @@ model/models.ts
 model/siteDto.ts
 model/temporaryFileUploadDto.ts
 model/updateBookableEntityDto.ts
+model/updateBookableEntityOrderDto.ts
 model/updateFloorDto.ts
 model/updateSiteDto.ts
 model/userDto.ts
