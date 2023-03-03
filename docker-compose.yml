@@ -1,11 +1,13 @@
 version: '3.8'
 services:
   replace-backend:
-    image: ${REPLACE_ECR_BACKEND}:latest
+    image: ${REPLACE_ECR_BACKEND}:${IMAGE_TAG}
     environment:
       - "REPLACE_DATABASE_URL=${REPLACE_DATABASE_URL}"
       - "REPLACE_DATABASE_USER=${REPLACE_DATABASE_USR}"
       - "REPLACE_DATABASE_PASSWORD=${REPLACE_DATABASE_PSW}"
+      - "REPLACE_OAUTH_AUTHORIZEURL=${REPLACE_OAUTH_AUTHORIZEURL}"
+      - "REPLACE_OAUTH_ACCESSTOKENURL=${REPLACE_OAUTH_ACCESSTOKENURL}"
       - "REPLACE_OAUTH_CALLBACK=${REPLACE_OAUTH_CALLBACK}"
       - "REPLACE_OAUTH_CLIENT_ID=${REPLACE_OAUTH_CLIENTID}"
       - "REPLACE_OAUTH_CLIENT_SECRET=${REPLACE_OAUTH_SECRET}"
@@ -17,7 +19,7 @@ services:
       - "traefik.http.services.backend.loadbalancer.server.port=80"
 
   replace-frontend:
-    image: ${REPLACE_ECR_FRONTEND}:latest
+    image: ${REPLACE_ECR_FRONTEND}:${IMAGE_TAG}
     expose:
       - 80
     labels:
@@ -33,7 +35,6 @@ services:
       - "--entrypoints.web.address=:8085"
     ports:
       - "8085:8085"
-      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:

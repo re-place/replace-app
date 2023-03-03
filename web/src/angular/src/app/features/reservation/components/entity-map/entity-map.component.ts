@@ -93,7 +93,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
         },
     })
 
-    private map: OlMap | undefined
+    public map: OlMap | undefined
     private readonly imageLoader: ImageLoader = new ImageLoader()
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -170,6 +170,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
     private createMap(): OlMap {
         const map = new OlMap({
             target: "map",
+            controls: [],
             layers: [
                 this.imageLayer,
                 this.entityLayer,
