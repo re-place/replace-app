@@ -3,7 +3,6 @@ package replace.http.controller
 import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
 import io.ktor.server.application.call
-import io.ktor.server.resources.delete
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -18,7 +17,6 @@ import replace.http.routeRepository
 import replace.http.withUserSession
 import replace.model.Booking
 import replace.usecase.booking.CreateBookingUseCase
-import replace.usecase.booking.DeleteBookingUseCase
 import replace.usecase.booking.GetBookingUseCase
 import kotlin.reflect.typeOf
 
@@ -39,21 +37,6 @@ fun Route.registerBookingRoutes() {
                 json {
                     schema(listType)
                 }
-            }
-        }
-
-        delete<Routing.ById> { route ->
-            withUserSession {
-                DeleteBookingUseCase.execute(route.id, it.userId)
-            }
-        } describe {
-            description = "Deletes a Booking by id"
-            "id" pathParameter {
-                description = "The id of the Booking to delete"
-                schema("<id>")
-            }
-            204 response {
-                description = "The deleted Booking with the given id"
             }
         }
 
