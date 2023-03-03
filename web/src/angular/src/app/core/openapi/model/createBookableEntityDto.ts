@@ -18,5 +18,6 @@ export interface CreateBookableEntityDto {
     floorId?: string;
     parentId?: string;
     typeId?: string;
+    index?: number;
 }
 

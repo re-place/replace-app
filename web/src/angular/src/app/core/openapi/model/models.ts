@@ -12,6 +12,7 @@ export * from './floorDto';
 export * from './siteDto';
 export * from './temporaryFileUploadDto';
 export * from './updateBookableEntityDto';
+export * from './updateBookableEntityOrderDto';
 export * from './updateFloorDto';
 export * from './updateSiteDto';
 export * from './userDto';

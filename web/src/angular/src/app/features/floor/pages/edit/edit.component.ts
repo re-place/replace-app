@@ -96,6 +96,7 @@ export class EditComponent implements OnDestroy {
             type: undefined,
             posX: 0,
             posY: 0,
+            index: this.bookableEntities.data?.length ?? 0,
         }
     }
 
@@ -199,19 +200,17 @@ export class EditComponent implements OnDestroy {
     }
 
     public saveOrder() {
-        let apiError = false
-        this.bookableEntities.data?.forEach((entity, i) => {
-            if(apiError) return
-            this.api.apiBookableEntityPut({
-                ...entity,
-                index: i,
-            }).subscribe({
-                error: err => {
-                    console.log(err)
-                    apiError = true
-                    this.snackBar.open("Reihenfolge konnte nicht gespeichert werden.", "error", {duration: 3000})
-                },
-            })
+        this.api.apiBookableEntityOrderPut({
+            floorId: this.floor.data?.id,
+            bookableEntityIds: this.bookableEntities.data?.map((entity) => entity.id as string) ?? [],
+        }).subscribe({
+            next: () => {
+                this.bookableEntities.refresh()
+                this.snackBar.open("Erfolgreich aktualisiert", "OK", { duration: 1000 })
+            },
+            error: (error) => {
+                this.snackBar.open(error.message, "OK")
+            },
         })
     }
 }

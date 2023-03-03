@@ -11,7 +11,8 @@
  */
 
 
-export interface FunctionProvider { 
-    default_VALUE_EXPRESSION?: string;
+export interface UpdateBookableEntityOrderDto { 
+    floorId?: string;
+    bookableEntityIds?: Array<string>;
 }
 

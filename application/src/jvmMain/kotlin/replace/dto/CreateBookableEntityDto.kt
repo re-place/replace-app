@@ -14,4 +14,6 @@ data class CreateBookableEntityDto(
     val parentId: String? = null,
 
     val typeId: String? = null,
+
+    val index: Int,
 )

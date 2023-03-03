@@ -52,14 +52,18 @@
             </create-or-update-bookable-entity>
             <loading-state [loading]="bookableEntities.loading()">
                 <ng-template>
-                    <bookable-entity-list
-                        class="mt-4 w-60 block"
-                        [bookableEntities]="bookableEntities.data"
-                        [(selectedBookableEntity)]="selectedEntity"
-                        (create)="onCreateBookableEntity()"
-                        (newOrder)="saveOrder()"
-                    >
-                    </bookable-entity-list>
+                    <div class="flex flex-col h-full">
+                        <bookable-entity-list
+                            class="mt-4 w-60 block min-h-0"
+                            [bookableEntities]="bookableEntities.data"
+                            [(selectedBookableEntity)]="selectedEntity"
+                            (create)="onCreateBookableEntity()"
+                        >
+                        </bookable-entity-list>
+                        <button class="mt-auto self-end" mat-raised-button color="primary" type="button" [disabled]="bookableEntities.data?.length === 0" (click)="saveOrder()">
+                            Reihenfolge speichern
+                        </button>
+                    </div>
                 </ng-template>
             </loading-state>
         </div>
