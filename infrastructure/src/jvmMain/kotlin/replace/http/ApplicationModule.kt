@@ -23,9 +23,12 @@ import replace.job.DeleteOldTemporaryFileUploadsJob
 
 fun Application.applicationModule() {
     println("Starting backend...")
-
+    val environment = environment
     install(CORS) {
-        anyHost() // TODO: Don't do this in production
+        if (environment.developmentMode) {
+            anyHost()
+        }
+
         allowHeader(HttpHeaders.ContentType)
         exposeHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Delete)
