@@ -19,5 +19,6 @@ export interface UpdateBookableEntityDto {
     typeId?: string;
     posX?: number;
     posY?: number;
+    index?: number;
 }
 

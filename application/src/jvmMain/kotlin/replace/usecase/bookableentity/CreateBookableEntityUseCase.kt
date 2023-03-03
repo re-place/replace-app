@@ -23,6 +23,7 @@ object CreateBookableEntityUseCase {
                 typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntityTypes) }
                 posX = bookableEntityDto.posX
                 posY = bookableEntityDto.posY
+                index = bookableEntityDto.index
             }
 
             bookableEntity.toDto()

@@ -28,6 +28,7 @@ import { LocaleDatePipe } from "./pipes/locale-date.pipe"
 import { LocaleListPipe } from "./pipes/locale-list.pipe"
 import { LocaleTimePipe } from "./pipes/locale-time.pipe"
 import { MaterialModule } from "../material/material.module"
+import { DragDropModule } from "@angular/cdk/drag-drop"
 
 // Register the plugin
 registerPlugin(FilePondPluginImagePreview)
@@ -86,6 +87,6 @@ registerPlugin(FilePondPluginFileValidateType)
         TimePickerComponent,
         ZoomControlComponent,
     ],
-    imports: [CommonModule, MaterialModule, RouterModule, FilePondModule],
+    imports: [CommonModule, MaterialModule, RouterModule, FilePondModule, DragDropModule],
 })
 export class SharedModule {}

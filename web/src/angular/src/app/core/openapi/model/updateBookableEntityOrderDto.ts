@@ -11,13 +11,8 @@
  */
 
 
-export interface CreateBookableEntityDto { 
-    name?: string;
-    posX?: number;
-    posY?: number;
+export interface UpdateBookableEntityOrderDto { 
     floorId?: string;
-    parentId?: string;
-    typeId?: string;
-    index?: number;
+    bookableEntityIds?: Array<string>;
 }
 

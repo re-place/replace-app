@@ -7,6 +7,7 @@ object BookableEntities : Models("bookable_entities") {
     val name = varchar("name", 255)
     val pos_x = integer("pos_x").default(0)
     val pos_y = integer("pos_y").default(0)
+    val index = integer("index").default(0)
     val floor_id = reference("floor_id", Floors)
     val type_id = reference("type_id", BookableEntityTypes).nullable()
     val parent_id = reference("parent_id", BookableEntities).nullable()
@@ -18,6 +19,8 @@ class BookableEntity(id: EntityID<String>) : Model(id) {
 
     var posX by BookableEntities.pos_x
     var posY by BookableEntities.pos_y
+
+    var index by BookableEntities.index
 
     var floorId by BookableEntities.floor_id
     var floor by Floor referencedOn BookableEntities.floor_id

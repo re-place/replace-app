@@ -1,0 +1,29 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-02-27_09-00-32_add_index_column_to_bookable_entities_column",
+        "author": "re-place",
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "bookable_entities",
+              "columns": [
+                {
+                  "column": {
+                    "name": "index",
+                    "type": "int",
+                    "defaultValueNumeric": 0,
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }]
+}
+

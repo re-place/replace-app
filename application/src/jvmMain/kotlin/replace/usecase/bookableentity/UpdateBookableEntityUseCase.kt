@@ -25,6 +25,7 @@ object UpdateBookableEntityUseCase {
             bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
             bookableEntity.posX = bookableEntityDto.posX
             bookableEntity.posY = bookableEntityDto.posY
+            bookableEntity.index = bookableEntityDto.index
 
             bookableEntity.toDto()
         }
