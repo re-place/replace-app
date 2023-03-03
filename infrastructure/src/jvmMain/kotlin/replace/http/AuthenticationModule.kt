@@ -74,8 +74,11 @@ fun Application.authenticationModule() {
         }
         oauth("microsoft-oauth") {
 
-            val callback = this@authenticationModule.environment.config.tryGetString("ktor.oauth.callback")
-                ?: throw IllegalStateException("Missing OAuth callback URL")
+            val url = this@authenticationModule.environment.config.tryGetString("ktor.deployment.url")
+                ?: throw IllegalStateException("Missing deployment url")
+
+            val callback = "$url/api/session/callback"
+
             urlProvider = { callback }
 
             client = httpClient

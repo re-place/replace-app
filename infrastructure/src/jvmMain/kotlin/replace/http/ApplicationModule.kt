@@ -6,6 +6,7 @@ import guru.zoroark.tegral.openapi.ktorui.TegralSwaggerUiKtor
 import guru.zoroark.tegral.openapi.ktorui.swaggerUiEndpoint
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -24,11 +25,10 @@ import replace.job.DeleteOldTemporaryFileUploadsJob
 fun Application.applicationModule() {
     println("Starting backend...")
     val environment = environment
+    val urlString = environment.config.tryGetString("ktor.deployment.url") ?: throw IllegalStateException("No deployment url set")
+    val url = Url(urlString)
     install(CORS) {
-        if (environment.developmentMode) {
-            anyHost()
-        }
-
+        allowHost(url.host, schemes = listOf(url.protocol.name))
         allowHeader(HttpHeaders.ContentType)
         exposeHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Delete)
