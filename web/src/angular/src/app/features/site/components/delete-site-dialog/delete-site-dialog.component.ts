@@ -10,16 +10,8 @@ import { DataLoader } from 'src/app/util';
   ]
 })
 export class DeleteSiteDialogComponent {
-  public site = new DataLoader<SiteDto[]>()
-
   constructor (
     @Inject(MAT_DIALOG_DATA) public data: {id:string, name:string },
     private readonly api: DefaultService
     ) {}
-  // ngOnInit(): void {
-  //   const now = new Date()
-  //   this.site.source(() => this.api.apiSiteGet(undefined, false, undefined)).refresh()
-  // }
-
-
 }

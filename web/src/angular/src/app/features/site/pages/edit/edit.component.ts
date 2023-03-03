@@ -3,9 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar"
 import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 
-import { BookableEntityDto, CreateFloorDto, DefaultService, FloorDto, SiteDto, UpdateFloorDto, UpdateSiteDto } from "src/app/core/openapi"
-import { BookableEntities } from "src/app/core/openapi/model/bookableEntities"
-import { BookableEntity } from "src/app/core/openapi/model/bookableEntity"
+import { CreateFloorDto, DefaultService, FloorDto, SiteDto, UpdateFloorDto, UpdateSiteDto } from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -19,8 +17,6 @@ export class EditComponent implements OnDestroy {
     site: DataLoader<SiteDto> = new DataLoader<SiteDto>()
     floors = new DataLoader<FloorDto[]>()
     editingFloor: CreateFloorDto | UpdateFloorDto | undefined = undefined
-    floor = new DataLoader<FloorDto>()
-    bookableEntities = new DataLoader<BookableEntityDto[]>
 
     private readonly routeSub: Subscription
 
@@ -38,7 +34,6 @@ export class EditComponent implements OnDestroy {
         this.routeSub = route.params.subscribe(async (params) => {
             this.site.source(() => api.apiSiteIdGet(params["id"])).refresh()
             this.floors.source(() => api.apiSiteSiteIdFloorGet(params["id"])).refresh()
-            this.bookableEntities.source(() => api.apiBookableEntityGet(undefined, false, undefined)).refresh()
         })
     }
 
@@ -83,7 +78,6 @@ export class EditComponent implements OnDestroy {
             siteId: this.site.data?.id,
         }), {
             onSuccess: () => {
-
                 this.floors.refresh()
                 this.editingFloor = undefined
             },
@@ -94,9 +88,6 @@ export class EditComponent implements OnDestroy {
        
         this.api.apiFloorIdDelete(id).subscribe({
             next: () => {
-                if (this.floor?.data?.id === id) {
-                    this.floor.data.id = undefined
-                }
                 this.floors.refresh()
                 this.snackBar.open("Erfolgreich gelöscht", "OK", { duration: 1000 })
             },
