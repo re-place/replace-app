@@ -10,12 +10,9 @@ import { MatDialog } from "@angular/material/dialog"
 })
 export class FloorListComponent {
     @Input() floors: FloorDto[] | undefined
-    @Input() id: string | undefined
-    @Input() name: string | undefined
 
     @Output() edit = new EventEmitter<FloorDto>()
     @Output() create = new EventEmitter<void>()
-    @Output() cancel = new EventEmitter<void>()
     @Output() delete = new EventEmitter<string>()
 
 
