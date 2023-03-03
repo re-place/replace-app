@@ -1,31 +1,17 @@
-<crud-layout title="Meine Buchungen">
-    <crud-card>
-        <div class="overflow-auto">
-            <loading-state [loading]="sites === undefined">
-                <ng-template>
-                    <data-table [data]="tableData" [columns]="dataColumns">
-                        <ng-template let-item>
-                            <div class="flex justify-end">
-                                <button
-                                    type="button"
-                                    (click)="deleteBooking(item)"
-                                    class="rounded-full hover:bg-black/5 w-8 h-8 flex justify-center items-center text-red-500"
-                                >
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </div>
-                        </ng-template>
-                    </data-table>
-                    <empty-state *ngIf="tableData?.length === 0">
-                        <ng-template [icon]>
-                            <mat-icon class="scale-[3] text-gray-300"> search </mat-icon>
-                        </ng-template>
-                        <ng-template [actions]>
-                            <span class="text-gray-400"> Keine Buchungen vorhanden </span>
-                        </ng-template>
-                    </empty-state>
-                </ng-template>
-            </loading-state>
+<div class="py-4">
+    <div class="mx-auto px-4 sm:px-6 xl:px-8 flex max-w-7xl">
+        <h1 class="text-2xl font-semibold text-gray-900">Meine Buchungen</h1>
+    </div>
+    <div class="mx-auto px-4 sm:px-6 xl:px-8 flex flex-col gap-16 pt-4 text-gray-700">
+        <div class="flex flex-col" *ngFor="let group of groupedBookings">
+            <div class="flex items-center mb-4">
+                <div class="h-[2px] grow bg-gray-300 2xl:bg-inherit 2xl:bg-gradient-to-r from-transparent via-gray-300 to-gray-300"></div>
+                <h2 class="text-xl font-medium mx-4 text-gray-400">{{ group.start | localeDate:dateFormat }}</h2>
+                <div class="h-[2px] grow bg-gray-300 2xl:bg-inherit 2xl:bg-gradient-to-l from-transparent via-gray-300 to-gray-300"></div>
+            </div>
+            <div class="max-w-7xl self-center w-full flex flex-col xl:text-xl gap-8">
+                <booking-card *ngFor="let booking of group.bookings" [booking]="booking" (delete)="deleteBooking($event)"></booking-card>
+            </div>
         </div>
-    </crud-card>
-</crud-layout>
+    </div>
+</div>

@@ -1,8 +1,20 @@
-import {Component, OnInit} from "@angular/core"
+import { Component, OnInit } from "@angular/core"
+import { MatDialog } from "@angular/material/dialog"
 import { MatSnackBar } from "@angular/material/snack-bar"
 
-import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
-import { toLocaleDateTimeString } from "src/app/util/DateTime"
+import { DeleteMyBookingDialogComponent } from "../../components/delete-my-booking-dialog/delete-my-booking-dialog.component"
+import { BookableEntityDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+
+export type Booking = {
+    id: string
+    start: Date
+    end: Date
+
+    site: SiteDto
+    floor: FloorDto
+
+    bookedEntities: BookableEntityDto[]
+}
 
 @Component({
     selector: "reservation-overview",
@@ -10,33 +22,80 @@ import { toLocaleDateTimeString } from "src/app/util/DateTime"
     styles: [],
 })
 export class ReservationOverviewComponent implements OnInit {
-    bookings: BookingDto[] = []
-    floors: FloorDto[] = []
-    sites: SiteDto[] = []
+    loadedBookings: BookingDto[] | undefined = undefined
+    bookings: Booking[] = []
+    floors: Map<string, FloorDto> | undefined = undefined
+    sites: Map<string, SiteDto> | undefined = undefined
 
-    tableData: any[] = []
+    groupedBookings: { start: Date, bookings: Booking[] }[] = []
 
-    public dataColumns = [
-        { key: "site", label: "Standort", getter: (booking: any) => booking.site.name },
-        { key: "floor", label: "Stockwerk", getter: (booking: any) => booking.floor.name },
-        { key: "entities", label: "Objekte", getter: (booking: any) => booking.entities },
-        { key: "start", label: "Anfang", getter: (booking: any) => toLocaleDateTimeString(booking.start) },
-        { key: "end", label: "Ende", getter: (booking: any) => toLocaleDateTimeString(booking.end) },
-    ]
-
-    constructor(private readonly apiService: DefaultService, private readonly snackBar: MatSnackBar) { }
-
-    ngOnInit(): void {
-        this.getBookings()
+    dateFormat: Intl.DateTimeFormatOptions = {
+        dateStyle: "full",
     }
 
-    getBookings() {
+    constructor(
+        private readonly apiService: DefaultService,
+        private readonly snackBar: MatSnackBar,
+        private readonly dialog: MatDialog,
+    ) { }
+
+    ngOnInit(): void {
+        this.loadBookings()
+        this.loadSites()
+        this.loadFloors()
+    }
+
+    toBookings(bookings: BookingDto[]): Booking[] {
+        if (this.sites === undefined || this.floors === undefined) {
+            return []
+        }
+
+        return bookings
+            .filter(booking => booking.bookedEntities?.length ?? 0 > 0)
+            .map(booking => {
+                const floor = this.floors?.get(booking.bookedEntities?.at(0)?.floorId ?? "")
+
+                if (floor === undefined) {
+                    console.error("Floor not found", booking.bookedEntities?.at(0)?.floorId)
+                    return undefined
+                }
+
+                const site = this.sites?.get(floor.siteId as string)
+
+                if (site === undefined) {
+                    console.error("Site not found", floor.siteId)
+                    return undefined
+                }
+
+                return {
+                    id: booking.id as string,
+                    start: new Date(booking.start as string),
+                    end: new Date(booking.end as string),
+                    site,
+                    floor,
+                    bookedEntities: booking.bookedEntities as BookableEntityDto[],
+                }
+            })
+            .filter((booking): booking is Exclude<typeof booking, undefined> => booking !== undefined)
+    }
+
+    transformBookings() {
+        if (this.loadedBookings === undefined) {
+            return
+        }
+
+        this.bookings = this.toBookings(this.loadedBookings)
+        this.groupedBookings = this.groupBookings(this.bookings)
+    }
+
+    loadBookings() {
+        this.loadedBookings = undefined
         const today = new Date()
         today.setHours(0, 0, 0, 0)
         this.apiService.apiBookingByParamsGet(today.toISOString(), undefined, undefined, undefined, true).subscribe({
             next: response => {
-                this.bookings = response
-                this.getSites()
+                this.loadedBookings = response
+                this.transformBookings()
             },
             error: err => {
                 console.log(err)
@@ -45,11 +104,12 @@ export class ReservationOverviewComponent implements OnInit {
         })
     }
 
-    getSites() {
+    loadSites() {
+        this.sites = undefined
         this.apiService.apiSiteGet().subscribe({
             next: response => {
-                this.sites = response
-                this.getFloors()
+                this.sites = new Map(response.map(site => [site.id as string, site]))
+                this.transformBookings()
             },
             error: err => {
                 console.log(err)
@@ -58,11 +118,12 @@ export class ReservationOverviewComponent implements OnInit {
         })
     }
 
-    getFloors() {
+    loadFloors() {
+        this.floors = undefined
         this.apiService.apiFloorGet().subscribe({
             next: response => {
-                this.floors = response
-                this.enrichBookings()
+                this.floors = new Map(response.map(floor => [floor.id as string, floor]))
+                this.transformBookings()
             },
             error: err => {
                 console.log(err)
@@ -71,32 +132,55 @@ export class ReservationOverviewComponent implements OnInit {
         })
     }
 
-    enrichBookings() {
-        const rows: any[] = []
-        this.bookings.forEach(booking => {
-            const row: any = {...booking}
-            if(booking.bookedEntities == undefined || booking.bookedEntities.length < 1)
-                return
-            const entity = booking.bookedEntities[0]
-            row.entities = booking.bookedEntities.map(ent => ent.name).join(", ")
-            const floor = this.floors.find(floor => floor.id == entity.floorId)
-            row.floor = floor?.name
-            row.site = this.sites.find(site => site.id == floor?.siteId)?.name
-            rows.push(row)
+    groupBookings(bookings: Booking[]): { start: Date, bookings: Booking[] }[] {
+        const groupedBookings = new Map<number, Booking[]>()
+
+        bookings.forEach(booking => {
+            const start = new Date(booking.start)
+            start.setHours(0, 0, 0, 0)
+
+            const key = start.getTime()
+
+            if (groupedBookings.has(key)) {
+                groupedBookings.get(key)?.push(booking)
+            } else {
+                groupedBookings.set(key, [booking])
+            }
         })
 
-        this.tableData = rows
+        const grouped = Array.from(groupedBookings.entries())
+
+        grouped.sort((a, b) => a[0] - b[0])
+        grouped.forEach(group => group[1].sort((a, b) => a.start.getTime() - b.start.getTime()))
+
+        return grouped.map(group => ({
+            start: new Date(group[0]),
+            bookings: group[1],
+        }))
     }
 
-    deleteBooking(element: any) {
-        this.apiService.apiBookingIdDelete(element.id).subscribe({
-            next: response => {
-                this.snackBar.open("Buchung gelöscht", "ok", {duration: 4000})
-                this.getBookings()
+    deleteBooking(element: Booking) {
+        this.dialog.open(DeleteMyBookingDialogComponent, {
+            data: {
+                id: element.id,
+                from: element.start,
+                to: element.end,
             },
-            error: err => {
-                this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
-            },
+        }).afterClosed().subscribe(result => {
+            if (result !== true) {
+                return
+            }
+
+            this.apiService.apiBookingIdDelete(element.id).subscribe({
+                next: response => {
+                    this.snackBar.open("Buchung gelöscht", "ok", {duration: 4000})
+                    this.loadBookings()
+                },
+                error: err => {
+                    this.snackBar.open("Buchung konnte nicht gelöscht werden", "error", {duration: 5000})
+                },
+            })
         })
+
     }
 }
