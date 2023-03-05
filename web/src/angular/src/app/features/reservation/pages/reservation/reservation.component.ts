@@ -3,7 +3,7 @@ import {MatSnackBar} from "@angular/material/snack-bar"
 
 import { Entity } from "../../components/entity-map/entity-map.component"
 import { Interval } from "../../components/time-selector/time-selector.component"
-import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { BookableEntityDto, BookableEntityTypeDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 import { DataLoader } from "src/app/util"
 import { useLocalStorage } from "src/app/util/LocalStorage"
 
@@ -15,9 +15,11 @@ import { useLocalStorage } from "src/app/util/LocalStorage"
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
     floors: FloorDto[] = []
+    types: BookableEntityTypeDto[] = []
 
     private _storedSiteId = useLocalStorage<string>("selectedSite")
     private _storedFloorId = useLocalStorage<string>("selectedFloor")
+    private _storedTypeId = useLocalStorage<string>("selectedType")
 
     private _selectingSite = false
     private _selectingFloor = false
@@ -26,7 +28,9 @@ export class ReservationComponent implements OnInit {
     private _start = new Date()
     private _end = new Date()
 
-    bookableEntities: Entity[] = []
+    //filteredBookableEntities: Entity[] = []
+    bookableEntities: BookableEntityDto[] = []
+    filteredBookableEntities: Entity[] = []
 
     bookedEntities: Set<string> = new Set()
 
@@ -53,6 +57,11 @@ export class ReservationComponent implements OnInit {
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) {
+        this.apiService.apiBookableEntityTypeGet().subscribe({
+            next: result => {
+                this.types = result
+            },
+        })
         this.bookings.subscribe((data) => {
             this.bookedEntities
                 = new Set(data.flatMap((booking) => booking?.bookedEntities?.map((entity) => entity.id)) as string[])
@@ -93,6 +102,16 @@ export class ReservationComponent implements OnInit {
         this.snackBar.open(message, "error", { duration: 3000 })
     }
 
+    filterEntitiesByType() {
+        this.filteredBookableEntities = this.bookableEntities
+            .filter(entity => entity.typeId == this.selectedType)
+            .map((entity): Entity => ({
+                available: true,
+                selected: false,
+                entity,
+            }))
+    }
+
     refreshBookableEntities() {
         if (this.selectedFloor === undefined) {
             return
@@ -100,7 +119,9 @@ export class ReservationComponent implements OnInit {
 
         this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id ?? "").subscribe({
             next: response => {
-                this.bookableEntities = response.map((entity): Entity => ({
+                this.bookableEntities = response
+                const filtered = response.filter(entity => entity.typeId == this.selectedType)
+                this.filteredBookableEntities = filtered.map((entity): Entity => ({
                     available: true,
                     selected: false,
                     entity,
@@ -113,14 +134,23 @@ export class ReservationComponent implements OnInit {
     }
 
     updateAvailability() {
-        const entities = this.bookableEntities
+        const entities = this.filteredBookableEntities
 
         for (const entity of entities) {
             entity.available = !this.bookedEntities.has(entity.entity.id ?? "")
             entity.selected = false
         }
 
-        this.bookableEntities = [...entities]
+        this.filteredBookableEntities = [...entities]
+    }
+
+    get selectedType() {
+        if (this._storedTypeId.value === undefined) return undefined
+        return this._storedTypeId.value
+    }
+
+    set selectedType(typeId: string | undefined) {
+        this._storedTypeId.value = typeId
     }
 
     get selectedSite() {
@@ -230,14 +260,14 @@ export class ReservationComponent implements OnInit {
     }
 
     get disabled() {
-        return this.selectedFloor === undefined || this.bookableEntities.filter(entity => entity.selected).length === 0
+        return this.selectedFloor === undefined || this.filteredBookableEntities.filter(entity => entity.selected).length === 0
     }
 
     onSubmit() {
         const floorId = this.selectedFloor?.id
         const start = this._start.toISOString()
         const end = this._end.toISOString()
-        const entities = this.bookableEntities.filter(entity => entity.selected).map(entity => entity.entity.id as string)
+        const entities = this.filteredBookableEntities.filter(entity => entity.selected).map(entity => entity.entity.id as string)
 
         if (floorId === undefined) {
             return
