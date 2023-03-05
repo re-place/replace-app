@@ -22,7 +22,7 @@ fun Application.routeControllers(
             registerBookableEntityTypeRoutes()
             registerBookingRoutes()
             registerFloorRoutes(fileStorage)
-            registerSiteRoutes()
+            registerSiteRoutes(fileStorage)
             registerUserRoutes()
             registerFileRoutes(fileStorage)
             registerTemporaryFileUploadRoutes(fileStorage)

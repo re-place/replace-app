@@ -1,0 +1,11 @@
+<div class="p-4">
+    <div>
+        Sind Sie sicher, dass Sie die Etage <span class="font-medium text-lg">{{ data.name }}</span> löschen möchten? <br />
+    </div>
+    <div class="flex gap-2 mt-4">
+        <button mat-raised-button mat-dialog-close cdkFocusInitial [mat-dialog-close]="false" color="blue" class="ml-auto">
+            Abbrechen
+        </button>
+        <button mat-raised-button [mat-dialog-close]="true" color="warn"  >Löschen</button>
+    </div>
+</div>

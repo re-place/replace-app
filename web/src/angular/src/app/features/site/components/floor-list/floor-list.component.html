@@ -7,6 +7,13 @@
                         <mat-icon>edit</mat-icon>
                     </ng-template>
                 </text-button>
+                <div class="flex justify-end">
+                    <text-button type="button" color="red" class="ml-auto" (click)="onDelete(item)">
+                        <ng-template>
+                            <mat-icon>delete</mat-icon>
+                        </ng-template>
+                    </text-button>
+                </div>
             </div>
         </ng-template>
     </data-table>

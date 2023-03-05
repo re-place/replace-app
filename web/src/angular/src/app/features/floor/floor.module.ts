@@ -11,6 +11,7 @@ import { FloorRoutingModule } from "./floor-routing.module"
 import { EditComponent } from "./pages/edit/edit.component"
 import { MaterialModule } from "src/app/material/material.module"
 import { SharedModule } from "src/app/shared/shared.module"
+import { DeleteFloorDialogComponent } from "../site/components/delete-floor-dialog/delete-floor-dialog.component"
 
 @NgModule({
     declarations: [
@@ -19,6 +20,7 @@ import { SharedModule } from "src/app/shared/shared.module"
         CreateOrUpdateBookableEntityComponent,
         EntityMapComponent,
         DeleteBookableEntityDialogComponent,
+        DeleteFloorDialogComponent
     ],
     imports: [CommonModule, FloorRoutingModule, SharedModule, MaterialModule, FormsModule],
 })
