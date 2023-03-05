@@ -110,6 +110,7 @@ export class ReservationComponent implements OnInit {
                 selected: false,
                 entity,
             }))
+        this.updateAvailability()
     }
 
     refreshBookableEntities() {
