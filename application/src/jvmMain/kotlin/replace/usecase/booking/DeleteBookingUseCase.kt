@@ -1,7 +1,10 @@
 package replace.usecase.booking
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.model.Booking
+import replace.model.BookedEntities
 import replace.model.Bookings
 
 object DeleteBookingUseCase {
@@ -10,12 +13,8 @@ object DeleteBookingUseCase {
         currentUserId: String
     ) {
         return transaction {
-            val booking = Booking.find {
-                Bookings.id eq bookingId
-                Bookings.user_id eq currentUserId
-            }.firstOrNull()
-
-            booking?.delete()
+            BookedEntities.deleteWhere { BookedEntities.booking_id eq bookingId }
+            Bookings.deleteWhere { Bookings.id eq bookingId and (Bookings.user_id eq currentUserId) }
         }
     }
 }
