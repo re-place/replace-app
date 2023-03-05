@@ -28,7 +28,6 @@ export class ReservationComponent implements OnInit {
     private _start = new Date()
     private _end = new Date()
 
-    //filteredBookableEntities: Entity[] = []
     bookableEntities: BookableEntityDto[] = []
     filteredBookableEntities: Entity[] = []
 
