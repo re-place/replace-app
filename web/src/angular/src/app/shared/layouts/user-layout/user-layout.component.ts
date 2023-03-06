@@ -28,11 +28,11 @@ export class UserLayoutComponent implements OnInit {
             route: "/reservation",
             icon: "calendar_today",
         },
-        {
-            title: "Standorte",
-            route: "/site",
-            icon: "location_city",
-        },
+//        {
+//            title: "Standorte",
+//            route: "/site",
+//            icon: "location_city",
+//        },
     ]
 
     public isCollapsed = true
