@@ -6,7 +6,7 @@ liquibase = "2.1.1"
 liquibase-core = "4.19.0"
 liquibase-picocli = "4.7.0"
 log4j = "2.20.0"
-postgresql = "42.5.1"
+postgresql = "42.5.4"
 tegral = "0.0.3"
 
 [libraries]
