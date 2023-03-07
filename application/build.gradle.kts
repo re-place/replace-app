@@ -16,4 +16,12 @@ dependencies {
     jvmMainImplementation(libs.exposed.jdbc)
     jvmMainImplementation(libs.exposed.java.time)
     jvmMainImplementation(libs.kotlinx.datetime)
+    jvmTestImplementation(libs.kotest)
+    jvmTestImplementation("com.h2database:h2:2.1.212")
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
 }

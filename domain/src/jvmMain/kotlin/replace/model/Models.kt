@@ -6,13 +6,15 @@ import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.CustomFunction
 import org.jetbrains.exposed.sql.VarCharColumnType
+import java.util.UUID
 
 open class Models : IdTable<String> {
 
     constructor() : super()
     constructor(name: String) : super(name)
 
-    final override val id: Column<EntityID<String>> = varchar("id", 36).defaultExpression(CustomFunction("gen_random_uuid()", VarCharColumnType())).entityId()
+    final override val id: Column<EntityID<String>> = varchar("id", 36)
+        .clientDefault { UUID.randomUUID().toString() }.entityId()
     override val primaryKey = PrimaryKey(id, name = "pk_${tableName}_id")
 }
 
