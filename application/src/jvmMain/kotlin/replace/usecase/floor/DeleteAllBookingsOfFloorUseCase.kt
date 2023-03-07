@@ -7,7 +7,7 @@ import replace.model.BookedEntities
 
 object DeleteAllBookingsOfFloorUseCase {
     suspend fun execute(
-        bookableEntityId: String
+        bookableEntityId: String,
     ) {
         return transaction {
             BookedEntities.deleteWhere { bookable_entity_id eq bookableEntityId }

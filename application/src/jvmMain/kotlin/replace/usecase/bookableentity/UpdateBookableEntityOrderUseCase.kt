@@ -12,7 +12,6 @@ object UpdateBookableEntityOrderUseCase {
     suspend fun execute(
         bookableEntityOrderDto: UpdateBookableEntityOrderDto,
     ) {
-
         return transaction {
             BookableEntity.find {
                 BookableEntities.id inList bookableEntityOrderDto.bookableEntityIds and

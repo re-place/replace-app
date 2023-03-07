@@ -42,6 +42,6 @@ tegral-openapi-swagger = { module = "guru.zoroark.tegral:tegral-openapi-ktorui",
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ktlint = "org.jlleitschuh.gradle.ktlint:11.0.0"
+ktlint = "org.jlleitschuh.gradle.ktlint:11.3.1"
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor"}

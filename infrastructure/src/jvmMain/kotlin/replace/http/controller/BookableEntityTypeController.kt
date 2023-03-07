@@ -13,7 +13,6 @@ import replace.model.BookableEntityType
 import replace.usecase.bookableentitytype.CreateBookableEntityTypeUseCase
 
 fun Route.registerBookableEntityTypeRoutes() {
-
     route("/api/bookable-entity-type") {
         routeRepository(BookableEntityType.Companion) {
             it.toDto()

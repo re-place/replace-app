@@ -38,13 +38,14 @@ fun Route.registerFileRoutes(fileStorage: FileStorage) {
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Inline.withParameter(
-                    ContentDisposition.Parameters.FileName, "${file.name}.${file.extension}"
-                ).toString()
+                    ContentDisposition.Parameters.FileName,
+                    "${file.name}.${file.extension}",
+                ).toString(),
             )
 
             call.response.header(
                 HttpHeaders.CacheControl,
-                "max-age=7776000" // 90 days
+                "max-age=7776000", // 90 days
             )
 
             call.respondBytes(ContentType.parse(mime)) { fileStorage.readFile(file.path).readBytes() }

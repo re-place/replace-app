@@ -41,7 +41,7 @@ fun Application.applicationModule() {
             Json {
                 encodeDefaults = false
                 ignoreUnknownKeys = true
-            }
+            },
         )
     }
     // install type-safe routing
@@ -64,7 +64,7 @@ fun Application.applicationModule() {
         driver = "org.postgresql.Driver",
         user = environment.config.tryGetString("ktor.db.user") ?: "",
         password = environment.config.tryGetString("ktor.db.password") ?: "",
-        databaseConfig = databaseConfig
+        databaseConfig = databaseConfig,
     )
 
     authenticationModule()
@@ -81,7 +81,7 @@ fun Application.applicationModule() {
     val deleteOldTemporaryFileUploadsJob = DeleteOldTemporaryFileUploadsJob(
         1000 * 60 * 60 * 12, // 12 hours
         1000 * 60 * 60 * 24, // 24 hours
-        storage
+        storage,
     )
 
     deleteOldTemporaryFileUploadsJob.dispatch()

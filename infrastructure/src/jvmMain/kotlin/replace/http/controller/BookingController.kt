@@ -31,7 +31,7 @@ fun Route.registerBookingRoutes() {
             call.respond(
                 transaction {
                     Booking.all().with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) }
-                }
+                },
             )
         } describe {
             description = "Gets all Bookings"

@@ -19,7 +19,6 @@ class LocalFileStorage : FileStorage {
     }
 
     override suspend fun saveFile(path: String, input: InputStream): Boolean = withContext(Dispatchers.IO) {
-
         val file = File("$STORAGE_PATH$path")
 
         ensureDirectoryExists(file.parent)

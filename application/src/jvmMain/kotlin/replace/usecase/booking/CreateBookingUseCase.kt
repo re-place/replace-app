@@ -14,7 +14,7 @@ import replace.model.Users
 object CreateBookingUseCase {
     suspend fun execute(
         createBookingDto: CreateBookingDto,
-        userId: String
+        userId: String,
     ): BookingDto {
         return transaction {
             if (createBookingDto.bookedEntityIds.isEmpty()) {

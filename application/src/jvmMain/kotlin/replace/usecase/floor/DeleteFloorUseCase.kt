@@ -13,7 +13,7 @@ import replace.usecase.file.DeleteFileUseCase
 object DeleteFloorUseCase {
     suspend fun execute(
         floorId: String,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ) {
         val floor = transaction {
             Floor.findById(floorId)

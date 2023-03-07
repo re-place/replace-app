@@ -101,7 +101,7 @@ liquibase {
                 "changeLogFile" to migrationRoot.path,
                 "url" to dbUrl,
                 "username" to dbUser,
-                "password" to dbPass
+                "password" to dbPass,
             )
         }
     }

@@ -11,7 +11,7 @@ import replace.usecase.floor.DeleteFloorUseCase
 object DeleteSiteUseCase {
     suspend fun execute(
         siteId: String,
-        fileStorage: FileStorage
+        fileStorage: FileStorage,
     ) {
         val site = transaction {
             Site.findById(siteId)

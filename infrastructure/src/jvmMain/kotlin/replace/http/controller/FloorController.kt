@@ -30,9 +30,7 @@ import replace.usecase.floor.DeleteFloorUseCase
 import replace.usecase.floor.UpdateFloorUseCase
 
 fun Route.registerFloorRoutes(fileStorage: FileStorage) {
-
     route("/api/floor") {
-
         delete("/{floorId}") {
             val floorId = call.parameters["floorId"]
             executeUseCase {
