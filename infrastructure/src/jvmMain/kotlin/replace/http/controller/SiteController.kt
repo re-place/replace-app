@@ -28,7 +28,6 @@ import replace.usecase.site.UpdateSiteUseCase
 
 fun Route.registerSiteRoutes(fileStorage: FileStorage) {
     route("/api/site") {
-
         delete("/{siteId}") {
             val siteId = call.parameters["siteId"]
             executeUseCase {
