@@ -9,10 +9,11 @@ import { EditComponent } from "./pages/edit/edit.component"
 import { IndexComponent } from "./pages/index/index.component"
 import { SiteRoutingModule } from "./site-routing.module"
 import { MaterialModule } from "src/app/material/material.module"
-import { SharedModule } from "src/app/shared/shared.module"
+import { SharedModule } from "src/app/shared/shared.module";
+import { DeleteSiteDialogComponent } from './components/delete-site-dialog/delete-site-dialog.component'
 
 @NgModule({
-    declarations: [IndexComponent, CreateComponent, EditComponent, CreateOrUpdateFloorComponent, FloorListComponent],
+    declarations: [IndexComponent, CreateComponent, EditComponent, CreateOrUpdateFloorComponent, FloorListComponent, DeleteSiteDialogComponent],
     imports: [CommonModule, SiteRoutingModule, SharedModule, MaterialModule, FormsModule, ReactiveFormsModule],
 })
 export class SiteModule {}

@@ -1,8 +1,11 @@
 <card>
-    <div class="flex flex-col xl:flex-row items-start relative overflow-hidden transition-[height]" [class]="open ? 'h-96' : 'h-40'">
+    <div
+        class="flex flex-col xl:flex-row items-start relative overflow-hidden transition-[height]"
+        [class]="open ? 'h-96' : 'h-40'"
+    >
         <div class="grid grid-cols-[auto_1fr] grid-flow-row gap-2 items-center pr-20 xl:pr-0">
             <mat-icon class="!h-5 !w-5 text-[1.25rem]">schedule</mat-icon>
-            <div>{{ booking.start | localeDateTime:dateTimeFormat }} - {{ booking.end | localeDateTime:dateTimeFormat }}</div>
+            <div>{{ booking.start | localeDateTime : dateTimeFormat }} - {{ booking.end | localeDateTime : dateTimeFormat }}</div>
             <mat-icon class="!h-5 !w-5 text-[1.25rem]">location_city</mat-icon>
             <div>{{ booking.site.name }}</div>
             <mat-icon class="!h-5 !w-5 text-[1.25rem]">account_tree</mat-icon>
@@ -28,8 +31,6 @@
         >
             <mat-icon class="!h-7 !w-7 text-[1.75rem]">chevron_left</mat-icon>
         </button>
-        <div *ngIf="!open" class="absolute bottom-0 left-0 right-0 bg-gradient-to-b h-4 from-transparent to-white">
-
-        </div>
+        <div *ngIf="!open" class="absolute bottom-0 left-0 right-0 bg-gradient-to-b h-4 from-transparent to-white"></div>
     </div>
 </card>

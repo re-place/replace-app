@@ -2,6 +2,7 @@ package replace.http.controller
 
 import guru.zoroark.tegral.openapi.dsl.schema
 import guru.zoroark.tegral.openapi.ktor.describe
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.resources.delete
 import io.ktor.server.response.respond
@@ -45,6 +46,8 @@ fun Route.registerBookingRoutes() {
         delete<Routing.ById> { route ->
             withUserSession {
                 DeleteBookingUseCase.execute(route.id, it.userId)
+
+                call.respond(HttpStatusCode.NoContent)
             }
         } describe {
             description = "Deletes a Booking by id"

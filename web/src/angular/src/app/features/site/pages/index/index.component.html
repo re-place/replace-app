@@ -1,8 +1,8 @@
 <crud-layout title="Standorte" [createRoute]="'create'">
     <crud-card>
-        <loading-state [loading]="sites === undefined">
+        <loading-state [loading]="sites.loading()">
             <ng-template>
-                <data-table [data]="sites" [columns]="dataColumns">
+                <data-table [data]="sites.data" [columns]="dataColumns">
                     <ng-template let-item>
                         <div class="flex justify-end">
                             <a
@@ -11,10 +11,15 @@
                             >
                                 <mat-icon>edit</mat-icon>
                             </a>
+                            <text-button type="button" color="red" (click)="onDelete(item)">
+                                <ng-template>
+                                    <mat-icon>delete</mat-icon>
+                                </ng-template>
+                            </text-button>
                         </div>
                     </ng-template>
                 </data-table>
-                <empty-state *ngIf="sites?.length === 0">
+                <empty-state *ngIf="sites.data?.length === 0">
                     <ng-template [icon]>
                         <mat-icon class="scale-[3] text-gray-400"> location_city </mat-icon>
                     </ng-template>

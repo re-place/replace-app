@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core"
 import {MatSnackBar} from "@angular/material/snack-bar"
+import { firstValueFrom } from "rxjs"
 
 import { Entity } from "../../components/entity-map/entity-map.component"
 import { Interval } from "../../components/time-selector/time-selector.component"
@@ -62,24 +63,27 @@ export class ReservationComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.apiService.apiSiteGet().subscribe({
-            next: response => {
-                this.sites = response
-            },
-            error: () => {
-                this.showErrorSnackbar("Standort konnten nicht abgefragt werden")
-            },
-        })
+        Promise.all([
+            firstValueFrom(this.apiService.apiSiteGet())
+                .catch(() => this.showErrorSnackbar("Standort konnte nicht geladen werden")),
+            firstValueFrom(this.apiService.apiFloorGet())
+                .catch(() => this.showErrorSnackbar("Stockwerke konnten nicht geladen werden")),
+        ]).then(([sites, floors]) => {
+            this.sites = sites ?? []
+            this.floors = floors ?? []
 
-        this.apiService.apiFloorGet().subscribe({
-            next: response => {
-                this.floors = response
-                this.refreshBookableEntities()
-                this.bookings.refresh()
-            },
-            error: () => {
-                this.showErrorSnackbar("Stockwerke konnten nicht abgefragt werden")
-            },
+            if (this.sites.length === 0) {
+                this.showErrorSnackbar("Keine Standorte gefunden")
+                return
+            }
+
+            if (this.floors.length === 0) {
+                this.showErrorSnackbar("Keine Stockwerke gefunden")
+                return
+            }
+
+            this.refreshBookableEntities()
+            this.bookings.refresh()
         })
 
         this._start.setHours(8, 0, 0, 0)

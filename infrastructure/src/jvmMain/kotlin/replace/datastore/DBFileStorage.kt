@@ -1,5 +1,7 @@
 package replace.datastore
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.InputStream
 
@@ -23,7 +25,7 @@ class DBFileStorage : FileStorage {
 
     override suspend fun deleteFile(path: String): Boolean {
         return transaction {
-            DBFile.findById(path)?.delete()
+            DBFiles.deleteWhere { DBFiles.id eq path }
 
             return@transaction true
         }

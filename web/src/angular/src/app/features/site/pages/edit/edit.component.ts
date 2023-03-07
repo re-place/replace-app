@@ -78,9 +78,21 @@ export class EditComponent implements OnDestroy {
             siteId: this.site.data?.id,
         }), {
             onSuccess: () => {
-
                 this.floors.refresh()
                 this.editingFloor = undefined
+            },
+        })
+    }
+
+    public onDeleteFloor(id: string) {
+       
+        this.api.apiFloorIdDelete(id).subscribe({
+            next: () => {
+                this.floors.refresh()
+                this.snackBar.open("Erfolgreich gelöscht", "OK", { duration: 1000 })
+            },
+            error: (error) => {
+                this.snackBar.open(error.message, "OK")
             },
         })
     }

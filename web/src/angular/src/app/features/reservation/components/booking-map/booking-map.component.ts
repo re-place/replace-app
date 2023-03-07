@@ -1,4 +1,15 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ChangeDetectorRef, ElementRef } from "@angular/core"
+import {
+    AfterViewInit,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChange,
+    SimpleChanges,
+    ChangeDetectorRef,
+    OnDestroy,
+    AfterViewChecked,
+} from "@angular/core"
 import { Feature, Map as OlMap, View } from "ol"
 import { Point } from "ol/geom"
 import ImageLayer from "ol/layer/Image"
@@ -9,14 +20,14 @@ import { Circle, Fill, Stroke, Style } from "ol/style"
 
 import { Booking } from "../../pages/reservation-overview/reservation-overview.component"
 import { BookableEntityDto } from "src/app/core/openapi"
-import { ImageLoader, LoadedImage } from "src/app/util/ImageLoader"
+import { ImageLoader } from "src/app/util/ImageLoader"
 
 @Component({
     selector: "booking-map",
     templateUrl: "./booking-map.component.html",
     styles: [],
 })
-export class BookingMapComponent implements OnChanges, OnInit, AfterViewInit {
+export class BookingMapComponent implements OnChanges, OnInit, AfterViewChecked, OnDestroy {
     @Input() booking: Booking | undefined
 
     private readonly imageLayer = new ImageLayer()
@@ -76,8 +87,8 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewInit {
         this.map?.updateSize()
     }
 
-
     ngOnInit(): void {
+        console.log("initing with booking", this.booking?.id ?? "undefined")
         this.id = `booking-map-${this.booking?.id ?? "undefined"}`
         this.imageLoader.clearSubscriptions()
         this.imageLoader.subscribe((loadedImage) => {
@@ -88,13 +99,15 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewInit {
 
             const extent = [0, 0, loadedImage.image.width, loadedImage.image.height]
 
-            this.imageLayer.setSource(new ImageStatic({
-                url: loadedImage.source,
-                imageExtent: extent,
-                imageLoadFunction: (imageToLoad) => {
-                    imageToLoad.setImage(loadedImage.image)
-                },
-            }))
+            this.imageLayer.setSource(
+                new ImageStatic({
+                    url: loadedImage.source,
+                    imageExtent: extent,
+                    imageLoadFunction: (imageToLoad) => {
+                        imageToLoad.setImage(loadedImage.image)
+                    },
+                }),
+            )
             const map = this.map
 
             if (map === undefined) {
@@ -148,34 +161,45 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewInit {
             view.fit([0, 0, image.width, image.height], {
                 size,
             })
-
         })
+
+        this.map = this.createMap(undefined)
     }
 
-    ngAfterViewInit(): void {
-        const map = this.createMap()
-        this.map = map
-        this.ch.detectChanges()
-
-        const element = map.getTargetElement()
-
-        if (element === null) {
+    ngAfterViewChecked(): void {
+        if (this.map === undefined) {
             return
         }
 
-        this.resizeObserver?.observe(element)
+        const targetElement = document.getElementById(this.id)
+
+        if (targetElement === null || !targetElement.isConnected) {
+            return
+        }
+
+        const mapElement = this.map.getTargetElement()
+
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        if (mapElement !== null && mapElement.isConnected) {
+            return
+        }
+
+        this.map.setTarget(targetElement)
+        this.resizeObserver?.disconnect()
+        this.resizeObserver?.observe(targetElement)
     }
 
+    ngOnDestroy(): void {
+        this.resizeObserver?.disconnect()
+        this.map?.dispose()
+    }
 
-    private createMap(): OlMap {
+    private createMap(element: HTMLElement | undefined): OlMap {
         const map = new OlMap({
-            target: this.id,
+            target: element,
             controls: [],
             interactions: [],
-            layers: [
-                this.imageLayer,
-                this.entityLayer,
-            ],
+            layers: [this.imageLayer, this.entityLayer],
             view: new View({
                 zoom: 2,
             }),
@@ -185,7 +209,7 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewInit {
     }
 
     public toFeatures(entities: BookableEntityDto[]) {
-        return entities.map(entity => {
+        return entities.map((entity) => {
             const feature = new Feature({
                 geometry: new Point([entity.posX ?? 0, entity.posY ?? 0]),
             })
