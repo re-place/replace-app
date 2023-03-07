@@ -7,7 +7,7 @@ import replace.model.Bookings
 object DeleteBookingUseCase {
     suspend fun execute(
         bookingId: String,
-        currentUserId: String
+        currentUserId: String,
     ) {
         return transaction {
             val booking = Booking.find {

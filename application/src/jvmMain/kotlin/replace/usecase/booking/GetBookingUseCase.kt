@@ -29,7 +29,6 @@ object GetBookingUseCase {
         val endInst = end?.let { Instant.parse(it) }
 
         val bookingDtos = transaction {
-
             val query = Bookings.selectAll()
 
             my?.let {

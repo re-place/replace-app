@@ -54,7 +54,7 @@ fun Application.authenticationModule() {
                 Json {
                     encodeDefaults = false
                     ignoreUnknownKeys = true
-                }
+                },
             )
         }
     }
@@ -73,7 +73,6 @@ fun Application.authenticationModule() {
             }
         }
         oauth("microsoft-oauth") {
-
             val url = this@authenticationModule.environment.config.tryGetString("ktor.deployment.url")
                 ?: throw IllegalStateException("Missing deployment url")
 
@@ -156,7 +155,7 @@ fun Application.authenticationModule() {
                     user.id.value,
                     checkNotNull(principal.state) { "No state" },
                     principal.accessToken,
-                    userInfo.email
+                    userInfo.email,
                 )
 
                 call.sessions.set(session)

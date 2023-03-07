@@ -13,7 +13,6 @@ object UpdateBookableEntityUseCase {
     suspend fun execute(
         bookableEntityDto: UpdateBookableEntityDto,
     ): BookableEntityDto {
-
         return transaction {
             val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 

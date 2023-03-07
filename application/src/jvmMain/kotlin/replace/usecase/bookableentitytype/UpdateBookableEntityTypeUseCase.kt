@@ -11,7 +11,6 @@ object UpdateBookableEntityTypeUseCase {
         updateBookableEntityTypeDto: UpdateBookableEntityTypeDto,
     ): BookableEntityTypeDto {
         return transaction {
-
             val bookableEntityType = BookableEntityType.findById(updateBookableEntityTypeDto.id)
 
             checkNotNull(bookableEntityType) { "BookableEntityType with id ${updateBookableEntityTypeDto.id} not found" }

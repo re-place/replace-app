@@ -31,7 +31,6 @@ class DBFileStorage : FileStorage {
 
     override suspend fun copyFile(from: String, to: String): Boolean {
         return transaction {
-
             val oldFile = DBFile.findById(from) ?: return@transaction false
 
             DBFile.new(to) {

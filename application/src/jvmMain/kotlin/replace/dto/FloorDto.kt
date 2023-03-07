@@ -17,7 +17,6 @@ class FloorDto(
 ) : ModelDto
 
 fun Floor.toDto(with: List<KProperty1<Floor, *>> = emptyList()): FloorDto {
-
     val siteDto = if (with.contains(Floor::site)) {
         site.toDto()
     } else {

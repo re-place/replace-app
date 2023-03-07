@@ -28,7 +28,6 @@ import replace.usecase.floor.CreateFloorUseCase
 import replace.usecase.floor.UpdateFloorUseCase
 
 fun Route.registerFloorRoutes(fileStorage: FileStorage) {
-
     route("/api/floor") {
         routeRepository(Floor.Companion) {
             it.toDto()

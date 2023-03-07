@@ -8,5 +8,5 @@ data class UpdateBookingDto(
     val userId: String,
     val bookedEntityIds: List<String>,
     val start: String,
-    val end: String
+    val end: String,
 )
