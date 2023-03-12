@@ -2,7 +2,7 @@
 exposed = "0.41.1"
 kotlin = "1.8.10"
 ktor = "2.2.4"
-liquibase = "2.1.1"
+liquibase = "2.2.0"
 liquibase-core = "4.19.0"
 liquibase-picocli = "4.7.0"
 log4j = "2.20.0"
