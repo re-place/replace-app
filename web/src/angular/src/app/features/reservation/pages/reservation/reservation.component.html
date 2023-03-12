@@ -36,18 +36,35 @@
                     <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1" [inline]="false">account_tree</mat-icon> Stockwerk
                 </div>
             </div>
-            <mat-button-toggle-group
-                [(ngModel)]="selectedType"
-                (change)="filterEntitiesByType()"
-                name="selected_type"
-                class="w-full !rounded-md border-0">
-                <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full flex items-center justify-center bg-gray-100 z-0">
-                    <span class="text-xl text-gray-700 text-center">
-                        {{ type.name }}
-                    </span>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+            <div
+                class="hidden lg:flex">
+                <mat-button-toggle-group
+                    [(ngModel)]="selectedType"
+                    (change)="filterEntitiesByType()"
+                    name="selected_type"
+                    class="w-full !rounded-md border-0">
+                    <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full flex items-center justify-center bg-gray-100 z-0">
+                        <span class="text-xl text-gray-700 text-center">
+                            {{ type.name }}
+                        </span>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
             <time-selector [(interval)]="interval" [(isSelectingTime)]="isSelectingTime" class="place-self-end"></time-selector>
+            <div
+                class="flex lg:hidden w-full">
+                <mat-button-toggle-group
+                    [(ngModel)]="selectedType"
+                    (change)="filterEntitiesByType()"
+                    name="selected_type"
+                    class="w-full !rounded-md border-0">
+                    <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full flex items-center justify-center bg-gray-100 z-0">
+                        <span class="text-xl text-gray-700 text-center">
+                            {{ type.name }}
+                        </span>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
         </div>
         <site-selector *ngIf="isSelectingSite" [sites]="sites" (siteSelected)="selectedSite  = $event"></site-selector>
         <floor-selector *ngIf="!isSelectingSite && isSelectingFloor" [floors]="selectableFloors" (floorSelected)="selectedFloor = $event"></floor-selector>
