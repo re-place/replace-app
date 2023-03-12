@@ -15,35 +15,31 @@
     <div class="flex gap-2">
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Position X</mat-label>
-            <input
-                required
-                type="number"
-                matInput
-                [(ngModel)]="posXInput"
-                placeholder="0"
-                step="1"
-                name="position_x"
-            />
+            <input required type="number" matInput [(ngModel)]="posXInput" placeholder="0" step="1" name="position_x" />
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Position Y</mat-label>
-            <input
-                required
-                type="number"
-                matInput
-                [(ngModel)]="posYInput"
-                placeholder="0"
-                step="1"
-                name="position_y"
-            />
+            <input required type="number" matInput [(ngModel)]="posYInput" placeholder="0" step="1" name="position_y" />
         </mat-form-field>
     </div>
 
+    <mat-form-field appearance="fill">
+        <mat-label>Verknüpft zu</mat-label>
+        <mat-select [(value)]="parentIdInput">
+            <mat-option *ngFor="let entity of availableParents" [value]="entity.id">
+                {{ entity.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="children.length > 0">
+        <h4 class="text-base font-medium mt-4">Zugeordnete Buchungselemente:</h4>
+        {{ childNames }}
+    </div>
+
     <div class="flex justify-end mt-8 gap-4">
-        <button mat-raised-button color="white" type="button" (click)="onCancel()">
-            Abbrechen
-        </button>
+        <button mat-raised-button color="white" type="button" (click)="onCancel()">Abbrechen</button>
         <button mat-raised-button color="primary" type="submit">
             {{ saveText }}
         </button>

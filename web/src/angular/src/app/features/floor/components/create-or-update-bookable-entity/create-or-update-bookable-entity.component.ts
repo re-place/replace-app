@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 
 import { DeleteBookableEntityDialogComponent } from "../entity-deletion-modal/delete-bookable-entity-dialog.component"
+import { BookableEntityDto } from "src/app/core/openapi"
+
 
 @Component({
     selector: "create-or-update-bookable-entity",
@@ -13,10 +15,14 @@ export class CreateOrUpdateBookableEntityComponent {
     @Input() name: string | undefined
     @Input() posX: number | undefined
     @Input() posY: number | undefined
+    @Input() parentId: string | undefined
+    @Input() availableParents: BookableEntityDto[] = []
+    @Input() children: BookableEntityDto[] = []
 
     @Output() nameChange = new EventEmitter<string>()
     @Output() posXChange = new EventEmitter<number>()
     @Output() posYChange = new EventEmitter<number>()
+    @Output() parentIdChange = new EventEmitter<string | undefined>()
 
     @Output() submitBookableEntity = new EventEmitter<void>()
     @Output() cancel = new EventEmitter<void>()
@@ -57,6 +63,18 @@ export class CreateOrUpdateBookableEntityComponent {
         this.posYChange.emit(value)
     }
 
+    public get parentIdInput(): string | undefined {
+        return this.parentId
+    }
+
+    public set parentIdInput(value: string | undefined) {
+        this.parentIdChange.emit(value)
+    }
+
+    public get childNames(): string {
+        return this.children.map(child => child.name).join(", ")
+    }
+
     public onCancel() {
         this.cancel.emit()
     }
@@ -68,6 +86,7 @@ export class CreateOrUpdateBookableEntityComponent {
             return "Buchungselement bearbeiten"
         }
     }
+
     public onDelete() {
         this.dialog.open(DeleteBookableEntityDialogComponent, {
             data: {

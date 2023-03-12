@@ -18,6 +18,7 @@ export class EditComponent implements OnDestroy {
     floor = new DataLoader<FloorDto>()
     bookableEntities = new DataLoader<BookableEntityDto[]>()
     editingBookableEntity: SetOptional<BookableEntityDto, "id" | "parentId" | "floorId"> | undefined = undefined
+    editingBookableEntityAvailableParents: BookableEntityDto[] = []
 
     private readonly routeSub: Subscription
 
@@ -56,6 +57,7 @@ export class EditComponent implements OnDestroy {
 
     public set selectedEntity(entity: BookableEntityDto | undefined) {
         this.editingBookableEntity = { ...entity }
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data?.filter((e) => e.id !== entity?.id) ?? []
     }
 
     public get files(): FileUploadDto[] {
@@ -88,6 +90,7 @@ export class EditComponent implements OnDestroy {
 
     public onEditBookableEntity(bookableEntity?: BookableEntityDto) {
         this.editingBookableEntity = { ...bookableEntity}
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data?.filter((e) => e.id !== bookableEntity?.id) ?? []
     }
 
     public onCreateBookableEntity() {
@@ -97,7 +100,10 @@ export class EditComponent implements OnDestroy {
             posX: 0,
             posY: 0,
             index: this.bookableEntities.data?.length ?? 0,
+            parentId: undefined,
         }
+
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data ?? []
     }
 
     public onSubmitBookableEntity() {
@@ -182,6 +188,14 @@ export class EditComponent implements OnDestroy {
         }
 
         this.editingBookableEntity = { ...this.editingBookableEntity, posY }
+    }
+
+    public onSelectedEntityParentIdUpdate(parentId: string | undefined) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, parentId }
     }
 
     public onDeleteEntity(id: string) {
