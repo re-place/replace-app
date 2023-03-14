@@ -7,6 +7,13 @@
             </ng-template>
         </text-button>
     </div>
+
+    <mat-button-toggle-group [value]="typeInput" (change)="typeInput = $event.value" name="object_type" multiple class="p-0 border-gray-300 mb-4">
+        <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full">
+            {{ type.name }}
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+
     <mat-form-field appearance="fill" class="w-full">
         <mat-label>Name</mat-label>
         <input required type="text" matInput [(ngModel)]="nameInput" placeholder="AP 1" name="object_name" />

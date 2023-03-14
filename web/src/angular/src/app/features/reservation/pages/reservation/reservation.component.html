@@ -1,9 +1,15 @@
+<style>
+.mat-button-toggle-checked {
+    box-shadow: inset 0px 0px 6px 0px rgba(169,221,121,1);
+    z-index: 2;
+}
+</style>
 <div class="py-4">
     <div class="mb-2 sm:mb-0 mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
         <h1 class="text-2xl font-semibold text-gray-900">Buchen</h1>
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 flex flex-col gap-4">
-        <div class="flex flex-wrap xl:grid grid-cols-[25%_25%_1fr] gap-4">
+        <div class="flex flex-wrap xl:grid grid-cols-[20%_20%_25%_1fr] gap-4">
             <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingSite = true">
                 <div *ngIf="selectedSite; else default" class="text-xl text-gray-700 flex">
                     {{ selectedSite.name ?? ' ' }}
@@ -14,7 +20,7 @@
                     </div>
                 </ng-template>
                 <div class="text-xs text-gray-400 flex items-center">
-                    <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1" [inline]="false">location_city</mat-icon> Gebäude
+                    <mat-icon class="!h-5 !w-5 !text-[1.25rem] mr-1" [inline]="false">location_city</mat-icon> Gebäude
                 </div>
             </div>
             <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingFloor = true">
@@ -27,24 +33,52 @@
                     </div>
                 </ng-template>
                 <div class="text-xs text-gray-400 flex items-center">
-                    <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1" [inline]="false">account_tree</mat-icon> Stockwerk
+                    <mat-icon class="!h-5 !w-5 !text-[1.25rem] mr-1" [inline]="false">account_tree</mat-icon> Stockwerk
                 </div>
             </div>
+            <div class="hidden lg:block self-stretch place-self-stretch">
+                <mat-button-toggle-group
+                    [ngModel]="selectedType?.id"
+                    (ngModelChange)="setSelectedType($event)"
+                    name="selected_type"
+                    class="w-full !rounded-md border-0 h-full"
+                >
+                    <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full flex items-center justify-center bg-gray-100 z-0">
+                        <span class="text-xl text-gray-700 text-center">
+                            {{ type.name }}
+                        </span>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
             <time-selector [interval]="interval" (intervalChange)="setInterval($event)" [(isSelectingTime)]="isSelectingTime" class="place-self-end"></time-selector>
+            <div
+                class="flex lg:hidden w-full">
+                <mat-button-toggle-group
+                    [value]="selectedType?.id"
+                    (change)="setSelectedType($event.value)"
+                    name="selected_type"
+                    class="w-full !rounded-md border-0">
+                    <mat-button-toggle *ngFor="let type of types" [value]="type.id" class="w-full flex items-center justify-center bg-gray-100 z-0">
+                        <span class="text-xl text-gray-700 text-center">
+                            {{ type.name }}
+                        </span>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
         </div>
         <site-selector *ngIf="isSelectingSite" [sites]="sites" (siteSelected)="setSelectedSite($event)"></site-selector>
         <floor-selector *ngIf="!isSelectingSite && isSelectingFloor" [floors]="siteFloors" (floorSelected)="setSelectedFloor($event)"></floor-selector>
         <card *ngIf="!isSelectingSite && !isSelectingFloor && selectedSite !== undefined && selectedFloor !== undefined">
             <div class="flex flex-col xl:flex-row">
                 <div class="order-3 xl:order-1 grow h-64 sm:h-96 rounded-md bg-gray-100 p-1">
-                    <entity-map [entities]="bookableEntities" [backgroundImage]="selectedFloor.planFile" (entitySelected)="onBookableEntitySelection($event)"></entity-map>
+                    <entity-map [entities]="visibleBookableEntities" [backgroundImage]="selectedFloor.planFile" (entitySelected)="onBookableEntitySelection($event)"></entity-map>
                 </div>
                 <div class="order-1 mb-4 xl:mb-0 xl:w-64 xl:ml-5 xl:h-96 overflow-auto">
                     <bookings-list *ngIf="bookings.data" [bookings]="bookings.data" [interval]="interval"></bookings-list>
                 </div>
             </div>
             <div class="mt-4 relative">
-                <bookable-entities-list [entities]="bookableEntities" (entitySelected)="onBookableEntitySelection($event)"></bookable-entities-list>
+                <bookable-entities-list [entities]="visibleBookableEntities" (entitySelected)="onBookableEntitySelection($event)"></bookable-entities-list>
                 <div *ngIf="bookings.data === undefined" class="pointer-events-none absolute inset-0 bg-white/50"> </div>
             </div>
         </card>

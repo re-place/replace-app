@@ -4,7 +4,7 @@ import { firstValueFrom } from "rxjs"
 
 import { Entity, EntityStatus, interactableStates } from "../../components/entity-map/entity-map.component"
 import { Interval } from "../../components/time-selector/time-selector.component"
-import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
+import { BookableEntityDto, BookableEntityTypeDto, BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 import { DataLoader } from "src/app/util"
 import { useLocalStorage } from "src/app/util/LocalStorage"
 
@@ -17,12 +17,15 @@ export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
     floors: FloorDto[] = []
     siteFloors: FloorDto[] = []
+    types: BookableEntityTypeDto[] = []
 
     private _storedSiteId = useLocalStorage<string>("selectedSite")
     private _storedFloorId = useLocalStorage<string>("selectedFloor")
+    private _storedTypeId = useLocalStorage<string>("selectedType")
 
     private _selectedFloor: FloorDto | undefined
     private _selectedSite: SiteDto | undefined
+    private _selectedType: BookableEntityTypeDto | undefined
 
     private _interval = {
         start: new Date(),
@@ -31,8 +34,9 @@ export class ReservationComponent implements OnInit {
 
     protected selecting: "site" | "floor" | "time" | undefined
 
-    bookableEntities: Entity[] = []
-    bookableEntitiesMap: Map<string, Entity> = new Map()
+    visibleBookableEntities: Entity[] = []
+    visibleBookableEntitiesMap: Map<string, Entity> = new Map()
+    bookableEntities: BookableEntityDto[] = []
 
     bookedEntityIds: Set<string> = new Set()
     unavailableEntityIds: Set<string> = new Set()
@@ -60,6 +64,11 @@ export class ReservationComponent implements OnInit {
         private readonly apiService: DefaultService,
         private readonly snackBar: MatSnackBar,
     ) {
+        this.apiService.apiBookableEntityTypeGet().subscribe({
+            next: result => {
+                this.types = result
+            },
+        })
         this.bookings.subscribe((data) => {
             this.updateAvailability(this.bookableEntities, data)
         })
@@ -71,9 +80,12 @@ export class ReservationComponent implements OnInit {
                 .catch(() => this.showErrorSnackbar("Standort konnte nicht geladen werden")),
             firstValueFrom(this.apiService.apiFloorGet())
                 .catch(() => this.showErrorSnackbar("Stockwerke konnten nicht geladen werden")),
-        ]).then(([sites, floors]) => {
+            firstValueFrom(this.apiService.apiBookableEntityTypeGet())
+                .catch(() => this.showErrorSnackbar("Buchbare Entitäten konnten nicht geladen werden")),
+        ]).then(([sites, floors, types]) => {
             this.sites = sites ?? []
             this.floors = floors ?? []
+            this.types = types ?? []
 
             if (this.sites.length === 0) {
                 this.showErrorSnackbar("Keine Standorte gefunden")
@@ -91,6 +103,12 @@ export class ReservationComponent implements OnInit {
 
             if (this._storedFloorId.value !== undefined) {
                 this.setSelectedFloor(this.siteFloors.find(f => f.id === this._storedFloorId.value))
+            }
+
+            if (this._storedTypeId.value !== undefined) {
+                this.setSelectedType(this.types.find(t => t.id === this._storedTypeId.value)?.id)
+            } else {
+                this.setSelectedType(this.types.at(0)?.id)
             }
         })
 
@@ -115,12 +133,7 @@ export class ReservationComponent implements OnInit {
 
         this.apiService.apiFloorFloorIdBookableEntityGet(this._selectedFloor.id ?? "").subscribe({
             next: response => {
-                this.bookableEntities = response.map((entity): Entity => ({
-                    status: EntityStatus.AVAILABLE,
-                    entity,
-                }))
-
-                this.bookableEntitiesMap = new Map(this.bookableEntities.map(entity => [entity.entity.id ?? "", entity]))
+                this.bookableEntities = response
                 this.bookings.refresh()
             },
             error: () => {
@@ -197,28 +210,45 @@ export class ReservationComponent implements OnInit {
         return new Set(unavailableEntities.map((entity) => entity.entity.id as string))
     }
 
-    updateAvailability(entities: Entity[], bookings: BookingDto[]) {
+    updateAvailability(bookableEntities: BookableEntityDto[], bookings: BookingDto[]) {
+        const entities = bookableEntities.map((entity) => ({
+            entity,
+            status: EntityStatus.AVAILABLE,
+        }))
+
         const bookedEntities = this.getBookedEntities(bookings, entities)
         const unavailableEntities = this.getUnavailableEntities(bookedEntities, entities)
 
-        this.bookableEntities = entities.map((entity) => {
-            if (bookedEntities.has(entity.entity.id ?? "")) {
-                entity.status = EntityStatus.BOOKED
-                return entity
-            }
+        this.visibleBookableEntities = entities
+            .map((entity) => {
+                if (bookedEntities.has(entity.entity.id ?? "")) {
+                    entity.status = EntityStatus.BOOKED
+                    return entity
+                }
 
-            if (unavailableEntities.has(entity.entity.id ?? "")) {
-                entity.status = EntityStatus.DISABLED
-                return entity
-            }
+                if (unavailableEntities.has(entity.entity.id ?? "")) {
+                    entity.status = EntityStatus.DISABLED
+                    return entity
+                }
 
-            if (entity.status === EntityStatus.SELECTED) {
-                return entity
-            }
+                if (entity.status === EntityStatus.SELECTED) {
+                    return entity
+                }
 
-            entity.status = EntityStatus.AVAILABLE
-            return entity
-        })
+                entity.status = EntityStatus.AVAILABLE
+                return entity
+            })
+            .filter((entity) => {
+                if (this._selectedType === undefined) {
+                    return true
+                }
+
+                if (entity.entity.typeId === undefined) {
+                    return true
+                }
+
+                return entity.entity.typeId === this._selectedType.id
+            })
 
         this.triggerBookableEntitiesChanges()
     }
@@ -226,7 +256,7 @@ export class ReservationComponent implements OnInit {
     onBookableEntitySelection(id: string | Entity) {
         id = typeof id === "string" ? id : id.entity.id as string
 
-        const entity = this.bookableEntitiesMap.get(id)
+        const entity = this.visibleBookableEntitiesMap.get(id)
 
         if (!interactableStates.includes(entity?.status)) {
             return
@@ -235,7 +265,7 @@ export class ReservationComponent implements OnInit {
         if (entity?.status === EntityStatus.SELECTED) {
             entity.status = EntityStatus.AVAILABLE
 
-            const descendants = this.getDescendants(entity, this.bookableEntities)
+            const descendants = this.getDescendants(entity, this.visibleBookableEntities)
 
             for (const descendant of descendants) {
                 if (descendant.status === EntityStatus.SELECTED_DISABLED || descendant.status === EntityStatus.SELECTED) {
@@ -245,7 +275,7 @@ export class ReservationComponent implements OnInit {
         } else if (entity?.status === EntityStatus.AVAILABLE) {
             entity.status = EntityStatus.SELECTED
 
-            const descendants = this.getDescendants(entity, this.bookableEntities)
+            const descendants = this.getDescendants(entity, this.visibleBookableEntities)
 
             for (const descendant of descendants) {
                 if (descendant === entity) {
@@ -263,8 +293,8 @@ export class ReservationComponent implements OnInit {
     }
 
     protected triggerBookableEntitiesChanges() {
-        this.bookableEntities = [...this.bookableEntities]
-        this.bookableEntitiesMap = new Map(this.bookableEntities.map(entity => [entity.entity.id ?? "", entity]))
+        this.visibleBookableEntities = [...this.visibleBookableEntities]
+        this.visibleBookableEntitiesMap = new Map(this.visibleBookableEntities.map(entity => [entity.entity.id ?? "", entity]))
     }
 
     get selectedSite() {
@@ -310,6 +340,22 @@ export class ReservationComponent implements OnInit {
 
 
         this.refreshBookableEntities()
+    }
+
+    get selectedType() {
+        return this._selectedType
+    }
+
+    setSelectedType(typeId: string | undefined) {
+        this._storedTypeId.value = typeId
+
+        if (typeId === undefined) {
+            this._selectedType = undefined
+        } else {
+            this._selectedType = this.types.find(t => t.id === typeId)
+        }
+
+        this.updateAvailability(this.bookableEntities, this.bookings.data ?? [])
     }
 
     get siteTagClasses() {
@@ -401,7 +447,8 @@ export class ReservationComponent implements OnInit {
     }
 
     get disabled() {
-        const selectedEntitiesCount = this.bookableEntities.filter(entity => entity.status === EntityStatus.SELECTED).length
+        const selectedEntitiesCount =
+            this.visibleBookableEntities.filter(entity => entity.status === EntityStatus.SELECTED).length
 
         return this._selectedFloor === undefined || selectedEntitiesCount === 0
 
@@ -412,7 +459,7 @@ export class ReservationComponent implements OnInit {
         const start = this._interval.start.toISOString()
         const end = this._interval.end.toISOString()
 
-        const entities = this.bookableEntities
+        const entities = this.visibleBookableEntities
             .filter(entity => entity.status === EntityStatus.SELECTED)
             .map(entity => entity.entity.id as string)
 

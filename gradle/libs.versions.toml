@@ -3,7 +3,7 @@ exposed = "0.41.1"
 kotlin = "1.8.10"
 ktor = "2.2.4"
 liquibase = "2.2.0"
-liquibase-core = "4.19.0"
+liquibase-core = "4.20.0"
 liquibase-picocli = "4.7.0"
 log4j = "2.20.0"
 postgresql = "42.5.4"
@@ -15,7 +15,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 guice = "com.google.inject:guice:5.1.0"
-kotest = "io.kotest:kotest-runner-junit5-jvm:5.5.4"
+kotest = "io.kotest:kotest-runner-junit5-jvm:5.5.5"
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"

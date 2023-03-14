@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 
 import { DeleteBookableEntityDialogComponent } from "../entity-deletion-modal/delete-bookable-entity-dialog.component"
-import { BookableEntityDto } from "src/app/core/openapi"
+import { BookableEntityTypeDto , BookableEntityDto } from "src/app/core/openapi"
 
 
 @Component({
@@ -17,8 +17,12 @@ export class CreateOrUpdateBookableEntityComponent {
     @Input() posY: number | undefined
     @Input() parentId: string | undefined
     @Input() availableParents: BookableEntityDto[] = []
+    @Input() typeId: string | undefined
+    @Input() types: BookableEntityTypeDto[] = []
+
     @Input() children: BookableEntityDto[] = []
 
+    @Output() typeIdChange = new EventEmitter<string>()
     @Output() nameChange = new EventEmitter<string>()
     @Output() posXChange = new EventEmitter<number>()
     @Output() posYChange = new EventEmitter<number>()
@@ -37,6 +41,19 @@ export class CreateOrUpdateBookableEntityComponent {
     public onSubmit(event: SubmitEvent) {
         event.preventDefault()
         this.submitBookableEntity.emit()
+    }
+
+    public get typeInput(): string[] {
+        return this.typeId !== undefined ? [this.typeId] : []
+    }
+
+    public set typeInput(value: string[]) {
+        if (value.length === 0) {
+            this.typeIdChange.emit(undefined)
+            return
+        }
+
+        this.typeIdChange.emit(value.filter((v) => v !== this.typeId).at(0))
     }
 
     public get nameInput(): string | undefined {
