@@ -4,7 +4,7 @@
     </div>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 flex flex-col gap-4">
         <div class="flex flex-wrap xl:grid grid-cols-[25%_25%_1fr] gap-4">
-            <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingSite=true">
+            <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingSite = true">
                 <div *ngIf="selectedSite; else default" class="text-xl text-gray-700 flex">
                     {{ selectedSite.name ?? ' ' }}
                 </div>
@@ -17,7 +17,7 @@
                     <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1" [inline]="false">location_city</mat-icon> Gebäude
                 </div>
             </div>
-            <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingFloor=true">
+            <div class="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="isSelectingFloor = true">
                 <div *ngIf="selectedFloor; else default" class="text-lg text-gray-700">
                     {{ selectedFloor.name ?? '' }}
                 </div>
@@ -30,16 +30,16 @@
                     <mat-icon class="!h-5 !w-5 text-[1.25rem] mr-1" [inline]="false">account_tree</mat-icon> Stockwerk
                 </div>
             </div>
-            <time-selector [(interval)]="interval" [(isSelectingTime)]="isSelectingTime" class="place-self-end"></time-selector>
+            <time-selector [interval]="interval" (intervalChange)="setInterval($event)" [(isSelectingTime)]="isSelectingTime" class="place-self-end"></time-selector>
         </div>
-        <site-selector *ngIf="isSelectingSite" [sites]="sites" (siteSelected)="selectedSite  = $event"></site-selector>
-        <floor-selector *ngIf="!isSelectingSite && isSelectingFloor" [floors]="selectableFloors" (floorSelected)="selectedFloor = $event"></floor-selector>
+        <site-selector *ngIf="isSelectingSite" [sites]="sites" (siteSelected)="setSelectedSite($event)"></site-selector>
+        <floor-selector *ngIf="!isSelectingSite && isSelectingFloor" [floors]="siteFloors" (floorSelected)="setSelectedFloor($event)"></floor-selector>
         <card *ngIf="!isSelectingSite && !isSelectingFloor && selectedSite !== undefined && selectedFloor !== undefined">
             <div class="flex flex-col xl:flex-row">
                 <div class="order-3 xl:order-1 grow h-64 sm:h-96 rounded-md bg-gray-100 p-1">
                     <entity-map [(entities)]="bookableEntities" [backgroundImage]="selectedFloor.planFile"></entity-map>
                 </div>
-                <div class="order-1 mb-4 xl:mb-0 xl:w-64 xl:ml-5 xl:h-96">
+                <div class="order-1 mb-4 xl:mb-0 xl:w-64 xl:ml-5 xl:h-96 overflow-auto">
                     <bookings-list *ngIf="bookings.data" [bookings]="bookings.data" [interval]="interval"></bookings-list>
                 </div>
             </div>

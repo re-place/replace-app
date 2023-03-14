@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 
-import { Entity } from "../entity-map/entity-map.component"
+import { Entity, EntityStatus } from "../entity-map/entity-map.component"
 
 @Component({
     selector: "bookable-entities-list",
@@ -13,17 +13,16 @@ export class BookableEntitiesListComponent {
     @Output() entitiesChange: EventEmitter<Entity[]> = new EventEmitter()
 
     get availableEntities() {
-        return this.entities.filter(entity => entity.available)
+        return this.entities.filter(entity => entity.status === EntityStatus.AVAILABLE || entity.status === EntityStatus.SELECTED)
     }
 
     onEntitySelection(entity: Entity) {
-        const index = this.entities.findIndex(e => e.entity.id === entity.entity.id)
 
-        if (index === -1) {
-            return
+        if (entity.status === EntityStatus.SELECTED) {
+            entity.status = EntityStatus.AVAILABLE
+        } else {
+            entity.status = EntityStatus.SELECTED
         }
-
-        this.entities[index].selected = !this.entities[index].selected
 
         this.entitiesChange.emit([...this.entities])
     }

@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     Component,
     Input,
     OnChanges,
@@ -88,7 +87,6 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewChecked,
     }
 
     ngOnInit(): void {
-        console.log("initing with booking", this.booking?.id ?? "undefined")
         this.id = `booking-map-${this.booking?.id ?? "undefined"}`
         this.imageLoader.clearSubscriptions()
         this.imageLoader.subscribe((loadedImage) => {

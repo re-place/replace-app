@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core"
 import {MatSnackBar} from "@angular/material/snack-bar"
 import { firstValueFrom } from "rxjs"
 
-import { Entity } from "../../components/entity-map/entity-map.component"
+import { Entity, EntityStatus } from "../../components/entity-map/entity-map.component"
 import { Interval } from "../../components/time-selector/time-selector.component"
 import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 import { DataLoader } from "src/app/util"
@@ -16,26 +16,32 @@ import { useLocalStorage } from "src/app/util/LocalStorage"
 export class ReservationComponent implements OnInit {
     sites: SiteDto[] = []
     floors: FloorDto[] = []
+    siteFloors: FloorDto[] = []
 
     private _storedSiteId = useLocalStorage<string>("selectedSite")
     private _storedFloorId = useLocalStorage<string>("selectedFloor")
 
-    private _selectingSite = false
-    private _selectingFloor = false
-    private _selectingTime = false
+    private _selectedFloor: FloorDto | undefined
+    private _selectedSite: SiteDto | undefined
 
-    private _start = new Date()
-    private _end = new Date()
+    private _interval = {
+        start: new Date(),
+        end: new Date(),
+    }
+
+    protected selecting: "site" | "floor" | "time" | undefined
 
     bookableEntities: Entity[] = []
+    bookableEntitiesMap: Map<string, Entity> = new Map()
 
-    bookedEntities: Set<string> = new Set()
+    bookedEntityIds: Set<string> = new Set()
+    unavailableEntityIds: Set<string> = new Set()
 
     public bookings: DataLoader<BookingDto[]>   = new DataLoader(
         () => {
-            const floorId = this.selectedFloor?.id
-            const start = this._start.toISOString()
-            const end = this._end.toISOString()
+            const floorId = this._selectedFloor?.id
+            const start = this._interval.start.toISOString()
+            const end = this._interval.end.toISOString()
 
             if (floorId === undefined) {
                 return Promise.resolve([])
@@ -55,10 +61,7 @@ export class ReservationComponent implements OnInit {
         private readonly snackBar: MatSnackBar,
     ) {
         this.bookings.subscribe((data) => {
-            this.bookedEntities
-                = new Set(data.flatMap((booking) => booking?.bookedEntities?.map((entity) => entity.id)) as string[])
-
-            this.updateAvailability()
+            this.updateAvailability(this.bookableEntities, data)
         })
     }
 
@@ -82,14 +85,22 @@ export class ReservationComponent implements OnInit {
                 return
             }
 
-            this.refreshBookableEntities()
-            this.bookings.refresh()
+            if (this._storedSiteId.value !== undefined) {
+                this.setSelectedSite(this.sites.find(s => s.id === this._storedSiteId.value))
+            }
+
+            if (this._storedFloorId.value !== undefined) {
+                this.setSelectedFloor(this.siteFloors.find(f => f.id === this._storedFloorId.value))
+            }
         })
 
-        this._start.setHours(8, 0, 0, 0)
-        this._start.setDate(this._start.getDate() + 1)
-        this._end.setHours(18, 0, 0, 0)
-        this._end.setDate(this._end.getDate() + 1)
+        const start = this._interval.start
+        const end = this._interval.end
+
+        start.setHours(8, 0, 0, 0)
+        start.setDate(start.getDate() + 1)
+        end.setHours(18, 0, 0, 0)
+        end.setDate(end.getDate() + 1)
     }
 
 
@@ -98,17 +109,19 @@ export class ReservationComponent implements OnInit {
     }
 
     refreshBookableEntities() {
-        if (this.selectedFloor === undefined) {
+        if (this._selectedFloor === undefined) {
             return
         }
 
-        this.apiService.apiFloorFloorIdBookableEntityGet(this.selectedFloor.id ?? "").subscribe({
+        this.apiService.apiFloorFloorIdBookableEntityGet(this._selectedFloor.id ?? "").subscribe({
             next: response => {
                 this.bookableEntities = response.map((entity): Entity => ({
-                    available: true,
-                    selected: false,
+                    status: EntityStatus.AVAILABLE,
                     entity,
                 }))
+
+                this.bookableEntitiesMap = new Map(this.bookableEntities.map(entity => [entity.entity.id ?? "", entity]))
+                this.bookings.refresh()
             },
             error: () => {
                 this.showErrorSnackbar("Buchbare Objekte konnten nicht abgefragt werden")
@@ -116,48 +129,130 @@ export class ReservationComponent implements OnInit {
         })
     }
 
-    updateAvailability() {
-        const entities = this.bookableEntities
-
-        for (const entity of entities) {
-            entity.available = !this.bookedEntities.has(entity.entity.id ?? "")
-            entity.selected = false
+    protected getBookedEntities(bookings: BookingDto[], bookableEntities: Entity[]): Set<string> {
+        if (bookings === undefined || bookings.length === 0) {
+            return new Set()
         }
 
-        this.bookableEntities = [...entities]
+        const bookedEntities =
+            new Set(bookings.flatMap((booking) => booking?.bookedEntities?.map((entity) => entity.id)) as string[])
+
+        let uncheckedBookableEntities = bookableEntities.filter((entity) => !bookedEntities.has(entity.entity.id ?? ""))
+
+        let oldSize = bookedEntities.size
+        let newSize = bookedEntities.size
+
+        do {
+            oldSize = newSize
+
+            for (const entity of uncheckedBookableEntities) {
+                const parentId = entity.entity.parentId
+                if (parentId === undefined) {
+                    continue
+                }
+
+                if (!bookedEntities.has(parentId)) {
+                    continue
+                }
+
+                bookedEntities.add(entity.entity.id ?? "")
+            }
+
+            uncheckedBookableEntities
+                = uncheckedBookableEntities.filter((entity) => !bookedEntities.has(entity.entity.id ?? ""))
+
+            newSize = bookedEntities.size
+
+        } while (oldSize !== newSize)
+
+        return bookedEntities
+    }
+
+    protected getUnavailableEntities(bookedEntitieIds: Set<string>, bookableEntities: Entity[]): Set<string> {
+        const bookedEntities = bookableEntities.filter((entity) => bookedEntitieIds.has(entity.entity.id ?? ""))
+
+        const parentIdsOfBookedEntities = new Set<string>(
+            bookedEntities.flatMap((entity) => entity.entity.parentId ?? []),
+        )
+
+        return new Set(
+            bookableEntities
+                .filter((entity) => parentIdsOfBookedEntities.has(entity.entity.id ?? ""))
+                .map((entity) => entity.entity.id as string),
+        )
+    }
+
+    updateAvailability(entities: Entity[], bookings: BookingDto[]) {
+        const bookedEntities = this.getBookedEntities(bookings, entities)
+        const unavailableEntities = this.getUnavailableEntities(bookedEntities, entities)
+
+        this.bookableEntities = entities.map((entity) => {
+            if (bookedEntities.has(entity.entity.id ?? "")) {
+                entity.status = EntityStatus.BOOKED
+                return entity
+            }
+
+            if (unavailableEntities.has(entity.entity.id ?? "")) {
+                entity.status = EntityStatus.DISABLED
+                return entity
+            }
+
+            if (entity.status === EntityStatus.SELECTED) {
+                return entity
+            }
+
+            entity.status = EntityStatus.AVAILABLE
+            return entity
+        })
     }
 
     get selectedSite() {
-        if (this._storedSiteId.value === undefined) return undefined
-
-        return this.sites.find(site => site.id === this._storedSiteId.value)
+        return this._selectedSite
     }
 
-    set selectedSite(site: SiteDto | undefined) {
-        if (site?.id !== this._storedSiteId.value) {
-            this._storedFloorId.value = undefined
+    setSelectedSite(site: SiteDto | undefined) {
+        this._storedSiteId.value = site?.id
+        this.selecting = undefined
+
+        if (site === undefined) {
+            this._selectedSite = undefined
+            return
         }
 
-        this._storedSiteId.value = site?.id
-        this._selectingSite = false
+        this._selectedSite = this.sites.find(s => s.id === site.id)
+        this.siteFloors = this.floors.filter(f => f.siteId === site.id)
+
+        if (this._selectedFloor === undefined) {
+            return
+        }
+
+        if (this.siteFloors.some((floor) => floor.id === this._selectedFloor?.id)) {
+            return
+        }
+
+        this.setSelectedFloor(undefined)
     }
 
     get selectedFloor() {
-        if (this._storedFloorId.value === undefined) return undefined
-
-        return this.selectableFloors.find(floor => floor.id === this._storedFloorId.value)
+        return this._selectedFloor
     }
 
-    set selectedFloor(floor: FloorDto | undefined) {
+    setSelectedFloor(floor: FloorDto | undefined) {
         this._storedFloorId.value = floor?.id
-        this._selectingFloor = false
+        this.selecting = undefined
+
+        if (floor === undefined) {
+            this._selectedFloor = undefined
+        } else {
+            this._selectedFloor = this.siteFloors.find(f => f.id === floor.id)
+        }
+
 
         this.refreshBookableEntities()
-        this.bookings.refresh()
     }
 
     get siteTagClasses() {
-        if (this.selectedSite === undefined) {
+        if (this._selectedSite === undefined) {
             return ""
         }
 
@@ -165,83 +260,100 @@ export class ReservationComponent implements OnInit {
     }
 
     get floorTagClasses() {
-        if (this.selectedFloor === undefined) {
+        if (this._selectedFloor === undefined) {
             return ""
         }
 
         return "hover:text-gray-400 cursor-pointer"
     }
 
+    get isSelecting(): "site" | "floor" | "time" | undefined {
+        if (this._selectedSite === undefined) {
+            return "site"
+        }
+
+        if (this._selectedFloor === undefined) {
+            return "floor"
+        }
+
+        return this.selecting
+    }
+
     get isSelectingSite() {
-        return this.selectedSite === undefined || this._selectingSite
+        return this.isSelecting === "site"
     }
 
     set isSelectingSite(value: boolean) {
-        this._selectingSite = value
         if (value) {
-            this.isSelectingFloor = false
-        }
-    }
-
-    get isSelectingTime() {
-        return this._selectingTime
-    }
-
-    set isSelectingTime(value: boolean) {
-        if (this.selectedFloor === undefined || this.selectedSite === undefined) {
+            this.selecting = "site"
             return
         }
 
-        this.isSelectingSite = false
-        this.isSelectingFloor = false
+        if (!this.isSelectingSite) {
+            return
+        }
 
-        this._selectingTime = value
+        this.selecting = undefined
     }
 
     get isSelectingFloor() {
-        return this.selectedFloor === undefined || this._selectingFloor
+        return this.isSelecting === "floor"
     }
 
     set isSelectingFloor(value: boolean) {
-        this._selectingFloor = value
-
         if (value) {
-            this.isSelectingSite = false
+            this.selecting = "floor"
+            return
         }
+
+        if (!this.isSelectingFloor) {
+            return
+        }
+
+        this.selecting = undefined
     }
 
-    get selectableFloors() {
-        const site = this.selectedSite
+    get isSelectingTime() {
+        return this.isSelecting === "time"
+    }
 
-        if (site === undefined) {
-            return []
+    set isSelectingTime(value: boolean) {
+        if (value) {
+            this.selecting = "time"
+            return
         }
 
-        return this.floors.filter(floor => floor.siteId === site.id)
+        if (!this.isSelectingTime) {
+            return
+        }
+
+        this.selecting = undefined
     }
 
     get interval() {
-        return {
-            start: this._start,
-            end: this._end,
-        }
+        return this._interval
     }
 
-    set interval(interval: Interval) {
-        this._start = interval.start
-        this._end = interval.end
+    setInterval(interval: Interval) {
+        this._interval = interval
         this.bookings.refresh()
     }
 
     get disabled() {
-        return this.selectedFloor === undefined || this.bookableEntities.filter(entity => entity.selected).length === 0
+        const selectedEntitiesCount = this.bookableEntities.filter(entity => entity.status === EntityStatus.SELECTED).length
+
+        return this._selectedFloor === undefined || selectedEntitiesCount === 0
+
     }
 
     onSubmit() {
-        const floorId = this.selectedFloor?.id
-        const start = this._start.toISOString()
-        const end = this._end.toISOString()
-        const entities = this.bookableEntities.filter(entity => entity.selected).map(entity => entity.entity.id as string)
+        const floorId = this._selectedFloor?.id
+        const start = this._interval.start.toISOString()
+        const end = this._interval.end.toISOString()
+
+        const entities = this.bookableEntities
+            .filter(entity => entity.status === EntityStatus.SELECTED)
+            .map(entity => entity.entity.id as string)
 
         if (floorId === undefined) {
             return
