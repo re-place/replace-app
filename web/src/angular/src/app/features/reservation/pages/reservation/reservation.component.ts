@@ -142,6 +142,8 @@ export class ReservationComponent implements OnInit {
                 break
             }
 
+            checkedEntities.add(parent.entity.id as string)
+
             ancestors.push(parent)
             currentEntity = parent
         }
@@ -161,6 +163,8 @@ export class ReservationComponent implements OnInit {
             if (checkedEntities.has(currentEntity.entity.id as string)) {
                 continue
             }
+
+            checkedEntities.add(currentEntity.entity.id as string)
 
             const children = bookableEntities.filter(e => e.entity.parentId === currentEntity.entity.id)
             descendants.push(...children)
