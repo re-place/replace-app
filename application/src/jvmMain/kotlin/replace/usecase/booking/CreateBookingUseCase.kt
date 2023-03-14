@@ -88,7 +88,7 @@ object CreateBookingUseCase {
                 |    FROM booked_entities
                 |    JOIN withAncestors ON withAncestors.id = booked_entities.bookable_entity_id
                 |    JOIN bookings ON bookings.id = booked_entities.booking_id
-                |    WHERE bookings.start < ?::timestamp AND bookings.end > ?::timestamp
+                |    WHERE bookings.start <= ?::timestamp AND bookings.end > ?::timestamp
                 |)
                 |SELECT
                 |    COUNT(withBookings.id) as count
@@ -138,7 +138,7 @@ object CreateBookingUseCase {
                 |    FROM booked_entities
                 |    JOIN withAncestors ON withAncestors.id = booked_entities.bookable_entity_id
                 |    JOIN bookings ON bookings.id = booked_entities.booking_id
-                |    WHERE bookings.start < ?::timestamp AND bookings.end > ?::timestamp
+                |    WHERE bookings.start <= ?::timestamp AND bookings.end > ?::timestamp
                 |)
                 |SELECT
                 |    COUNT(withBookings.id) as count
