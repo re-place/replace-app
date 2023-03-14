@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
+import { BookableEntityTypeDto } from "src/app/core/openapi"
 
 import { DeleteBookableEntityDialogComponent } from "../entity-deletion-modal/delete-bookable-entity-dialog.component"
 
@@ -13,7 +14,10 @@ export class CreateOrUpdateBookableEntityComponent {
     @Input() name: string | undefined
     @Input() posX: number | undefined
     @Input() posY: number | undefined
+    @Input() typeId: string | undefined
+    @Input() types: BookableEntityTypeDto[] = []
 
+    @Output() typeIdChange = new EventEmitter<string>()
     @Output() nameChange = new EventEmitter<string>()
     @Output() posXChange = new EventEmitter<number>()
     @Output() posYChange = new EventEmitter<number>()
@@ -31,6 +35,14 @@ export class CreateOrUpdateBookableEntityComponent {
     public onSubmit(event: SubmitEvent) {
         event.preventDefault()
         this.submitBookableEntity.emit()
+    }
+
+    public get typeInput(): string | undefined {
+        return this.typeId
+    }
+
+    public set typeInput(value: string | undefined) {
+        this.typeIdChange.emit(value)
     }
 
     public get nameInput(): string | undefined {
