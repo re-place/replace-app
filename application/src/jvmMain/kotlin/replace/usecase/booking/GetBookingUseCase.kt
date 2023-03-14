@@ -53,7 +53,7 @@ object GetBookingUseCase {
             }
 
             startInst?.let {
-                query.andWhere { Bookings.end greaterEq timestampLiteral(it) }
+                query.andWhere { Bookings.end greater timestampLiteral(it) }
             }
 
             endInst?.let {

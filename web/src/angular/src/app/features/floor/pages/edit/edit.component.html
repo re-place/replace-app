@@ -44,11 +44,15 @@
                 [(typeId)]="editingBookableEntity.typeId"
                 [posX]="editingBookableEntity.posX"
                 [posY]="editingBookableEntity.posY"
+                [parentId]="editingBookableEntity.parentId"
+                [availableParents]="editingBookableEntityAvailableParents"
+                [children]="editingBookableEntity.children ?? []"
                 [types]="types"
                 (submitBookableEntity)="onSubmitBookableEntity()"
                 (cancel)="onCancelEditingBookableEntity()"
                 (posXChange)="onSelectedEntityPosXUpdate($event)"
                 (posYChange)="onSelectedEntityPosYUpdate($event)"
+                (parentIdChange)="onSelectedEntityParentIdUpdate($event)"
                 (delete)="onDeleteEntity($event)"
             >
             </create-or-update-bookable-entity>
@@ -62,7 +66,14 @@
                             (create)="onCreateBookableEntity()"
                         >
                         </bookable-entity-list>
-                        <button class="mt-auto self-end" mat-raised-button color="primary" type="button" [disabled]="bookableEntities.data?.length === 0" (click)="saveOrder()">
+                        <button
+                            class="mt-auto self-end"
+                            mat-raised-button
+                            color="primary"
+                            type="button"
+                            [disabled]="bookableEntities.data?.length === 0"
+                            (click)="saveOrder()"
+                        >
                             Reihenfolge speichern
                         </button>
                     </div>
