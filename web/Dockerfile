@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-alpine3.17 as build
+FROM node:19-alpine3.17 as build
 ENV BASE_PATH=src/angular
 WORKDIR /replace
 COPY $BASE_PATH/package.json .
