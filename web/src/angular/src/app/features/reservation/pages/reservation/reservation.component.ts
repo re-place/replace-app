@@ -248,6 +248,10 @@ export class ReservationComponent implements OnInit {
             const descendants = this.getDescendants(entity, this.bookableEntities)
 
             for (const descendant of descendants) {
+                if (descendant === entity) {
+                    continue
+                }
+
                 if (descendant.status === EntityStatus.AVAILABLE || descendant.status === EntityStatus.SELECTED) {
                     descendant.status = EntityStatus.SELECTED_DISABLED
                 }

@@ -25,8 +25,9 @@
     </div>
 
     <mat-form-field appearance="fill">
-        <mat-label>Verknüpft zu</mat-label>
+        <mat-label>Übergordnetes Objekt</mat-label>
         <mat-select [(value)]="parentIdInput">
+            <mat-option [value]="null"></mat-option>
             <mat-option *ngFor="let entity of availableParents" [value]="entity.id">
                 {{ entity.name }}
             </mat-option>
@@ -34,7 +35,7 @@
     </mat-form-field>
 
     <div *ngIf="children.length > 0">
-        <h4 class="text-base font-medium mt-4">Zugeordnete Buchungselemente:</h4>
+        <h4 class="text-base font-medium mt-4">Untergeordnete Buchungselemente:</h4>
         {{ childNames }}
     </div>
 

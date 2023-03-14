@@ -63,12 +63,12 @@ export class CreateOrUpdateBookableEntityComponent {
         this.posYChange.emit(value)
     }
 
-    public get parentIdInput(): string | undefined {
-        return this.parentId
+    public get parentIdInput(): string | null {
+        return this.parentId ?? null
     }
 
-    public set parentIdInput(value: string | undefined) {
-        this.parentIdChange.emit(value)
+    public set parentIdInput(value: string | null) {
+        this.parentIdChange.emit(value ?? undefined)
     }
 
     public get childNames(): string {
