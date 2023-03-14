@@ -15,14 +15,18 @@ export class BookableEntitiesListItemComponent {
 
     get classes() {
         if (this.entity.status === EntityStatus.SELECTED) {
-            return "shadow-primary-300 text-primary-500  cursor-pointer"
+            return "shadow-primary-300 shadow-lg text-primary-500  cursor-pointer outline outline-primary-300"
         }
 
         if (this.entity.status === EntityStatus.AVAILABLE) {
-            return "hover:shadow-primary-300 hover:text-primary-500 cursor-pointer"
+            return "hover:shadow-primary-300 hover:text-primary-500 cursor-pointer shadow-md"
         }
 
-        return "text-gray-300"
+        if (this.entity.status === EntityStatus.SELECTED_DISABLED) {
+            return "text-gray-300 bg-gray-50 text-gray-500 shadow-primary-300 cursor-not-allowed shadow-md"
+        }
+
+        return "text-gray-300 bg-gray-50 text-gray-500 shadow-md"
     }
 
     onClick() {

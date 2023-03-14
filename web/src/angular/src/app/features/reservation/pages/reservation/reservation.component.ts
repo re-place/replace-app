@@ -1,8 +1,8 @@
-import {Component, OnInit} from "@angular/core"
+import { Component, OnInit} from "@angular/core"
 import {MatSnackBar} from "@angular/material/snack-bar"
 import { firstValueFrom } from "rxjs"
 
-import { Entity, EntityStatus } from "../../components/entity-map/entity-map.component"
+import { Entity, EntityStatus, interactableStates } from "../../components/entity-map/entity-map.component"
 import { Interval } from "../../components/time-selector/time-selector.component"
 import { BookingDto, DefaultService, FloorDto, SiteDto } from "src/app/core/openapi"
 import { DataLoader } from "src/app/util"
@@ -129,57 +129,68 @@ export class ReservationComponent implements OnInit {
         })
     }
 
+    protected getAncestors(entity: Entity, bookableEntities: Entity[]) {
+        const ancestors: Entity[] = []
+
+        let currentEntity = entity
+        const checkedEntities = new Set<string>()
+
+        while (currentEntity.entity.parentId !== undefined) {
+            const parent = bookableEntities.find(e => e.entity.id === currentEntity.entity.parentId)
+
+            if (parent === undefined || checkedEntities.has(parent.entity.id as string)) {
+                break
+            }
+
+            ancestors.push(parent)
+            currentEntity = parent
+        }
+
+        return ancestors
+    }
+
+    protected getDescendants(entity: Entity, bookableEntities: Entity[]) {
+        const descendants: Entity[] = []
+
+        const queue: Entity[] = [entity]
+        const checkedEntities = new Set<string>()
+
+        while (queue.length > 0) {
+            const currentEntity = queue.shift() as Entity
+
+            if (checkedEntities.has(currentEntity.entity.id as string)) {
+                continue
+            }
+
+            const children = bookableEntities.filter(e => e.entity.parentId === currentEntity.entity.id)
+            descendants.push(...children)
+            queue.push(...children)
+        }
+
+        return descendants
+    }
+
     protected getBookedEntities(bookings: BookingDto[], bookableEntities: Entity[]): Set<string> {
         if (bookings === undefined || bookings.length === 0) {
             return new Set()
         }
 
-        const bookedEntities =
+        const bookedEntityIds =
             new Set(bookings.flatMap((booking) => booking?.bookedEntities?.map((entity) => entity.id)) as string[])
 
-        let uncheckedBookableEntities = bookableEntities.filter((entity) => !bookedEntities.has(entity.entity.id ?? ""))
+        const bookedEntities = bookableEntities
+            .filter((entity) => bookedEntityIds.has(entity.entity.id as string))
+            .flatMap((entitiy) => [entitiy, ...this.getDescendants(entitiy, bookableEntities)])
 
-        let oldSize = bookedEntities.size
-        let newSize = bookedEntities.size
-
-        do {
-            oldSize = newSize
-
-            for (const entity of uncheckedBookableEntities) {
-                const parentId = entity.entity.parentId
-                if (parentId === undefined) {
-                    continue
-                }
-
-                if (!bookedEntities.has(parentId)) {
-                    continue
-                }
-
-                bookedEntities.add(entity.entity.id ?? "")
-            }
-
-            uncheckedBookableEntities
-                = uncheckedBookableEntities.filter((entity) => !bookedEntities.has(entity.entity.id ?? ""))
-
-            newSize = bookedEntities.size
-
-        } while (oldSize !== newSize)
-
-        return bookedEntities
+        return new Set(bookedEntities.map((entity) => entity.entity.id as string))
     }
 
     protected getUnavailableEntities(bookedEntitieIds: Set<string>, bookableEntities: Entity[]): Set<string> {
         const bookedEntities = bookableEntities.filter((entity) => bookedEntitieIds.has(entity.entity.id ?? ""))
 
-        const parentIdsOfBookedEntities = new Set<string>(
-            bookedEntities.flatMap((entity) => entity.entity.parentId ?? []),
-        )
+        const unavailableEntities = bookedEntities.flatMap((entity) => [...this.getAncestors(entity, bookableEntities)])
 
-        return new Set(
-            bookableEntities
-                .filter((entity) => parentIdsOfBookedEntities.has(entity.entity.id ?? ""))
-                .map((entity) => entity.entity.id as string),
-        )
+        return new Set(unavailableEntities.map((entity) => entity.entity.id as string))
     }
 
     updateAvailability(entities: Entity[], bookings: BookingDto[]) {
@@ -204,6 +215,48 @@ export class ReservationComponent implements OnInit {
             entity.status = EntityStatus.AVAILABLE
             return entity
         })
+
+        this.triggerBookableEntitiesChanges()
+    }
+
+    onBookableEntitySelection(id: string | Entity) {
+        id = typeof id === "string" ? id : id.entity.id as string
+
+        const entity = this.bookableEntitiesMap.get(id)
+
+        if (!interactableStates.includes(entity?.status)) {
+            return
+        }
+
+        if (entity?.status === EntityStatus.SELECTED) {
+            entity.status = EntityStatus.AVAILABLE
+
+            const descendants = this.getDescendants(entity, this.bookableEntities)
+
+            for (const descendant of descendants) {
+                if (descendant.status === EntityStatus.SELECTED_DISABLED || descendant.status === EntityStatus.SELECTED) {
+                    descendant.status = EntityStatus.AVAILABLE
+                }
+            }
+        } else if (entity?.status === EntityStatus.AVAILABLE) {
+            entity.status = EntityStatus.SELECTED
+
+            const descendants = this.getDescendants(entity, this.bookableEntities)
+
+            for (const descendant of descendants) {
+                if (descendant.status === EntityStatus.AVAILABLE || descendant.status === EntityStatus.SELECTED) {
+                    descendant.status = EntityStatus.SELECTED_DISABLED
+                }
+            }
+        }
+
+        this.triggerBookableEntitiesChanges()
+
+    }
+
+    protected triggerBookableEntitiesChanges() {
+        this.bookableEntities = [...this.bookableEntities]
+        this.bookableEntitiesMap = new Map(this.bookableEntities.map(entity => [entity.entity.id ?? "", entity]))
     }
 
     get selectedSite() {

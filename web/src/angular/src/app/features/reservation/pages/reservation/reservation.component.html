@@ -37,14 +37,14 @@
         <card *ngIf="!isSelectingSite && !isSelectingFloor && selectedSite !== undefined && selectedFloor !== undefined">
             <div class="flex flex-col xl:flex-row">
                 <div class="order-3 xl:order-1 grow h-64 sm:h-96 rounded-md bg-gray-100 p-1">
-                    <entity-map [(entities)]="bookableEntities" [backgroundImage]="selectedFloor.planFile"></entity-map>
+                    <entity-map [entities]="bookableEntities" [backgroundImage]="selectedFloor.planFile" (entitySelected)="onBookableEntitySelection($event)"></entity-map>
                 </div>
                 <div class="order-1 mb-4 xl:mb-0 xl:w-64 xl:ml-5 xl:h-96 overflow-auto">
                     <bookings-list *ngIf="bookings.data" [bookings]="bookings.data" [interval]="interval"></bookings-list>
                 </div>
             </div>
             <div class="mt-4 relative">
-                <bookable-entities-list [(entities)]="bookableEntities"></bookable-entities-list>
+                <bookable-entities-list [entities]="bookableEntities" (entitySelected)="onBookableEntitySelection($event)"></bookable-entities-list>
                 <div *ngIf="bookings.data === undefined" class="pointer-events-none absolute inset-0 bg-white/50"> </div>
             </div>
         </card>

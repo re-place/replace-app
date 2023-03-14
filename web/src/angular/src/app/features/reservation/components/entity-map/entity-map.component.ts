@@ -15,7 +15,10 @@ export enum EntityStatus {
     SELECTED = "SELECTED",
     BOOKED = "BOOKED",
     DISABLED = "DISABLED",
+    SELECTED_DISABLED = "SELECTED_DISABLED",
 }
+
+export const interactableStates: (EntityStatus | undefined)[] = [EntityStatus.AVAILABLE, EntityStatus.SELECTED]
 
 export type Entity = {
     status: EntityStatus
@@ -30,6 +33,19 @@ const selectedStyle = new Style({
         }),
         stroke: new Stroke({
             color: "rgba(255, 255, 255, 1)",
+            width: 2,
+        }),
+    }),
+})
+
+const selectedDisabledStyle = new Style({
+    image: new Circle({
+        radius: 10,
+        fill: new Fill({
+            color: "rgba(104, 172, 48, 0.3)",
+        }),
+        stroke: new Stroke({
+            color: "rgba(255, 255, 255, 0.3)",
             width: 2,
         }),
     }),
@@ -85,7 +101,7 @@ export class EntityMapComponent implements OnInit, OnChanges {
 
     @Input() backgroundImage: FileDto | undefined | null
 
-    @Output() entitiesChange = new EventEmitter<Entity[]>()
+    @Output() entitySelected: EventEmitter<Entity> = new EventEmitter()
 
     private readonly imageLayer = new ImageLayer({
 
@@ -107,6 +123,8 @@ export class EntityMapComponent implements OnInit, OnChanges {
                 return bookedStyle
             case EntityStatus.DISABLED:
                 return disabledStyle
+            case EntityStatus.SELECTED_DISABLED:
+                return selectedDisabledStyle
             default:
                 return availableStyle
             }
@@ -211,25 +229,17 @@ export class EntityMapComponent implements OnInit, OnChanges {
 
             const status: EntityStatus | undefined = feature.getProperties()["status"]
 
-            if (status === EntityStatus.BOOKED || status === EntityStatus.DISABLED) {
+            if (!interactableStates.includes(status)) {
                 return
             }
 
-            const entityIndex = this.entities.findIndex(entity => entity.entity.id === feature.getId())
+            const entity = this.entities.find(entity => entity.entity.id === feature.getId())
 
-            if (entityIndex < 0) {
+            if (entity === undefined) {
                 return
             }
 
-            const entity = this.entities[entityIndex]
-
-            if (entity.status === EntityStatus.AVAILABLE) {
-                entity.status = EntityStatus.SELECTED
-            } else {
-                entity.status = EntityStatus.AVAILABLE
-            }
-
-            this.entitiesChange.emit([...this.entities])
+            this.entitySelected.emit(entity)
         })
 
         map.on("pointermove", (event) => {
@@ -244,12 +254,12 @@ export class EntityMapComponent implements OnInit, OnChanges {
 
             const status: EntityStatus  = feature.getProperties()["status"]
 
-            if (status === EntityStatus.BOOKED || status === EntityStatus.DISABLED) {
-                map.getTargetElement().style.cursor = ""
+            if (interactableStates.includes(status)) {
+                map.getTargetElement().style.cursor = "pointer"
                 return
             }
 
-            map.getTargetElement().style.cursor = "pointer"
+            map.getTargetElement().style.cursor = ""
         })
 
         return map

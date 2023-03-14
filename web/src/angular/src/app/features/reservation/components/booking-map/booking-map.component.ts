@@ -5,7 +5,6 @@ import {
     OnInit,
     SimpleChange,
     SimpleChanges,
-    ChangeDetectorRef,
     OnDestroy,
     AfterViewChecked,
 } from "@angular/core"
@@ -54,8 +53,6 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewChecked,
     })
 
     private resizeObserver: ResizeObserver | undefined
-
-    public constructor(private readonly ch: ChangeDetectorRef) {}
 
     public map: OlMap | undefined
     private readonly imageLoader: ImageLoader = new ImageLoader()
