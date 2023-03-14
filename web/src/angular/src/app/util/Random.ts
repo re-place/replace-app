@@ -7,5 +7,6 @@ export default function generateRandomColor(input: string | number) {
     }
 
     hash = (hash * 16_807) % 2_147_483_647
+
     return `hsl(${hash % 360}, 70%, 50%)`
 }
