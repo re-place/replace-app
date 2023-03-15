@@ -13,16 +13,14 @@ import replace.model.Floors
 import replace.model.Users
 
 inline fun useDatabase(block: () -> Unit) {
-    PostgreSQLContainer("postgres").apply {
-        withExposedPorts(5432)
-        withEnv("POSTGRES_PASSWORD", "password")
-    }.use {
-        it.start()
+    PostgreSQLContainer("postgres").use { container ->
+        container.start()
+        println("Postgres container started @ ${container.jdbcUrl}")
         Database.connect(
-            url = "jdbc:postgresql://localhost:5432/test;DB_CLOSE_DELAY=-1",
+            url = container.jdbcUrl,
             driver = "org.postgresql.Driver",
-            user = "postgres",
-            password = "password",
+            user = "test",
+            password = "test",
         )
         val tables: Array<out Table> = arrayOf(
             BookedEntities,
