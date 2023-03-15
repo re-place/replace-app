@@ -21,7 +21,7 @@ class DeleteOldTemporaryFileUploadsJob(
         try {
             newSuspendedTransaction {
                 val oldTemporaryFiles = TemporaryFile.find(
-                    TemporaryFiles.createdAt less Clock.System.now().minus(fileMaxAgeInMilliseconds, DateTimeUnit.MILLISECOND).toJavaInstant()
+                    TemporaryFiles.createdAt less Clock.System.now().minus(fileMaxAgeInMilliseconds, DateTimeUnit.MILLISECOND).toJavaInstant(),
                 )
 
                 oldTemporaryFiles.forEach { temporaryFile ->

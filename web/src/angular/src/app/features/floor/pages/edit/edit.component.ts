@@ -4,7 +4,14 @@ import { ActivatedRoute } from "@angular/router"
 import { Subscription } from "rxjs"
 import { SetOptional } from "type-fest"
 
-import { BookableEntityDto, DefaultService, FileUploadDto, FloorDto, UpdateFloorDto } from "src/app/core/openapi"
+import {
+    BookableEntityDto,
+    BookableEntityTypeDto,
+    DefaultService,
+    FileUploadDto,
+    FloorDto,
+    UpdateFloorDto,
+} from "src/app/core/openapi"
 import { DataLoader, Form } from "src/app/util"
 
 @Component({
@@ -17,7 +24,9 @@ export class EditComponent implements OnDestroy {
     form: Form<UpdateFloorDto> | undefined = undefined
     floor = new DataLoader<FloorDto>()
     bookableEntities = new DataLoader<BookableEntityDto[]>()
+    types: BookableEntityTypeDto[] = []
     editingBookableEntity: SetOptional<BookableEntityDto, "id" | "parentId" | "floorId"> | undefined = undefined
+    editingBookableEntityAvailableParents: BookableEntityDto[] = []
 
     private readonly routeSub: Subscription
 
@@ -26,6 +35,11 @@ export class EditComponent implements OnDestroy {
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
+        this.api.apiBookableEntityTypeGet().subscribe({
+            next: result => {
+                this.types = result
+            },
+        })
         this.floor.subscribe((floor) => {
             this.form = new Form({
                 id: floor.id,
@@ -56,6 +70,7 @@ export class EditComponent implements OnDestroy {
 
     public set selectedEntity(entity: BookableEntityDto | undefined) {
         this.editingBookableEntity = { ...entity }
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data?.filter((e) => e.id !== entity?.id) ?? []
     }
 
     public get files(): FileUploadDto[] {
@@ -88,6 +103,7 @@ export class EditComponent implements OnDestroy {
 
     public onEditBookableEntity(bookableEntity?: BookableEntityDto) {
         this.editingBookableEntity = { ...bookableEntity}
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data?.filter((e) => e.id !== bookableEntity?.id) ?? []
     }
 
     public onCreateBookableEntity() {
@@ -97,7 +113,10 @@ export class EditComponent implements OnDestroy {
             posX: 0,
             posY: 0,
             index: this.bookableEntities.data?.length ?? 0,
+            parentId: undefined,
         }
+
+        this.editingBookableEntityAvailableParents = this.bookableEntities.data ?? []
     }
 
     public onSubmitBookableEntity() {
@@ -182,6 +201,14 @@ export class EditComponent implements OnDestroy {
         }
 
         this.editingBookableEntity = { ...this.editingBookableEntity, posY }
+    }
+
+    public onSelectedEntityParentIdUpdate(parentId: string | undefined) {
+        if (this.editingBookableEntity === undefined) {
+            return
+        }
+
+        this.editingBookableEntity = { ...this.editingBookableEntity, parentId }
     }
 
     public onDeleteEntity(id: string) {

@@ -24,6 +24,7 @@ export interface BookableEntityDto {
     typeId?: string;
     floor?: FloorDto;
     parent?: BookableEntityDto;
+    children?: Array<BookableEntityDto>;
     type?: BookableEntityTypeDto;
 }
 

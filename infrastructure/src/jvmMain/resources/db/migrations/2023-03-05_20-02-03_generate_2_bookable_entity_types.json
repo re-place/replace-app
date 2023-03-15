@@ -1,0 +1,40 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-03-05_20-02-03_",
+        "author": "re-place",
+        "changes": [
+            {
+                "insert": {
+                    "tableName": "bookable_entity_types",
+                    "schemaName": "public",
+                    "columns": [
+                        {
+                            "column": {
+                                "name": "name",
+                                "value": "Raum"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "insert":{
+                    "tableName": "bookable_entity_types",
+                    "schemaName": "public",
+                    "columns": [
+                        {
+                            "column": {
+                                "name": "name",
+                                "value": "Arbeitsplatz"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+      }
+    }]
+}
+

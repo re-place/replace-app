@@ -1,12 +1,10 @@
 import {
-    AfterViewInit,
     Component,
     Input,
     OnChanges,
     OnInit,
     SimpleChange,
     SimpleChanges,
-    ChangeDetectorRef,
     OnDestroy,
     AfterViewChecked,
 } from "@angular/core"
@@ -56,8 +54,6 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewChecked,
 
     private resizeObserver: ResizeObserver | undefined
 
-    public constructor(private readonly ch: ChangeDetectorRef) {}
-
     public map: OlMap | undefined
     private readonly imageLoader: ImageLoader = new ImageLoader()
 
@@ -88,7 +84,6 @@ export class BookingMapComponent implements OnChanges, OnInit, AfterViewChecked,
     }
 
     ngOnInit(): void {
-        console.log("initing with booking", this.booking?.id ?? "undefined")
         this.id = `booking-map-${this.booking?.id ?? "undefined"}`
         this.imageLoader.clearSubscriptions()
         this.imageLoader.subscribe((loadedImage) => {

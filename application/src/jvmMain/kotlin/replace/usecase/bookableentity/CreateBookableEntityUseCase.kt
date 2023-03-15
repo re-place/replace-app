@@ -14,7 +14,6 @@ object CreateBookableEntityUseCase {
     fun execute(
         bookableEntityDto: CreateBookableEntityDto,
     ): BookableEntityDto {
-
         return transaction {
             val bookableEntity = BookableEntity.new {
                 name = bookableEntityDto.name

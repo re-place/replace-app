@@ -23,6 +23,7 @@ data class BookableEntityDto(
 
     val floor: FloorDto? = null,
     val parent: BookableEntityDto? = null,
+    val children: List<BookableEntityDto>? = null,
     val type: BookableEntityTypeDto? = null,
 ) : ModelDto
 
@@ -45,6 +46,12 @@ fun BookableEntity.toDto(with: List<KProperty1<BookableEntity, *>> = emptyList()
         null
     }
 
+    val children = if (with.contains(BookableEntity::children)) {
+        children.map { it.toDto() }
+    } else {
+        null
+    }
+
     return BookableEntityDto(
         id = id.value,
         name = name,
@@ -56,6 +63,7 @@ fun BookableEntity.toDto(with: List<KProperty1<BookableEntity, *>> = emptyList()
         typeId = typeId?.value,
         floor = floor,
         parent = parent,
+        children = children,
         type = type,
     )
 }

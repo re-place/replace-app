@@ -29,7 +29,6 @@ object GetBookingUseCase {
         val endInst = end?.let { Instant.parse(it) }
 
         val bookingDtos = transaction {
-
             val query = Bookings.selectAll()
 
             my?.let {
@@ -54,7 +53,7 @@ object GetBookingUseCase {
             }
 
             startInst?.let {
-                query.andWhere { Bookings.end greaterEq timestampLiteral(it) }
+                query.andWhere { Bookings.end greater timestampLiteral(it) }
             }
 
             endInst?.let {

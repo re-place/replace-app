@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class CreateBookingDto(
     val bookedEntityIds: List<String>,
     val start: String,
-    val end: String
+    val end: String,
 )

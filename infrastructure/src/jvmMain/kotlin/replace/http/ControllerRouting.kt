@@ -14,7 +14,7 @@ import replace.http.controller.registerTemporaryFileUploadRoutes
 import replace.http.controller.registerUserRoutes
 
 fun Application.routeControllers(
-    fileStorage: FileStorage
+    fileStorage: FileStorage,
 ) {
     routing {
         authenticate("internal-session") {

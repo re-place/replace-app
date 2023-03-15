@@ -27,31 +27,31 @@ suspend inline fun <reified T : Any?> PipelineContext<Unit, ApplicationCall>.exe
         call.respondText(
             "Invalid request: ${e.message} \n" +
                 " ${e.stackTrace.joinToString("\n")}",
-            status = HttpStatusCode.BadRequest
+            status = HttpStatusCode.BadRequest,
         )
     } catch (e: BadRequestException) {
         call.respondText(
             "Invalid request: ${e.cause?.message ?: e.message} \n" +
                 " ${e.stackTrace.joinToString("\n")}",
-            status = HttpStatusCode.BadRequest
+            status = HttpStatusCode.BadRequest,
         )
     } catch (e: IllegalArgumentException) {
         call.respondText(
             "Invalid request: ${e.cause?.message ?: e.message} \n" +
                 " ${e.stackTrace.joinToString("\n")}",
-            status = HttpStatusCode.BadRequest
+            status = HttpStatusCode.BadRequest,
         )
     } catch (e: IllegalStateException) {
         call.respondText(
             "Something went horrible wrong.\n" +
                 "${e.cause?.message ?: e.message}\n" +
                 e.stackTrace.joinToString("\n"),
-            status = HttpStatusCode.InternalServerError
+            status = HttpStatusCode.InternalServerError,
         )
     } catch (e: Exception) {
         call.respondText(
             "[${e::class}]: An internal error occurred: ${e.message} \n ${e.stackTrace.joinToString("\n")}",
-            status = HttpStatusCode.InternalServerError
+            status = HttpStatusCode.InternalServerError,
         )
     }
 }

@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 buildscript {
     dependencies {
-        classpath("com.typesafe:config:1.4.2")
+        classpath(libs.typesafe.config)
     }
 }
 
@@ -18,8 +18,6 @@ plugins {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-content-negotiation:2.2.2")
-    implementation("io.ktor:ktor-serialization-gson:2.2.2")
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-domain"))
     jvmMainImplementation(libs.kotlinx.coroutines)
@@ -100,7 +98,7 @@ liquibase {
                 "changeLogFile" to migrationRoot.path,
                 "url" to dbUrl,
                 "username" to dbUser,
-                "password" to dbPass
+                "password" to dbPass,
             )
         }
     }

@@ -21,5 +21,5 @@ fun File.toDto() = FileDto(
     extension = extension,
     sizeInBytes = sizeInBytes,
     mime = mime,
-    url = "/api/file/$id"
+    url = "/api/file/$id",
 )

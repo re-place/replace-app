@@ -38,7 +38,6 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
                 val temporaryFileUploadDtos = mutableListOf<TemporaryFileUploadDto>()
 
                 multipart.forEachPart {
-
                     if (it !is PartData.FileItem) {
                         it.dispose()
                         return@forEachPart
@@ -48,7 +47,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
                     val newFile = CreateTemporaryFileUploadUseCase.execute(
                         name,
                         it.streamProvider(),
-                        fileStorage
+                        fileStorage,
                     )
                     temporaryFileUploadDtos.add(newFile)
                 }
@@ -84,8 +83,9 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Inline.withParameter(
-                    ContentDisposition.Parameters.FileName, "${file.name}.${file.extension}"
-                ).toString()
+                    ContentDisposition.Parameters.FileName,
+                    "${file.name}.${file.extension}",
+                ).toString(),
             )
 
             val mime = file.mime ?: ContentType.Application.OctetStream.toString()

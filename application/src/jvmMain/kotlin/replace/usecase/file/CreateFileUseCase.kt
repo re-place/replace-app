@@ -15,7 +15,6 @@ object CreateFileUseCase {
         fileStorage: FileStorage,
     ): FileDto {
         return newSuspendedTransaction {
-
             val temporaryFileUpload = TemporaryFile.findById(temporaryFileUploadId)
                 ?: throw IllegalArgumentException("Temporary file upload with id $temporaryFileUploadId not found")
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 
-import { Entity } from "../entity-map/entity-map.component"
+import { Entity, EntityStatus } from "../entity-map/entity-map.component"
 
 @Component({
     selector: "bookable-entities-list-item",
@@ -14,19 +14,23 @@ export class BookableEntitiesListItemComponent {
     @Output() entitySelected: EventEmitter<Entity> = new EventEmitter()
 
     get classes() {
-        if (this.entity.selected) {
-            return "shadow-primary-300 text-primary-500  cursor-pointer"
+        if (this.entity.status === EntityStatus.SELECTED) {
+            return "shadow-primary-300 shadow-lg text-primary-500  cursor-pointer outline outline-primary-300"
         }
 
-        if (this.entity.available) {
-            return "hover:shadow-primary-300 hover:text-primary-500 cursor-pointer"
+        if (this.entity.status === EntityStatus.AVAILABLE) {
+            return "hover:shadow-primary-300 hover:text-primary-500 cursor-pointer shadow-md"
         }
 
-        return "text-gray-300"
+        if (this.entity.status === EntityStatus.SELECTED_DISABLED) {
+            return "text-gray-300 bg-gray-50 text-gray-500 shadow-primary-300 cursor-not-allowed shadow-md"
+        }
+
+        return "text-gray-300 bg-gray-50 text-gray-500 shadow-md"
     }
 
     onClick() {
-        if (!this.entity.available) {
+        if (this.entity.status === EntityStatus.DISABLED || this.entity.status === EntityStatus.BOOKED) {
             return
         }
 
