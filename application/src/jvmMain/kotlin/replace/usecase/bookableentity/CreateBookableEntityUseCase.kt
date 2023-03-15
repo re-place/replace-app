@@ -1,7 +1,7 @@
 package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.BookableEntityDto
 import replace.dto.CreateBookableEntityDto
 import replace.dto.toDto
@@ -11,10 +11,10 @@ import replace.model.BookableEntityTypes
 import replace.model.Floors
 
 object CreateBookableEntityUseCase {
-    fun execute(
+    suspend fun execute(
         bookableEntityDto: CreateBookableEntityDto,
     ): BookableEntityDto {
-        return transaction {
+        return newSuspendedTransaction {
             val bookableEntity = BookableEntity.new {
                 name = bookableEntityDto.name
                 floorId = EntityID(bookableEntityDto.floorId, Floors)

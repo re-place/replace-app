@@ -8,23 +8,25 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.Booking
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.booking
-import replace.usecase.generator.user
-import replace.usecase.prepareDatabase
+import replace.usecase.useDatabase
 
-class DeleteBookingUseCaseTest : FunSpec({
-    context("happy path") {
-        test("delete a simple bookable entity") {
-            prepareDatabase()
-            checkAll(ReplaceArb.booking()) { booking ->
-                val user = transaction {
-                    Booking.findById(booking.id) shouldNotBe null
-                    booking.user
-                }
-                DeleteBookingUseCase.execute(booking.id.toString(), user.id.toString())
-                transaction {
-                    Booking.findById(booking.id) shouldBe null
+class DeleteBookingUseCaseTest : FunSpec(
+    {
+        context("happy path") {
+            test("delete a simple bookable entity") {
+                useDatabase {
+                    checkAll(ReplaceArb.booking()) { booking ->
+                        val user = transaction {
+                            Booking.findById(booking.id) shouldNotBe null
+                            booking.user
+                        }
+                        DeleteBookingUseCase.execute(booking.id.toString(), user.id.toString())
+                        transaction {
+                            Booking.findById(booking.id) shouldBe null
+                        }
+                    }
                 }
             }
         }
-    }
-},)
+    },
+)

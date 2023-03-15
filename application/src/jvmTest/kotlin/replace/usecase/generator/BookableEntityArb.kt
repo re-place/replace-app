@@ -61,7 +61,7 @@ fun ReplaceArb.bookableEntityDto(
     val floor = floorArb.bind()
     val parent = parentArb.bind()
     val type = typeArb.bind()
-    BookableEntityDto(id, name, posX, posY, index, floor.id, parent?.id, type.id, floor, parent, type)
+    BookableEntityDto(id, name, posX, posY, index, floor.id, parent?.id, type.id, floor, parent, null, type)
 }
 
 fun ReplaceArb.bookableEntityCreateDto(

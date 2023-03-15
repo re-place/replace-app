@@ -18,7 +18,8 @@ dependencies {
     jvmMainImplementation(libs.kotlinx.datetime)
     jvmTestImplementation(libs.kotest.core)
     jvmTestImplementation(libs.kotest.property)
-    jvmTestImplementation("com.h2database:h2:2.1.212")
+    jvmTestImplementation("org.testcontainers:postgresql:1.17.6")
+    jvmTestImplementation(libs.postgrsql)
 }
 
 tasks {

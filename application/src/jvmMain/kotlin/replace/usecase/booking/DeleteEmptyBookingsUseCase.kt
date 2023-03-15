@@ -5,13 +5,13 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.model.BookedEntities
 import replace.model.Bookings
 
 object DeleteEmptyBookingsUseCase {
     suspend fun execute(): Int {
-        return transaction {
+        return newSuspendedTransaction {
             val bookingsToDelete = Bookings
                 .join(BookedEntities, JoinType.LEFT, Bookings.id, BookedEntities.booking_id)
                 .slice(Bookings.id)

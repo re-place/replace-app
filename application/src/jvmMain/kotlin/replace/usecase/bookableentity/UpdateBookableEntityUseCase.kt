@@ -1,6 +1,7 @@
 package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.UpdateBookableEntityDto
@@ -13,7 +14,7 @@ object UpdateBookableEntityUseCase {
     suspend fun execute(
         bookableEntityDto: UpdateBookableEntityDto,
     ): BookableEntityDto {
-        return transaction {
+        return newSuspendedTransaction {
             val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
             checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }

@@ -9,30 +9,33 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.BookableEntityType
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.bookableEntityTypeCreateDto
-import replace.usecase.prepareDatabase
+import replace.usecase.useDatabase
 import java.util.UUID
 
-class CreateBookableEntityTypeUseCaseTest : FunSpec({
-    context("happy path") {
-        test("create a simple bookable entity type") {
-            prepareDatabase()
-            checkAll(ReplaceArb.bookableEntityTypeCreateDto()) { dto ->
-                val fromUseCase = CreateBookableEntityTypeUseCase.execute(dto)
+class CreateBookableEntityTypeUseCaseTest : FunSpec(
+    {
+        context("happy path") {
+            test("create a simple bookable entity type") {
+                useDatabase {
+                    checkAll(ReplaceArb.bookableEntityTypeCreateDto()) { dto ->
+                        val fromUseCase = CreateBookableEntityTypeUseCase.execute(dto)
 
-                fromUseCase.id shouldNotBe null
-                shouldNotThrowAny { UUID.fromString(fromUseCase.id) }
-                fromUseCase.name shouldBe dto.name
+                        fromUseCase.id shouldNotBe null
+                        shouldNotThrowAny { UUID.fromString(fromUseCase.id) }
+                        fromUseCase.name shouldBe dto.name
 
-                val fromDb = transaction {
-                    BookableEntityType.findById(fromUseCase.id)
+                        val fromDb = transaction {
+                            BookableEntityType.findById(fromUseCase.id)
+                        }
+
+                        fromDb shouldNotBe null
+                        fromDb!!
+
+                        fromDb.id.toString() shouldBe fromUseCase.id
+                        fromDb.name shouldBe fromUseCase.name
+                    }
                 }
-
-                fromDb shouldNotBe null
-                fromDb!!
-
-                fromDb.id.toString() shouldBe fromUseCase.id
-                fromDb.name shouldBe fromUseCase.name
             }
         }
-    }
-},)
+    },
+)
