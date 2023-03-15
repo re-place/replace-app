@@ -36,7 +36,6 @@ dependencies {
     jvmMainImplementation(libs.ktor.server.status.pages)
     jvmMainImplementation(libs.tegral.openapi.base)
     jvmMainImplementation(libs.tegral.openapi.swagger)
-    jvmTestImplementation(libs.kotest)
     liquibaseRuntime(libs.liquibase.core)
     liquibaseRuntime(libs.liquibase.picocli)
     liquibaseRuntime(libs.postgrsql)

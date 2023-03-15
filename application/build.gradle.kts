@@ -16,7 +16,9 @@ dependencies {
     jvmMainImplementation(libs.exposed.jdbc)
     jvmMainImplementation(libs.exposed.java.time)
     jvmMainImplementation(libs.kotlinx.datetime)
-    jvmTestImplementation(libs.kotest)
+    jvmTestImplementation(libs.kotest.core)
+    jvmTestImplementation(libs.kotest.property)
+    jvmTestImplementation(libs.kotest.datetime)
     jvmTestImplementation("com.h2database:h2:2.1.212")
 }
 
