@@ -6,6 +6,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityTypeDto
+import replace.dto.CreateBookableEntityTypeDto
 import replace.model.BookableEntityType
 
 fun ReplaceArb.bookableEntityType(): Arb<BookableEntityType> = arbitrary {
@@ -18,7 +19,12 @@ fun ReplaceArb.bookableEntityType(): Arb<BookableEntityType> = arbitrary {
 }
 
 fun ReplaceArb.bookableEntityTypeDto(): Arb<BookableEntityTypeDto> = arbitrary {
-    val id = Arb.uuid().bind()
+    val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
-    BookableEntityTypeDto(id.toString(), name)
+    BookableEntityTypeDto(id, name)
+}
+
+fun ReplaceArb.bookableEntityTypeCreateDto(): Arb<CreateBookableEntityTypeDto> = arbitrary {
+    val name = Arb.string(1..100).bind()
+    CreateBookableEntityTypeDto(name)
 }

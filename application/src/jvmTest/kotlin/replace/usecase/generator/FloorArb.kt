@@ -26,8 +26,8 @@ fun ReplaceArb.floor(
 fun ReplaceArb.floorDto(
     siteArb: Arb<SiteDto> = siteDto(),
 ): Arb<FloorDto> = arbitrary {
-    val id = Arb.uuid().bind()
+    val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
     val site = siteArb.bind()
-    FloorDto(id.toString(), name, site.id, site)
+    FloorDto(id, name, site.id, site)
 }

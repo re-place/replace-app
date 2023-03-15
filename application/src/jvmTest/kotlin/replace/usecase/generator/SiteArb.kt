@@ -18,7 +18,7 @@ fun ReplaceArb.site(): Arb<Site> = arbitrary {
 }
 
 fun ReplaceArb.siteDto(): Arb<SiteDto> = arbitrary {
-    val id = Arb.uuid().bind()
+    val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
-    SiteDto(id.toString(), name)
+    SiteDto(id, name)
 }
