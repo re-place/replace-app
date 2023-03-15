@@ -4084,7 +4084,7 @@ __metadata:
     karma-jasmine: ~5.1.0
     karma-jasmine-html-reporter: ~2.0.0
     loadash: ^1.0.0
-    ngx-filepond: ^6.0.1
+    ngx-filepond: ^7.0.0
     ol: 7.1.0
     postcss: ^8.4.19
     rxjs: ~7.5.0
@@ -8385,16 +8385,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-filepond@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "ngx-filepond@npm:6.0.1"
+"ngx-filepond@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "ngx-filepond@npm:7.0.0"
   dependencies:
-    tslib: ^1.10.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ">=9.0.0"
-    "@angular/core": ">=9.0.0"
+    "@angular/common": ^15.2.0
+    "@angular/core": ^15.2.0
     filepond: ">=4.19.1 <5.x"
-  checksum: 7fea73b43c3a6a92e4af7c781a4196e930a95964f948691dfe999145c70da3e03c278b9248a16ca34fdf66f86e582032d30c013ee2d47cb2cadb784d751289b6
+  checksum: d091b9d2460c5e02abbe76ddaf860807f85f7c8b5d46b8b9bcbd41855fa3d8dbb970d671491f1319c5d4303682841032a7a60ce3ba2f4bba5018b22bd1f5c575
   languageName: node
   linkType: hard
 
@@ -10679,7 +10679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.10.0, tslib@npm:^1.8.1, tslib@npm:^1.9.0":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.0":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
