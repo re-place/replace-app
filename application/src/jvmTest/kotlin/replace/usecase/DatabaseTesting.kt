@@ -22,6 +22,7 @@ inline fun useDatabase(block: () -> Unit) {
             user = "test",
             password = "test",
         )
+        println("Successfully connected to postgres")
         val tables: Array<out Table> = arrayOf(
             BookedEntities,
             BookableEntities,
@@ -33,6 +34,7 @@ inline fun useDatabase(block: () -> Unit) {
         transaction {
             SchemaUtils.create(*tables)
         }
+        println("Successfully created tables ${tables.joinToString { it.tableName }}")
         block()
     }
 }

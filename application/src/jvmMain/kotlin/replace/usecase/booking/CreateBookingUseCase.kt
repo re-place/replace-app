@@ -58,7 +58,7 @@ object CreateBookingUseCase {
                 this.bookedEntities = newBookedEntities
             }
 
-            booking.toDto()
+            booking.toDto(listOf(Booking::bookedEntities))
         }
     }
 

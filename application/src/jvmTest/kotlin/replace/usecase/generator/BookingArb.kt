@@ -3,11 +3,9 @@ package replace.usecase.generator
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.uuid
-import kotlinx.datetime.toKotlinInstant
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.BookingDto
@@ -20,8 +18,8 @@ import replace.model.User
 fun ReplaceArb.booking(
     userArb: Arb<User> = ReplaceArb.user(),
 ): Arb<Booking> = arbitrary {
-    val start = Arb.instant().bind().toKotlinInstant()
-    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind()
+    val start = Arb.timeStamp().bind()
+    val end = Arb.timeStamp().filter { it > start }.bind()
     val user = userArb.bind()
     transaction {
         Booking.new {
@@ -39,16 +37,16 @@ fun ReplaceArb.bookingDto(
     val id = Arb.uuid().bind().toString()
     val user = userArb.bind()
     val bookedEntities = bookedEntitiesArb.bind()
-    val start = Arb.instant().bind().toKotlinInstant()
-    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind().toString()
+    val start = Arb.timeStamp().bind()
+    val end = Arb.timeStamp().filter { it > start }.bind().toString()
     BookingDto(id, user.id, user, bookedEntities, start.toString(), end)
 }
 
 fun ReplaceArb.bookingCreateDto(
-    bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }),
+    bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }, 1..10),
 ): Arb<CreateBookingDto> = arbitrary {
     val bookedEntities = bookedEntitiesArb.bind()
-    val start = Arb.instant().bind().toKotlinInstant()
-    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind().toString()
+    val start = Arb.timeStamp().bind()
+    val end = Arb.timeStamp().filter { it > start }.bind().toString()
     CreateBookingDto(bookedEntities, start.toString(), end)
 }

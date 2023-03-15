@@ -15,7 +15,7 @@ class DeleteBookingUseCaseTest : FunSpec(
         context("happy path") {
             test("delete a simple bookable entity") {
                 useDatabase {
-                    checkAll(ReplaceArb.booking()) { booking ->
+                    checkAll(50, ReplaceArb.booking()) { booking ->
                         val user = transaction {
                             Booking.findById(booking.id) shouldNotBe null
                             booking.user
