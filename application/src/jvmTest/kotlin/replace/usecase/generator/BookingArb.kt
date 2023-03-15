@@ -2,6 +2,7 @@ package replace.usecase.generator
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
@@ -20,7 +21,7 @@ fun ReplaceArb.booking(
     userArb: Arb<User> = ReplaceArb.user(),
 ): Arb<Booking> = arbitrary {
     val start = Arb.instant().bind().toKotlinInstant()
-    val end = Arb.instant().bind().toKotlinInstant()
+    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind()
     val user = userArb.bind()
     transaction {
         Booking.new {
@@ -38,16 +39,16 @@ fun ReplaceArb.bookingDto(
     val id = Arb.uuid().bind().toString()
     val user = userArb.bind()
     val bookedEntities = bookedEntitiesArb.bind()
-    val start = Arb.instant().bind().toKotlinInstant().toString()
-    val end = Arb.instant().bind().toKotlinInstant().toString()
-    BookingDto(id, user.id, user, bookedEntities, start, end)
+    val start = Arb.instant().bind().toKotlinInstant()
+    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind().toString()
+    BookingDto(id, user.id, user, bookedEntities, start.toString(), end)
 }
 
 fun ReplaceArb.bookingCreateDto(
     bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }),
 ): Arb<CreateBookingDto> = arbitrary {
     val bookedEntities = bookedEntitiesArb.bind()
-    val start = Arb.instant().bind().toKotlinInstant().toString()
-    val end = Arb.instant().bind().toKotlinInstant().toString()
-    CreateBookingDto(bookedEntities, start, end)
+    val start = Arb.instant().bind().toKotlinInstant()
+    val end = Arb.instant().map { it.toKotlinInstant() }.filter { it > start }.bind().toString()
+    CreateBookingDto(bookedEntities, start.toString(), end)
 }
