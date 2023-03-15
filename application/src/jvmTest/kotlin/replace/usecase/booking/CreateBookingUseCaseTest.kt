@@ -7,7 +7,6 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.BookableEntity
-import replace.model.Booking
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.bookingCreateDto
 import replace.usecase.generator.user
@@ -43,4 +42,4 @@ class CreateBookingUseCaseTest : FunSpec({
             }
         }
     }
-})
+},)

@@ -4,8 +4,6 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.CustomFunction
-import org.jetbrains.exposed.sql.VarCharColumnType
 import java.util.UUID
 
 open class Models : IdTable<String> {

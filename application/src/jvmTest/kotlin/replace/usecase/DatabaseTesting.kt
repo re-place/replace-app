@@ -19,7 +19,7 @@ fun prepareDatabase() {
         BookableEntityTypes,
         Bookings,
         Floors,
-        Users
+        Users,
     )
     transaction {
         SchemaUtils.drop(*tables)
