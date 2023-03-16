@@ -4,8 +4,7 @@ import java.io.InputStream
 
 class InMemoryFileStorage : FileStorage {
 
-    val backing: MutableMap<String, ByteArray> = mutableMapOf()
-
+    private val backing: MutableMap<String, ByteArray> = mutableMapOf()
 
     override suspend fun exists(path: String): Boolean {
         return backing.containsKey(path)
