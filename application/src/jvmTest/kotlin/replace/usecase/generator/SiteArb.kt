@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.uuid
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
+import replace.dto.UpdateSiteDto
 import replace.model.Site
 
 fun ReplaceArb.site(): Arb<Site> = arbitrary {
@@ -27,4 +28,9 @@ fun ReplaceArb.siteDto(): Arb<SiteDto> = arbitrary {
 fun ReplaceArb.siteCreateDto(): Arb<CreateSiteDto> = arbitrary {
     val name = Arb.string(1..100).bind()
     CreateSiteDto(name)
+}
+
+fun ReplaceArb.siteUpdateDto(site: SiteDto): Arb<UpdateSiteDto> = arbitrary {
+    val name = Arb.string(1..100).bind()
+    UpdateSiteDto(site.id, name)
 }
