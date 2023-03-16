@@ -1,7 +1,7 @@
 
-<div class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer" (click)="openTimeSelector()">
+<div class="px-4 py-2 rounded-md" [ngClass]="[disabled ? 'bg-gray-100 cursor-none pointer-events-none text-gray-300' : 'cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-500']" (click)="openTimeSelector()">
     <div class="relative">
-        <div class="text-lg text-gray-500 text-right">
+        <div class="text-lg text-right">
             {{ [start, end] | localeDateTimeRange:dateTimeFormat }}
         </div>
         <div *ngIf="isSelectingTime" class="fixed inset-0 bg-black/20 sm:hidden z-50" (click)="onClickOutside($event)"></div>
@@ -40,10 +40,14 @@
             </div>
         </div>
     </div>
-    <div class="text-xs text-gray-400 flex items-center">
+    <div class="text-xs flex items-center" [ngClass]="[disabled ? 'text-gray-300' : 'text-gray-400']" >
         <mat-icon class="!h-5 !w-5 !text-[1.25rem] mr-1 ml-auto" [inline]="false">schedule</mat-icon> Zeitraum
     </div>
-    <div class="fixed bottom-28 right-8 sm:hidden z-10 p-4 bg-primary-700 flex justify-center items-center gap-2 text-white rounded-full" (click)="openTimeSelector()">
+    <div
+        *ngIf="!disabled"
+        class="fixed bottom-28 right-8 sm:hidden z-10 p-4 flex justify-center items-center gap-2 rounded-full bg-primary-700 text-white"
+        (click)="openTimeSelector()"
+    >
         <mat-icon class="!h-10 !w-10 !text-[2.5rem]">schedule</mat-icon>
     </div>
 </div>

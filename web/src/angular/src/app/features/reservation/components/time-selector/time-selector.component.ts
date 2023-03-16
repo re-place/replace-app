@@ -24,6 +24,7 @@ export class TimeSelectorComponent {
 
     @Input() interval!: Interval
     @Input() isSelectingTime!: boolean
+    @Input() disabled = false
 
     @Output() intervalChange = new EventEmitter<Interval>()
     @Output() isSelectingTimeChange = new EventEmitter<boolean>()

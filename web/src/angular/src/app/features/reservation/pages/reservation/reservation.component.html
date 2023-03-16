@@ -50,7 +50,7 @@
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </div>
-            <time-selector [interval]="interval" (intervalChange)="setInterval($event)" [(isSelectingTime)]="isSelectingTime" class="place-self-end"></time-selector>
+            <time-selector [interval]="interval" (intervalChange)="setInterval($event)" [(isSelectingTime)]="isSelectingTime" [disabled]="timeSelectionDisabled" class="place-self-end"></time-selector>
             <div
                 class="flex lg:hidden w-full">
                 <mat-button-toggle-group
@@ -83,12 +83,12 @@
             </div>
         </card>
         <div class="hidden sm:flex justify-end">
-            <button class="!p-8 !text-3xl" [disabled]="disabled" mat-raised-button color="primary" (click)="onSubmit()">Buchen</button>
+            <button class="!p-8 !text-3xl" [disabled]="submitDisabled" mat-raised-button color="primary" (click)="onSubmit()">Buchen</button>
         </div>
         <div class="mb-40 sm:mb-0"></div>
     </div>
     <div class="fixed sm:hidden bottom-6 right-8 flex justify-end w-auto gap-4">
-        <button [disabled]="disabled" class="z-10 p-4 bg-primary-700 flex justify-center items-center gap-2 text-white rounded-full disabled:opacity-50" (click)="onSubmit()">
+        <button [disabled]="submitDisabled" class="z-10 p-4 bg-primary-700 flex justify-center items-center gap-2 text-white rounded-full disabled:opacity-50" (click)="onSubmit()">
             <mat-icon class="!h-10 !w-10 !text-[2.5rem]">done</mat-icon>
         </button>
     </div>
