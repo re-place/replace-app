@@ -1,5 +1,4 @@
 import { MatSnackBar } from "@angular/material/snack-bar"
-import cloneDeep from "lodash/cloneDeep"
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs"
 
 export type SubmitConfig<R> = {
@@ -17,8 +16,11 @@ export default class From<T> {
     protected snackBar: undefined | MatSnackBar
     protected snackBarSubscription: undefined | Subscription
 
-    constructor(protected readonly initialData: T) {
-        this._data = cloneDeep(initialData)
+    protected readonly initialData: T
+
+    constructor(initialData: T) {
+        this.initialData = structuredClone(initialData)
+        this._data = structuredClone(initialData)
 
         this.onError = new Subject<string>()
     }
@@ -91,6 +93,6 @@ export default class From<T> {
     public reset() {
         this._isProcessing = false
         this._error = undefined
-        this._data = cloneDeep(this.initialData)
+        this._data = structuredClone(this.initialData)
     }
 }
