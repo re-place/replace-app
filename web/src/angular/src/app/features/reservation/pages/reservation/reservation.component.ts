@@ -51,7 +51,7 @@ export class ReservationComponent implements OnInit {
                 return Promise.resolve([])
             }
 
-            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, true)
+            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, undefined);
         },
     )
 
