@@ -1,7 +1,6 @@
 package replace.usecase.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.ArbitraryBuilderContext
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.list

@@ -3,7 +3,6 @@ package replace.usecase.site
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import replace.usecase.generator.ReplaceArb
@@ -27,5 +26,5 @@ class CreateSiteUseCaseTest : FunSpec(
                 }
             }
         }
-    }
+    },
 )

@@ -24,9 +24,7 @@ fun ReplaceArb.siteDto(): Arb<SiteDto> = arbitrary {
     SiteDto(id, name)
 }
 
-fun ReplaceArb.siteCreateDto(
-
-): Arb<CreateSiteDto> = arbitrary {
+fun ReplaceArb.siteCreateDto(): Arb<CreateSiteDto> = arbitrary {
     val name = Arb.string(1..100).bind()
     CreateSiteDto(name)
 }
