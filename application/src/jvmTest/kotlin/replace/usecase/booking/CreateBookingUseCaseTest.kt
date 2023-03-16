@@ -1,14 +1,20 @@
 package replace.usecase.booking
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.filter
 import io.kotest.property.checkAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.BookableEntity
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.bookingCreateDto
+import replace.usecase.generator.timeStamp
 import replace.usecase.generator.user
 import replace.usecase.useDatabase
 import java.util.UUID
@@ -39,6 +45,23 @@ class CreateBookingUseCaseTest : FunSpec(
                             fromDb.floorId.toString() shouldBe it.floorId
                             fromDb.typeId?.toString() shouldBe it.typeId
                             fromDb.parentId?.toString() shouldBe it.parentId
+                        }
+                    }
+                }
+            }
+        }
+        context("sad path") {
+            test("create a booking with end time before start time") {
+                useDatabase {
+                    checkAll(
+                        3,
+                        ReplaceArb.bookingCreateDto(endArb = { startActual: Instant -> Arb.timeStamp().filter { it < startActual } }),
+                        ReplaceArb.user(),
+                    ) { dto, user ->
+                        shouldThrowWithMessage<IllegalArgumentException>("Start must be before end") {
+                            coroutineScope {
+                                CreateBookingUseCase.execute(dto, user.id.toString())
+                            }
                         }
                     }
                 }

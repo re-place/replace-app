@@ -28,6 +28,10 @@ object CreateBookingUseCase {
             val start = Instant.parse(createBookingDto.start)
             val end = Instant.parse(createBookingDto.end)
 
+            if (start >= end) {
+                throw IllegalArgumentException("Start must be before end")
+            }
+
             val bookedAncestorCount = getBookedEntitiesAncestorCount(
                 createBookingDto.bookedEntityIds,
                 start,
