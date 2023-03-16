@@ -10,8 +10,8 @@
             <div>{{ booking.site.name }}</div>
             <mat-icon class="!h-5 !w-5 !text-[1.25rem]">account_tree</mat-icon>
             <div>{{ booking.floor.name }}</div>
-            <mat-icon class="!h-5 !w-5 !text-[1.25rem]">meeting_room</mat-icon>
-            <div>{{ toNameList(booking.bookedEntities) }}</div>
+            <mat-icon class="!h-5 !w-5 !text-[1.25rem] mb-auto mt-1">meeting_room</mat-icon>
+            <div class="max-w-80">{{ toNameList(booking.bookedEntities) }}</div>
         </div>
         <div class="pt-4 xl:pt-0 xl:ml-auto xl:pl-4 grow self-stretch">
             <booking-map class="block w-full h-56 xl:h-full xl:min-h-[24rem]" [booking]="booking"></booking-map>
@@ -21,7 +21,7 @@
             class="absolute top-2 right-12 rounded-full bg-white h-8 w-8 border-red-500 border-2 text-red-500 hover:border-red-400 hover:text-red-400"
             (click)="deleteBooking()"
         >
-            <mat-icon class="!h-7 !w-7 text-[1.75rem]">delete</mat-icon>
+            <mat-icon class="!h-7 !w-7 !text-[1.75rem]">delete</mat-icon>
         </button>
         <button
             type="button"
@@ -29,7 +29,7 @@
             [class]="{ '-rotate-90': open }"
             (click)="open = !open"
         >
-            <mat-icon class="!h-7 !w-7 text-[1.75rem]">chevron_left</mat-icon>
+            <mat-icon class="!h-7 !w-7 !text-[1.75rem]">chevron_left</mat-icon>
         </button>
         <div *ngIf="!open" class="absolute bottom-0 left-0 right-0 bg-gradient-to-b h-4 from-transparent to-white"></div>
     </div>
