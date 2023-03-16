@@ -1,20 +1,9 @@
 package replace.usecase.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.arbitrary
-import io.kotest.property.arbitrary.boolean
-import io.kotest.property.arbitrary.constant
-import io.kotest.property.arbitrary.flatMap
-import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.string
-import io.kotest.property.arbitrary.uuid
+import io.kotest.property.arbitrary.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.dto.BookableEntityDto
-import replace.dto.BookableEntityTypeDto
-import replace.dto.CreateBookableEntityDto
-import replace.dto.FloorDto
-import replace.dto.toDto
+import replace.dto.*
 import replace.model.BookableEntity
 import replace.model.BookableEntityType
 import replace.model.Floor
@@ -78,4 +67,21 @@ fun ReplaceArb.bookableEntityCreateDto(
     val typeId = typeIdArb.bind()
     val index = Arb.int(0..100).bind()
     CreateBookableEntityDto(name, posX, posY, floorId, parentId, typeId, index)
+}
+
+fun ReplaceArb.bookableEntityUpdateDto(
+    floorIdArb: Arb<String> = floor().map { it.id.toString() },
+    parentIdArb: Arb<String?> =
+        Arb.boolean().flatMap { b -> if (b) ReplaceArb.bookableEntity().map { it.id.toString() } else Arb.constant(null) },
+    typeIdArb: Arb<String> = bookableEntityType().map { it.id.toString() },
+): Arb<UpdateBookableEntityDto> = arbitrary {
+    val id = Arb.uuid().bind().toString()
+    val name = Arb.string(1..100).bind()
+    val posX = Arb.int(-100..100).bind()
+    val posY = Arb.int(-100..100).bind()
+    val floorId = floorIdArb.bind()
+    val parentId = parentIdArb.bind()
+    val typeId = typeIdArb.bind()
+    val index = Arb.int(0..100).bind()
+    UpdateBookableEntityDto(id, name,floorId, parentId, typeId, posX, posY, index)
 }
