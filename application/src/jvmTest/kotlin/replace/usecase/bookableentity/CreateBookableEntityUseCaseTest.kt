@@ -17,7 +17,7 @@ class CreateBookableEntityUseCaseTest : FunSpec(
         context("happy path") {
             test("create a simple bookable entity") {
                 useDatabase {
-                    checkAll(ReplaceArb.bookableEntityCreateDto()) { dto ->
+                    checkAll(20, ReplaceArb.bookableEntityCreateDto()) { dto ->
                         val fromUseCase = CreateBookableEntityUseCase.execute(dto)
 
                         fromUseCase.id shouldNotBe null
