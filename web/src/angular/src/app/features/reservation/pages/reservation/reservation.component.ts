@@ -446,7 +446,10 @@ export class ReservationComponent implements OnInit {
     }
 
     get timeSelectionDisabled() {
-        return this._selectedSite === undefined || this._selectedFloor === undefined || this.isSelectingSite || this.isSelectingFloor
+        return this._selectedSite === undefined ||
+        this._selectedFloor === undefined ||
+        this.isSelectingSite ||
+        this.isSelectingFloor
     }
 
     setInterval(interval: Interval) {
