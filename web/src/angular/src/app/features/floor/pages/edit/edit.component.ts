@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
-import { ActivatedRoute } from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
 import { Subscription } from "rxjs"
 import { SetOptional } from "type-fest"
 
@@ -32,6 +32,7 @@ export class EditComponent implements OnDestroy {
 
     constructor(
         private readonly api: DefaultService,
+        public readonly router: Router,
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
@@ -93,8 +94,7 @@ export class EditComponent implements OnDestroy {
 
     public async onSubmit() {
         await this.form?.submit((data) => this.api.apiFloorPut(data))
-        this.snackBar.open("Stockwerk erfolgreich aktualisiert", "OK", { duration: 1000 })
-        this.floor.refresh()
+        this.router.navigate(["site", this.floor.data?.siteId, "edit"])
     }
 
     ngOnDestroy(): void {
