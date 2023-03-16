@@ -1,11 +1,13 @@
 package replace.usecase.generator
 
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.ArbitraryBuilderContext
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.uuid
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.BookingDto
@@ -44,9 +46,11 @@ fun ReplaceArb.bookingDto(
 
 fun ReplaceArb.bookingCreateDto(
     bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }, 1..10),
+    startArb: Arb<Instant> = Arb.timeStamp(),
+    endArb: (startActual: Instant) -> Arb<Instant> = { startActual -> Arb.timeStamp().filter { it > startActual } },
 ): Arb<CreateBookingDto> = arbitrary {
     val bookedEntities = bookedEntitiesArb.bind()
-    val start = Arb.timeStamp().bind()
-    val end = Arb.timeStamp().filter { it > start }.bind().toString()
+    val start = startArb.bind()
+    val end = endArb(start).bind().toString()
     CreateBookingDto(bookedEntities, start.toString(), end)
 }
