@@ -7,7 +7,7 @@
 @import "tailwindcss/utilities";
 
 
-$andrena-plalette: (
+$andrena-palette: (
     50: #F3FBEA,
     100: #E4F5D2,
     200: #CBEBAB,
@@ -32,9 +32,9 @@ $andrena-plalette: (
     ),
 );
 
-$primary: mat.define-palette($andrena-plalette);
+$primary: mat.define-palette($andrena-palette);
 
-$accent: mat.define-palette($andrena-plalette);
+$accent: mat.define-palette($andrena-palette);
 
 $theme: mat.define-light-theme((
     color: (
@@ -77,6 +77,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --mdc-switch-selected-hover-track-color: #A9DD79;
     --mdc-switch-selected-pressed-track-color: #A9DD79;
     --mdc-switch-selected-track-color: #A9DD79;
+  }
+
+  .mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: #A9DD79;
   }
 
   @font-face {
