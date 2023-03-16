@@ -50,8 +50,8 @@ export class ReservationComponent implements OnInit {
             if (floorId === undefined) {
                 return Promise.resolve([])
             }
-            
-            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, undefined);
+
+            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, undefined)
         },
     )
 
