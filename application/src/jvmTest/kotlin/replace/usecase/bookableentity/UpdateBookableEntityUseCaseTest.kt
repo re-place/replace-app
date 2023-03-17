@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.datastore.InMemoryFileStorage
 import replace.model.BookableEntity
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.bookableEntity
@@ -44,7 +43,6 @@ class UpdateBookableEntityUseCaseTest : FunSpec(
                             fromDB.posX shouldBe update.posX
                             fromDB.posY shouldBe update.posY
                             fromDB.index shouldBe update.index
-
                         }
                     }
                 }

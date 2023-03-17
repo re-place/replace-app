@@ -10,6 +10,7 @@ import replace.model.BookableEntityTypes
 import replace.model.BookedEntities
 import replace.model.Bookings
 import replace.model.Floors
+import replace.model.TemporaryFiles
 import replace.model.Users
 
 inline fun useDatabase(block: () -> Unit) {
@@ -29,6 +30,7 @@ inline fun useDatabase(block: () -> Unit) {
             BookableEntityTypes,
             Bookings,
             Floors,
+            TemporaryFiles,
             Users,
         )
         transaction {
