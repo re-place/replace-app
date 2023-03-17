@@ -111,6 +111,7 @@ fun Application.authenticationModule() {
                     clientSecret = this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientSecret")
                         ?: throw IllegalStateException("Missing OAuth client secret"),
                     defaultScopes = listOf("email", "offline_access", "openid", "profile", "User.Read"),
+                    extraAuthParameters = listOf("prompt" to "select_account"),
                 )
             }
         }
