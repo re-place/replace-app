@@ -11,7 +11,7 @@ data class BookableEntityTypeDto(
     val bookableEntities: List<BookableEntityDto>? = null,
 ) : ModelDto
 
-suspend fun BookableEntityType.toDto(with: List<KProperty1<BookableEntityType, *>> = emptyList()): BookableEntityTypeDto {
+fun BookableEntityType.toDto(with: List<KProperty1<BookableEntityType, *>> = emptyList()): BookableEntityTypeDto {
     val bookableEntities = if (with.contains(BookableEntityType::bookableEntities)) {
         bookableEntities.map { it.toDto() }
     } else {

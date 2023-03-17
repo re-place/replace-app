@@ -11,7 +11,7 @@ class SiteDto(
     val floors: List<FloorDto>? = null,
 ) : ModelDto
 
-suspend fun Site.toDto(with: List<KProperty1<Site, *>> = emptyList()): SiteDto {
+fun Site.toDto(with: List<KProperty1<Site, *>> = emptyList()): SiteDto {
     val floors = if (with.contains(Site::floors)) {
         floors.map { it.toDto() }
     } else {

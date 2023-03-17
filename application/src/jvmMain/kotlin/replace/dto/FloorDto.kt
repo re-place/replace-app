@@ -1,7 +1,7 @@
 package replace.dto
 
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.Floor
 import kotlin.reflect.KProperty1
 
@@ -16,7 +16,7 @@ class FloorDto(
     val bookableEntities: List<BookableEntityDto>? = null,
 ) : ModelDto
 
-suspend fun Floor.toDto(with: List<KProperty1<Floor, *>> = emptyList()): FloorDto {
+fun Floor.toDto(with: List<KProperty1<Floor, *>> = emptyList()): FloorDto {
     val siteDto = if (with.contains(Floor::site)) {
         site.toDto()
     } else {
@@ -33,7 +33,7 @@ suspend fun Floor.toDto(with: List<KProperty1<Floor, *>> = emptyList()): FloorDt
         id = id.value,
         name = name,
         siteId = siteId.value,
-        planFile = newSuspendedTransaction { planFile?.toDto() },
+        planFile = transaction { planFile?.toDto() },
         site = siteDto,
         bookableEntities = bookableEntities,
     )
