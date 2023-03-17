@@ -10,18 +10,25 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.dao.EntityClass
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.ModelDto
 import replace.http.controller.Routing
 import replace.model.Model
 import kotlin.reflect.typeOf
 
-inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repository: EntityClass<String, T>, crossinline toDto: (T) -> D) {
+inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(
+    repository: EntityClass<String, T>,
+    crossinline toDto: suspend (T) -> D,
+) {
     val listType = typeOf<List<D>>()
 
     get {
-        call.respond(transaction { repository.all().map(toDto) })
+        call.respond(newSuspendedTransaction { repository.all().asFlow().map(toDto).toList() })
     } describe {
         description = "Gets all ${T::class.simpleName}s"
         200 response {
@@ -33,7 +40,7 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
     }
 
     get<Routing.ById> { route ->
-        val model = transaction { repository.findById(route.id) }
+        val model = newSuspendedTransaction { repository.findById(route.id) }
 
         if (model === null) {
             call.respondText("No Model with id ${route.id} found", status = HttpStatusCode.NotFound)
@@ -59,13 +66,13 @@ inline fun <reified T : Model, reified D : ModelDto> Route.routeRepository(repos
     }
 
     delete<Routing.ById> { route ->
-        val model = transaction { repository.findById(route.id) }
+        val model = newSuspendedTransaction { repository.findById(route.id) }
 
         if (model === null) {
             return@delete
         }
 
-        val deleteResult = transaction { model.delete(); true }
+        val deleteResult = newSuspendedTransaction { model.delete(); true }
 
         if (deleteResult) {
             call.respond(HttpStatusCode.NoContent)

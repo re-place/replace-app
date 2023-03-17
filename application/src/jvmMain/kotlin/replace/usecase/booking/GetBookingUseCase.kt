@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.javatime.timestampLiteral
 import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.BookingDto
 import replace.dto.toDto
 import replace.model.BookableEntities
@@ -28,7 +28,7 @@ object GetBookingUseCase {
         val startInst = start?.let { Instant.parse(it) }
         val endInst = end?.let { Instant.parse(it) }
 
-        val bookingDtos = transaction {
+        val bookingDtos = newSuspendedTransaction {
             val query = Bookings.selectAll()
 
             my?.let {

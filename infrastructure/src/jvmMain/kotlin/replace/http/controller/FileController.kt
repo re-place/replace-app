@@ -14,14 +14,14 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
 import io.swagger.v3.oas.models.media.FileSchema
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.model.File
 
 fun Route.registerFileRoutes(fileStorage: FileStorage) {
     route("/api/file") {
         get<Routing.ById> { route ->
-            val file = transaction { File.findById(route.id) }
+            val file = newSuspendedTransaction { File.findById(route.id) }
 
             if (file === null) {
                 call.respondText("No File with id ${route.id} found", status = HttpStatusCode.NotFound)

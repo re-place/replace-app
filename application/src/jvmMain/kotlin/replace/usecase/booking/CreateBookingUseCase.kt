@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.IColumnType
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.transactions.TransactionManager
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.BookingDto
 import replace.dto.CreateBookingDto
 import replace.dto.toDto
@@ -21,7 +21,7 @@ object CreateBookingUseCase {
         createBookingDto: CreateBookingDto,
         userId: String,
     ): BookingDto {
-        return transaction {
+        return newSuspendedTransaction {
             if (createBookingDto.bookedEntityIds.isEmpty()) {
                 throw IllegalArgumentException("BookedEntities must not be empty")
             }
@@ -74,14 +74,14 @@ object CreateBookingUseCase {
         }
     }
 
-    private fun getBookedEntitiesAncestorCount(
+    private suspend fun getBookedEntitiesAncestorCount(
         entityIds: List<String>,
         start: Instant,
         end: Instant,
     ): Int {
         // We use a recursive query to retrieve all ascendants (including itself), join them with bookings in the given time range and count the result
         // if the result is > 0 then one of the ascendants (or itself) is already booked
-        return transaction {
+        return newSuspendedTransaction {
             val query = TransactionManager.current().connection.prepareStatement(
                 """
                 |WITH RECURSIVE withAncestors AS (
@@ -124,14 +124,14 @@ object CreateBookingUseCase {
         }
     }
 
-    private fun getBookedEntitiesDescendantCount(
+    private suspend fun getBookedEntitiesDescendantCount(
         entityIds: List<String>,
         start: Instant,
         end: Instant,
     ): Int {
         // We use a recursive query to retrieve all descendants (including itself), join them with bookings in the given time range and count the result
         // if the result is > 0 then one of the descendants (or itself) is already booked
-        return transaction {
+        return newSuspendedTransaction {
             val query = TransactionManager.current().connection.prepareStatement(
                 """
                 |WITH RECURSIVE withAncestors AS (

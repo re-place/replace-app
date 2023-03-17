@@ -11,7 +11,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import org.jetbrains.exposed.dao.with
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.BookingDto
 import replace.dto.CreateBookingDto
 import replace.dto.toDto
@@ -29,7 +29,7 @@ fun Route.registerBookingRoutes() {
 
         get {
             call.respond(
-                transaction {
+                newSuspendedTransaction {
                     Booking.all().with(Booking::bookedEntities).map { it.toDto(listOf(Booking::bookedEntities)) }
                 },
             )

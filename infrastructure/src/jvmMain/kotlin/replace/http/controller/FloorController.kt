@@ -15,7 +15,7 @@ import io.ktor.server.routing.route
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.dto.BookableEntityDto
 import replace.dto.CreateFloorDto
@@ -72,7 +72,7 @@ fun Route.registerFloorRoutes(fileStorage: FileStorage) {
         get("/{floorId}/bookable-entity") {
             val floorId = call.parameters["floorId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            val bookableEntityDtos = transaction {
+            val bookableEntityDtos = newSuspendedTransaction {
                 BookableEntity
                     .find(BookableEntities.floor_id eq floorId)
                     .orderBy(BookableEntities.index to SortOrder.ASC)

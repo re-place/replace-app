@@ -2,7 +2,7 @@ package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.UpdateBookableEntityOrderDto
 import replace.model.BookableEntities
 import replace.model.BookableEntity
@@ -12,7 +12,7 @@ object UpdateBookableEntityOrderUseCase {
     suspend fun execute(
         bookableEntityOrderDto: UpdateBookableEntityOrderDto,
     ) {
-        return transaction {
+        return newSuspendedTransaction {
             BookableEntity.find {
                 BookableEntities.id inList bookableEntityOrderDto.bookableEntityIds and
                     (BookableEntities.floor_id eq EntityID(bookableEntityOrderDto.floorId, Floors))

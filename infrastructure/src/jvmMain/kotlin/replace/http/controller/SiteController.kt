@@ -12,7 +12,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.dto.CreateSiteDto
 import replace.dto.SiteDto
@@ -81,7 +81,7 @@ fun Route.registerSiteRoutes(fileStorage: FileStorage) {
         get("/{siteId}/floor") {
             val siteId = call.parameters["siteId"] ?: return@get call.respondText("Missing id", status = HttpStatusCode.BadRequest)
 
-            val floors = transaction { Floor.find { Floors.site_id eq siteId }.toList().map { it.toDto() } }
+            val floors = newSuspendedTransaction { Floor.find { Floors.site_id eq siteId }.toList().map { it.toDto() } }
 
             call.respond(floors)
         } describe {

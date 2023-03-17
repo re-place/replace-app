@@ -2,7 +2,7 @@ package replace.usecase.floor
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.model.BookableEntities
 import replace.model.BookableEntity
@@ -15,11 +15,11 @@ object DeleteFloorUseCase {
         floorId: String,
         fileStorage: FileStorage,
     ) {
-        val floor = transaction {
+        val floor = newSuspendedTransaction {
             Floor.findById(floorId)
         } ?: return
 
-        val bookableEntities = transaction {
+        val bookableEntities = newSuspendedTransaction {
             BookableEntity.find(BookableEntities.floor_id eq floorId).toList()
         }
 
@@ -27,11 +27,11 @@ object DeleteFloorUseCase {
             DeleteAllBookingsOfFloorUseCase.execute(it.id.value)
         }
 
-        transaction {
+        newSuspendedTransaction {
             BookableEntities.deleteWhere { BookableEntities.floor_id eq floorId }
         }
 
-        transaction {
+        newSuspendedTransaction {
             floor.delete()
         }
 

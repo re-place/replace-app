@@ -1,7 +1,7 @@
 package replace.usecase.bookableentity
 
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.BookableEntityDto
 import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
@@ -13,13 +13,13 @@ object UpdateBookableEntityUseCase {
     suspend fun execute(
         bookableEntityDto: UpdateBookableEntityDto,
     ): BookableEntityDto {
-        return transaction {
+        return newSuspendedTransaction {
             val bookableEntity = BookableEntity.findById(bookableEntityDto.id)
 
             checkNotNull(bookableEntity) { "BookableEntity with id ${bookableEntityDto.id} not found" }
             check(bookableEntityDto.parentId !== bookableEntity.id.value) { "BookableEntity cannot be its own parent" }
             bookableEntityDto.parentId?.let {
-                val parent = transaction { BookableEntity.findById(it) }
+                val parent = newSuspendedTransaction { BookableEntity.findById(it) }
                 checkNotNull(parent) { "Parent BookableEntity with id $it not found" }
             }
 
