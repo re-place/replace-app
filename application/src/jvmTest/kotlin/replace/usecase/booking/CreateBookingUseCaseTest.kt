@@ -58,7 +58,7 @@ class CreateBookingUseCaseTest : FunSpec(
                         ReplaceArb.bookingCreateDto(endArb = { startActual: Instant -> Arb.timeStamp().filter { it < startActual } }),
                         ReplaceArb.user(),
                     ) { dto, user ->
-                        shouldThrowWithMessage<IllegalArgumentException>("Start must be before end") {
+                        shouldThrowWithMessage<IllegalArgumentException>("End must be after start") {
                             coroutineScope {
                                 CreateBookingUseCase.execute(dto, user.id.toString())
                             }
