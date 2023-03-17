@@ -1,5 +1,6 @@
 package replace.usecase.generator
 
+import io.kotest.common.runBlocking
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.byte
@@ -8,15 +9,35 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.string
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.datastore.DBFile
+import replace.datastore.FileStorage
 import replace.model.TemporaryFile
 
 data class DBFileTuple<T>(
-    val dbFile: DBFile,
+    val data: ByteArray,
     val file: T,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-fun ReplaceArb.temporaryFile(): Arb<DBFileTuple<TemporaryFile>> = arbitrary {
+        other as DBFileTuple<*>
+
+        if (!data.contentEquals(other.data)) return false
+        if (file != other.file) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = data.contentHashCode()
+        result = 31 * result + (file?.hashCode() ?: 0)
+        return result
+    }
+}
+
+fun ReplaceArb.temporaryFile(
+    fileStorage: FileStorage,
+): Arb<DBFileTuple<TemporaryFile>> = arbitrary {
     val name = Arb.string(1..100).bind()
     val path = Arb.string(1..1000).bind()
     val extension = Arb.string(1..10).bind()
@@ -24,11 +45,12 @@ fun ReplaceArb.temporaryFile(): Arb<DBFileTuple<TemporaryFile>> = arbitrary {
     val sizeInBytes = Arb.long(1L..10_000_000L).bind()
     val createdAt = Arb.timeStamp().bind()
     val data = Arb.byteArray(Arb.int(1_000..100_000), Arb.byte()).bind()
+    runBlocking {
+        fileStorage.saveFile(path, data.inputStream())
+    }
     transaction {
         DBFileTuple(
-            DBFile.new(path) {
-                this.data = data
-            },
+            data,
             TemporaryFile.new {
                 this.name = name
                 this.path = path
