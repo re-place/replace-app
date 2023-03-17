@@ -2,7 +2,6 @@ package replace.dto
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.Floor
 import kotlin.reflect.KProperty1
 

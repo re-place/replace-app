@@ -11,7 +11,6 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.dao.EntityClass
