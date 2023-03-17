@@ -1,9 +1,21 @@
 package replace.usecase.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.constant
+import io.kotest.property.arbitrary.flatMap
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.uuid
 import org.jetbrains.exposed.sql.transactions.transaction
-import replace.dto.*
+import replace.dto.BookableEntityDto
+import replace.dto.BookableEntityTypeDto
+import replace.dto.CreateBookableEntityDto
+import replace.dto.FloorDto
+import replace.dto.UpdateBookableEntityDto
+import replace.dto.toDto
 import replace.model.BookableEntity
 import replace.model.BookableEntityType
 import replace.model.Floor
@@ -83,5 +95,5 @@ fun ReplaceArb.bookableEntityUpdateDto(
     val parentId = parentIdArb.bind()
     val typeId = typeIdArb.bind()
     val index = Arb.int(0..100).bind()
-    UpdateBookableEntityDto(id, name,floorId, parentId, typeId, posX, posY, index)
+    UpdateBookableEntityDto(id, name, floorId, parentId, typeId, posX, posY, index)
 }

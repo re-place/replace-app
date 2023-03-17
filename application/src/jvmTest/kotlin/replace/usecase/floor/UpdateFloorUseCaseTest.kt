@@ -11,7 +11,7 @@ import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.floorUpdateDto
 import replace.usecase.useDatabase
 
-class UpdateFloorUseCaseTest: FunSpec(
+class UpdateFloorUseCaseTest : FunSpec(
     {
         context("happy path") {
             test("Update a simple floor") {

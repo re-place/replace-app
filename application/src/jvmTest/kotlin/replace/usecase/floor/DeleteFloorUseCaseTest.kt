@@ -13,20 +13,20 @@ import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.floor
 import replace.usecase.useDatabase
 
-class DeleteFloorUseCaseTest: FunSpec(
+class DeleteFloorUseCaseTest : FunSpec(
     {
         context("happy path") {
             test("delete a simple floor") {
                 useDatabase {
                     val storage = InMemoryFileStorage()
-                        checkAll(2, ReplaceArb.floor()) { floor ->
-                            DeleteFloorUseCase.execute(floor.id.value, storage) shouldBe null
-                            val bookableEntities = transaction {
-                                BookableEntity.find(BookableEntities.floor_id eq floor.id)
-                            }
-//                            bookableEntities shouldBe null ??
-                            bookableEntities.shouldHaveSize(0)
+                    checkAll(2, ReplaceArb.floor()) { floor ->
+                        DeleteFloorUseCase.execute(floor.id.value, storage) shouldBe null
+                        val bookableEntities = transaction {
+                            BookableEntity.find(BookableEntities.floor_id eq floor.id)
                         }
+//                            bookableEntities shouldBe null ??
+                        bookableEntities.shouldHaveSize(0)
+                    }
                 }
             }
         }

@@ -35,8 +35,8 @@ fun ReplaceArb.floorDto(
 }
 
 fun ReplaceArb.floorCreateDto(
-    siteArb: Arb<SiteDto> = siteDto()
-    ):Arb<CreateFloorDto> = arbitrary {
+    siteArb: Arb<SiteDto> = siteDto(),
+): Arb<CreateFloorDto> = arbitrary {
     val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
     val site = siteArb.bind()
@@ -44,8 +44,8 @@ fun ReplaceArb.floorCreateDto(
 }
 
 fun ReplaceArb.floorUpdateDto(
-    siteArb: Arb<SiteDto> = siteDto()
-):Arb<UpdateFloorDto> = arbitrary {
+    siteArb: Arb<SiteDto> = siteDto(),
+): Arb<UpdateFloorDto> = arbitrary {
     val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
     val site = siteArb.bind()
