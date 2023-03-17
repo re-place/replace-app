@@ -3401,13 +3401,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.191":
-  version: 4.14.191
-  resolution: "@types/lodash@npm:4.14.191"
-  checksum: ba0d5434e10690869f32d5ea49095250157cae502f10d57de0a723fd72229ce6c6a4979576f0f13e0aa9fbe3ce2457bfb9fa7d4ec3d6daba56730a51906d1491
-  languageName: node
-  linkType: hard
-
 "@types/mime@npm:*":
   version: 3.0.1
   resolution: "@types/mime@npm:3.0.1"
@@ -4067,7 +4060,6 @@ __metadata:
     "@openapitools/openapi-generator-cli": ^2.5.2
     "@tailwindcss/forms": ^0.5.3
     "@types/jasmine": ~4.3.0
-    "@types/lodash": ^4.14.191
     "@types/uuid": ^9.0.0
     "@typescript-eslint/eslint-plugin": 5.44.0
     "@typescript-eslint/parser": 5.44.0
