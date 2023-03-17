@@ -2,6 +2,7 @@ package replace.usecase.generator
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -9,6 +10,7 @@ import replace.dto.CreateFloorDto
 import replace.dto.FloorDto
 import replace.dto.SiteDto
 import replace.dto.UpdateFloorDto
+import replace.dto.toDto
 import replace.model.Floor
 import replace.model.Site
 
@@ -26,7 +28,7 @@ fun ReplaceArb.floor(
 }
 
 fun ReplaceArb.floorDto(
-    siteArb: Arb<SiteDto> = siteDto(),
+    siteArb: Arb<SiteDto> = site().map { it.toDto() },
 ): Arb<FloorDto> = arbitrary {
     val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
@@ -35,7 +37,7 @@ fun ReplaceArb.floorDto(
 }
 
 fun ReplaceArb.floorCreateDto(
-    siteArb: Arb<SiteDto> = siteDto(),
+    siteArb: Arb<SiteDto> = site().map { it.toDto() },
 ): Arb<CreateFloorDto> = arbitrary {
     val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
@@ -44,9 +46,9 @@ fun ReplaceArb.floorCreateDto(
 }
 
 fun ReplaceArb.floorUpdateDto(
-    siteArb: Arb<SiteDto> = siteDto(),
+    id: String,
+    siteArb: Arb<SiteDto> = site().map { it.toDto() },
 ): Arb<UpdateFloorDto> = arbitrary {
-    val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
     val site = siteArb.bind()
     UpdateFloorDto(id, name, site.id, null)

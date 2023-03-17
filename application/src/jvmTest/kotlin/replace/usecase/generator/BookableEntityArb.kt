@@ -82,12 +82,12 @@ fun ReplaceArb.bookableEntityCreateDto(
 }
 
 fun ReplaceArb.bookableEntityUpdateDto(
+    id: String,
     floorIdArb: Arb<String> = floor().map { it.id.toString() },
     parentIdArb: Arb<String?> =
         Arb.boolean().flatMap { b -> if (b) ReplaceArb.bookableEntity().map { it.id.toString() } else Arb.constant(null) },
     typeIdArb: Arb<String> = bookableEntityType().map { it.id.toString() },
 ): Arb<UpdateBookableEntityDto> = arbitrary {
-    val id = Arb.uuid().bind().toString()
     val name = Arb.string(1..100).bind()
     val posX = Arb.int(-100..100).bind()
     val posY = Arb.int(-100..100).bind()
