@@ -11,8 +11,7 @@ type TimePeriod = "day" | "morning" | "afternoon"
 @Component({
     selector: "time-selector [interval]",
     templateUrl: "./time-selector.component.html",
-    styles: [
-    ],
+    styles: [],
     providers: [
         {
             provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
@@ -25,6 +24,7 @@ export class TimeSelectorComponent {
 
     @Input() interval!: Interval
     @Input() isSelectingTime!: boolean
+    @Input() disabled = false
 
     @Output() intervalChange = new EventEmitter<Interval>()
     @Output() isSelectingTimeChange = new EventEmitter<boolean>()
@@ -39,6 +39,34 @@ export class TimeSelectorComponent {
     private clickWasInside = false
     private complexView = false
 
+    get minDate() {
+        if (this.now.getHours() < 18) {
+            return this.now
+        }
+
+        const min = new Date(this.now)
+        min.setDate(min.getDate() + 1)
+        min.setHours(0)
+        min.setMinutes(0)
+        min.setSeconds(0)
+        min.setMilliseconds(0)
+
+        return min
+    }
+
+    get disableMorning () {
+
+        if (this.isComplexView) {
+            return false
+        }
+
+        if (this.isOnSameDay(this.start, this.now)) {
+            return this.now.getHours() > 12
+        }
+
+        return false
+    }
+
     get isComplexView () {
         return this.complexView
     }
@@ -50,8 +78,18 @@ export class TimeSelectorComponent {
             return
         }
 
+
         const start = new Date(this.start)
         const end = new Date(this.end)
+
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        if (this.editingDateRange !== null && this.editingDateRange.start !== null) {
+            start.setDate(this.editingDateRange.start.getDate())
+            start.setMonth(this.editingDateRange.start.getMonth())
+            start.setFullYear(this.editingDateRange.start.getFullYear())
+
+            this.editingDateRange = null
+        }
 
         end.setDate(start.getDate())
         end.setMonth(start.getMonth())
@@ -97,6 +135,11 @@ export class TimeSelectorComponent {
             end.setHours(18)
         }
 
+        if (end < this.minDate) {
+            start.setDate(start.getDate() + 1)
+            end.setDate(end.getDate() + 1)
+        }
+
         this.intervalChange.emit({ start, end })
     }
 
@@ -136,8 +179,13 @@ export class TimeSelectorComponent {
             return
         }
 
-        const start = new Date(this.start)
-        const end = new Date(this.end)
+        this.intervalChange.emit(this.getTimesForTimePeriod(period, this.start, this.end))
+    }
+
+    getTimesForTimePeriod(period: TimePeriod, startDate: Date, endDate: Date): { start: Date, end: Date } {
+
+        const start = new Date(startDate)
+        const end = new Date(endDate)
 
         start.setSeconds(0)
         start.setMilliseconds(0)
@@ -162,7 +210,7 @@ export class TimeSelectorComponent {
             end.setHours(18)
         }
 
-        this.intervalChange.emit({ start, end })
+        return { start, end }
     }
 
     public format: Intl.DateTimeFormatOptions = {
@@ -180,6 +228,29 @@ export class TimeSelectorComponent {
         }
 
         event?.stopPropagation()
+
+        if (this.isComplexView && this.editingDateRange !== null) {
+            const start = this.editingDateRange.start ?? this.start
+            const end = new Date(start)
+
+            start.setHours(this.interval.start.getHours())
+            start.setMinutes(this.interval.start.getMinutes())
+            start.setSeconds(0)
+            start.setMilliseconds(0)
+
+            end.setHours(this.interval.end.getHours())
+            end.setMinutes(this.interval.end.getMinutes())
+            end.setSeconds(0)
+            end.setMilliseconds(0)
+
+            if (start === end || start > end) {
+                end.setHours(start.getHours() + 1)
+            }
+
+            this.intervalChange.emit({ start, end })
+
+            this.editingDateRange = null
+        }
 
         this.isSelectingTimeChange.emit(false)
     }
@@ -207,25 +278,38 @@ export class TimeSelectorComponent {
         this.onClickOutside()
     }
 
+    isOnSameDay(date1: Date, date2: Date) {
+        return (
+            date1.getDate() === date2.getDate() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getFullYear() === date2.getFullYear()
+        )
+    }
+
     set start(start: Date) {
 
-        if (!this.isComplexView) {
-            start.setHours(this.interval.start.getHours())
-            start.setMinutes(this.interval.start.getMinutes())
-            start.setSeconds(this.interval.start.getSeconds())
-            start.setMilliseconds(this.interval.start.getMilliseconds())
-
-            const end = new Date(this.end)
-
-            end.setDate(start.getDate())
-            end.setMonth(start.getMonth())
-            end.setFullYear(start.getFullYear())
-
-            this.intervalChange.emit({ start, end })
+        if (this.isComplexView) {
+            this.intervalChange.emit({ ...this.interval, start })
             return
         }
 
-        this.intervalChange.emit({ ...this.interval, start })
+        start.setHours(this.interval.start.getHours())
+        start.setMinutes(this.interval.start.getMinutes())
+        start.setSeconds(0)
+        start.setMilliseconds(0)
+
+        const end = new Date(this.end)
+
+        end.setDate(start.getDate())
+        end.setMonth(start.getMonth())
+        end.setFullYear(start.getFullYear())
+
+        if (end < this.now) {
+            this.intervalChange.emit(this.getTimesForTimePeriod("afternoon", start, end))
+            return
+        }
+
+        this.intervalChange.emit({ start, end })
     }
 
     get start() {
@@ -240,33 +324,41 @@ export class TimeSelectorComponent {
         this.intervalChange.emit({ ...this.interval, end: date })
     }
 
+    get startMax() {
+        if (this.isOnSameDay(this.start, this.end)) {
+            return this.end
+        }
+
+        return undefined
+    }
+
+    get startMin() {
+        if (this.isOnSameDay(this.start, this.now)) {
+            const min = new Date(this.now)
+            min.setHours(min.getHours() + 1)
+            min.setMinutes(0)
+            min.setSeconds(0)
+            min.setMilliseconds(0)
+            return min
+        }
+
+        return undefined
+    }
+
+    get endMin() {
+        if (this.isOnSameDay(this.end, this.start)) {
+            const min = new Date(this.start)
+            min.setMinutes(min.getMinutes() + 1)
+            return min
+        }
+
+        return undefined
+    }
+
     editingDateRange: DateRange<Date> | null = null
 
     get dateRange(): DateRange<Date> {
         return this.editingDateRange ??  new DateRange(this.start, this.end)
-    }
-
-    get startMinTime(): Date {
-        if (
-            this.interval.start.getDate() > this.now.getDate() ||
-            this.interval.start.getMonth() > this.now.getMonth() ||
-            this.interval.start.getFullYear() > this.now.getFullYear()
-        ) {
-            const min = new Date(this.now)
-
-            min.setHours(0)
-            min.setMinutes(0)
-            min.setSeconds(0)
-            min.setMilliseconds(0)
-
-            return min
-        }
-        const min = new Date(this.now)
-
-        min.setHours(min.getHours() + 1)
-        min.setMinutes(0)
-
-        return min
     }
 
     onSelectedChange(date: Date): void {
@@ -285,13 +377,13 @@ export class TimeSelectorComponent {
 
             start.setHours(this.interval.start.getHours())
             start.setMinutes(this.interval.start.getMinutes())
-            start.setSeconds(this.interval.start.getSeconds())
-            start.setMilliseconds(this.interval.start.getMilliseconds())
+            start.setSeconds(0)
+            start.setMilliseconds(0)
 
             date.setHours(this.interval.end.getHours())
             date.setMinutes(this.interval.end.getMinutes())
-            date.setSeconds(this.interval.end.getSeconds())
-            date.setMilliseconds(this.interval.end.getMilliseconds())
+            date.setSeconds(0)
+            date.setMilliseconds(0)
 
             this.intervalChange.emit({ start: this.editingDateRange.start, end: date })
             this.editingDateRange = null

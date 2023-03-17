@@ -1,5 +1,6 @@
 package replace.usecase.booking
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.IColumnType
@@ -28,8 +29,16 @@ object CreateBookingUseCase {
             val start = Instant.parse(createBookingDto.start)
             val end = Instant.parse(createBookingDto.end)
 
-            if (start >= end) {
-                throw IllegalArgumentException("Start must be before end")
+            val duration = end.epochSeconds - start.epochSeconds
+
+            if (duration <= 0) {
+                throw IllegalArgumentException("End must be after start")
+            }
+
+            val now = Clock.System.now()
+
+            if (end.epochSeconds < now.epochSeconds) {
+                throw IllegalArgumentException("Start must be in the future")
             }
 
             val bookedAncestorCount = getBookedEntitiesAncestorCount(

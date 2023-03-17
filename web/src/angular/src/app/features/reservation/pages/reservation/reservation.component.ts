@@ -50,8 +50,8 @@ export class ReservationComponent implements OnInit {
             if (floorId === undefined) {
                 return Promise.resolve([])
             }
-            
-            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, undefined);
+
+            return this.apiService.apiBookingByParamsGet(start, end, undefined, floorId, undefined)
         },
     )
 
@@ -379,6 +379,10 @@ export class ReservationComponent implements OnInit {
             return "site"
         }
 
+        if (this.selecting === "site") {
+            return "site"
+        }
+
         if (this._selectedFloor === undefined) {
             return "floor"
         }
@@ -441,12 +445,19 @@ export class ReservationComponent implements OnInit {
         return this._interval
     }
 
+    get timeSelectionDisabled() {
+        return this._selectedSite === undefined ||
+        this._selectedFloor === undefined ||
+        this.isSelectingSite ||
+        this.isSelectingFloor
+    }
+
     setInterval(interval: Interval) {
         this._interval = interval
         this.bookings.refresh()
     }
 
-    get disabled() {
+    get submitDisabled() {
         const selectedEntitiesCount =
             this.visibleBookableEntities.filter(entity => entity.status === EntityStatus.SELECTED).length
 

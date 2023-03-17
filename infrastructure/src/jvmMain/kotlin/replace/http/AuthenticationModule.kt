@@ -40,7 +40,7 @@ import io.ktor.util.pipeline.PipelineContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.dto.toDto
 import replace.model.User
 import replace.model.Users
@@ -111,6 +111,7 @@ fun Application.authenticationModule() {
                     clientSecret = this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientSecret")
                         ?: throw IllegalStateException("Missing OAuth client secret"),
                     defaultScopes = listOf("email", "offline_access", "openid", "profile", "User.Read"),
+                    extraAuthParameters = listOf("prompt" to "select_account"),
                 )
             }
         }
@@ -141,9 +142,9 @@ fun Application.authenticationModule() {
 
                 // find user in db
 
-                val user = transaction {
+                val user = newSuspendedTransaction {
                     User.find { Users.email eq userInfo.email }.firstOrNull()
-                } ?: transaction {
+                } ?: newSuspendedTransaction {
                     User.new {
                         email = userInfo.email
                         firstname = userInfo.firstName
@@ -177,7 +178,7 @@ suspend fun <T> PipelineContext<Unit, ApplicationCall>.withUserSession(block: su
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
     withUserSession { session ->
-        val user = transaction { User.find { Users.email eq session.email }.firstOrNull() }
+        val user = newSuspendedTransaction { User.find { Users.email eq session.email }.firstOrNull() }
         checkNotNull(user) { "Could not find user ${session.email} in DB" }
         block(user)
     }

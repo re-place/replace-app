@@ -1,5 +1,5 @@
 <crud-layout [title]="title">
-    <crud-card (save)="onSubmit()" [saveText]="'speichern'">
+    <crud-card (save)="onSubmit()" [saveText]="'Speichern'">
         <loading-state [loading]="form === undefined">
             <ng-template>
                 <mat-form-field *ngIf="form !== undefined" appearance="fill" class="w-full">

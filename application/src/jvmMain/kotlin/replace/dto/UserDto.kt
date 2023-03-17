@@ -13,7 +13,7 @@ class UserDto(
     val bookings: List<BookingDto>? = null,
 ) : ModelDto
 
-fun User.toDto(with: List<KProperty1<User, *>> = emptyList()): UserDto {
+suspend fun User.toDto(with: List<KProperty1<User, *>> = emptyList()): UserDto {
     val bookings = if (with.contains(User::bookings)) {
         bookings.map { it.toDto() }
     } else {

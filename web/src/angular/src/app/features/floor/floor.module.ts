@@ -9,9 +9,9 @@ import { DeleteBookableEntityDialogComponent } from "./components/entity-deletio
 import { EntityMapComponent } from "./components/entity-map/entity-map.component"
 import { FloorRoutingModule } from "./floor-routing.module"
 import { EditComponent } from "./pages/edit/edit.component"
+import { DeleteFloorDialogComponent } from "../site/components/delete-floor-dialog/delete-floor-dialog.component"
 import { MaterialModule } from "src/app/material/material.module"
 import { SharedModule } from "src/app/shared/shared.module"
-import { DeleteFloorDialogComponent } from "../site/components/delete-floor-dialog/delete-floor-dialog.component"
 
 @NgModule({
     declarations: [
@@ -20,7 +20,7 @@ import { DeleteFloorDialogComponent } from "../site/components/delete-floor-dial
         CreateOrUpdateBookableEntityComponent,
         EntityMapComponent,
         DeleteBookableEntityDialogComponent,
-        DeleteFloorDialogComponent
+        DeleteFloorDialogComponent,
     ],
     imports: [CommonModule, FloorRoutingModule, SharedModule, MaterialModule, FormsModule],
 })

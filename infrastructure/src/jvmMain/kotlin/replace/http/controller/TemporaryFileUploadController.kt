@@ -22,7 +22,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.swagger.v3.oas.models.media.FileSchema
 import io.swagger.v3.oas.models.media.MapSchema
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.datastore.FileStorage
 import replace.dto.TemporaryFileUploadDto
 import replace.model.TemporaryFile
@@ -73,7 +73,7 @@ fun Route.registerTemporaryFileUploadRoutes(fileStorage: FileStorage) {
 
         get<Routing.ById> { route ->
 
-            val file = transaction { TemporaryFile.findById(route.id) }
+            val file = newSuspendedTransaction { TemporaryFile.findById(route.id) }
 
             if (file === null) {
                 call.respondText("No File with id ${route.id} found", status = HttpStatusCode.NotFound)

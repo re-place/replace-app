@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from "@angular/core"
 import { MatSnackBar } from "@angular/material/snack-bar"
-import { ActivatedRoute } from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
 import { Subscription } from "rxjs"
 
 import { CreateFloorDto, DefaultService, FloorDto, SiteDto, UpdateFloorDto, UpdateSiteDto } from "src/app/core/openapi"
@@ -22,6 +22,7 @@ export class EditComponent implements OnDestroy {
 
     constructor(
         private readonly api: DefaultService,
+        public readonly router: Router,
         private readonly route: ActivatedRoute,
         private readonly snackBar: MatSnackBar,
     ) {
@@ -40,7 +41,7 @@ export class EditComponent implements OnDestroy {
     public onSubmit() {
         this.form?.submit((data) => this.api.apiSitePut(data), {
             onSuccess: () => {
-                this.site.refresh()
+                this.router.navigate(["./../../"], { relativeTo: this.route })
             },
         })
     }
@@ -85,7 +86,7 @@ export class EditComponent implements OnDestroy {
     }
 
     public onDeleteFloor(id: string) {
-       
+
         this.api.apiFloorIdDelete(id).subscribe({
             next: () => {
                 this.floors.refresh()
