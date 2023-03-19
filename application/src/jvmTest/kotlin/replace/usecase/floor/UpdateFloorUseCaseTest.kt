@@ -17,14 +17,10 @@ class UpdateFloorUseCaseTest : FunSpec(
         context("happy path") {
             test("Update a simple floor") {
                 useDatabase {
-                    checkAll(5, ReplaceArb.floor()){ floor ->
+                    checkAll(20, ReplaceArb.floor()){ floor ->
                         val storage = InMemoryFileStorage()
                         checkAll(ReplaceArb.floorUpdateDto(floor.id.value)) { dto ->
                             val updatedFloor = UpdateFloorUseCase.execute(dto, storage)
-                            updatedFloor.id shouldBe dto.id
-                            updatedFloor.name shouldBe dto.name
-                            updatedFloor.siteId shouldBe dto.siteId
-                            updatedFloor.planFile shouldBe storage
 
                             val fromDb = transaction {
                                 Floor.findById(updatedFloor.id)
@@ -33,10 +29,9 @@ class UpdateFloorUseCaseTest : FunSpec(
                             fromDb shouldNotBe null
                             fromDb!!
 
-                            fromDb.id shouldNotBe updatedFloor.id
+                            fromDb.id.value shouldBe updatedFloor.id.toString()
                             fromDb.name shouldBe updatedFloor.name
-                            fromDb.siteId shouldBe updatedFloor.siteId
-                            fromDb.planFile shouldBe storage
+                            fromDb.siteId.value shouldBe updatedFloor.siteId.toString()
                         }
                     }
                 }

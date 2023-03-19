@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.InMemoryFileStorage
 import replace.model.BookableEntities
 import replace.model.BookableEntity
+import replace.model.Floor
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.floor
 import replace.usecase.useDatabase
@@ -19,13 +20,16 @@ class DeleteFloorUseCaseTest : FunSpec(
             test("delete a simple floor") {
                 useDatabase {
                     val storage = InMemoryFileStorage()
-                    checkAll(2, ReplaceArb.floor()) { floor ->
-                        DeleteFloorUseCase.execute(floor.id.value, storage) shouldBe null
-                        val bookableEntities = transaction {
-                            BookableEntity.find(BookableEntities.floor_id eq floor.id)
+                    checkAll(20, ReplaceArb.floor()) { floor ->
+                        DeleteFloorUseCase.execute(floor.id.value, storage)
+                        transaction {
+                            Floor.findById(floor.id.value) shouldBe null
                         }
-//                            bookableEntities shouldBe null ??
-                        bookableEntities.shouldHaveSize(0)
+
+                        transaction {
+                            val bookableEntities = BookableEntity.find(BookableEntities.floor_id eq floor.id)
+                            bookableEntities.shouldHaveSize(0)
+                        }
                     }
                 }
             }

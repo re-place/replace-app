@@ -17,7 +17,7 @@ class CreateFloorUseCaseTest : FunSpec(
             test("create a simple floor") {
                 useDatabase {
                     val storage = InMemoryFileStorage()
-                    checkAll(ReplaceArb.floorCreateDto()) { dto ->
+                    checkAll(20, ReplaceArb.floorCreateDto()) { dto ->
                         val fromUseCase = CreateFloorUseCase.execute(dto, storage)
 
                         fromUseCase.id shouldNotBe null
@@ -32,7 +32,6 @@ class CreateFloorUseCaseTest : FunSpec(
 
                         fromDb.id shouldNotBe null
                         fromDb.name shouldBe dto.name
-                        fromDb.planFile shouldBe storage
                     }
                 }
             }
