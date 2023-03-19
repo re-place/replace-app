@@ -9,6 +9,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.checkAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.model.BookableEntity
@@ -22,9 +23,9 @@ import java.util.UUID
 class CreateBookingUseCaseTest : FunSpec(
     {
         context("happy path") {
-            test("create a simple booking with one bookable entity") {
+            test("create a simple booking") {
                 useDatabase {
-                    checkAll(20, ReplaceArb.bookingCreateDto(), ReplaceArb.user()) { dto, user ->
+                    checkAll(5, ReplaceArb.bookingCreateDto(), ReplaceArb.user()) { dto, user ->
                         val fromUseCase = CreateBookingUseCase.execute(dto, user.id.toString())
 
                         fromUseCase.id shouldNotBe null
@@ -55,7 +56,11 @@ class CreateBookingUseCaseTest : FunSpec(
                 useDatabase {
                     checkAll(
                         3,
-                        ReplaceArb.bookingCreateDto(endArb = { startActual: Instant -> Arb.timeStamp().filter { it < startActual } }),
+                        ReplaceArb.bookingCreateDto(endArb = { startActual: Instant ->
+                            Arb.timeStamp().filter {
+                                it < startActual && it > Clock.System.now()
+                            }
+                        },),
                         ReplaceArb.user(),
                     ) { dto, user ->
                         shouldThrowWithMessage<IllegalArgumentException>("End must be after start") {

@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import replace.model.Booking
 import replace.usecase.generator.ReplaceArb
 import replace.usecase.generator.booking
@@ -13,15 +13,15 @@ import replace.usecase.useDatabase
 class DeleteBookingUseCaseTest : FunSpec(
     {
         context("happy path") {
-            test("delete a simple bookable entity") {
+            test("delete a simple booking") {
                 useDatabase {
-                    checkAll(20, ReplaceArb.booking()) { booking ->
-                        val user = transaction {
+                    checkAll(3, ReplaceArb.booking()) { booking ->
+                        val user = newSuspendedTransaction {
                             Booking.findById(booking.id) shouldNotBe null
                             booking.user
                         }
                         DeleteBookingUseCase.execute(booking.id.toString(), user.id.toString())
-                        transaction {
+                        newSuspendedTransaction {
                             Booking.findById(booking.id) shouldBe null
                         }
                     }

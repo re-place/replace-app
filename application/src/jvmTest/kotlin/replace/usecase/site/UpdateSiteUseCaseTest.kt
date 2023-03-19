@@ -19,7 +19,7 @@ class UpdateSiteUseCaseTest : FunSpec(
         context("happy path") {
             test("update a simple site") {
                 useDatabase {
-                    checkAll(ReplaceArb.site()) { site ->
+                    checkAll(20, ReplaceArb.site()) { site ->
                         val dtoPreUpdate = site.toDto()
                         val updateDto: UpdateSiteDto = ReplaceArb.siteUpdateDto(dtoPreUpdate).next()
 

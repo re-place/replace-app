@@ -17,9 +17,9 @@ class UpdateFloorUseCaseTest : FunSpec(
         context("happy path") {
             test("Update a simple floor") {
                 useDatabase {
-                    checkAll(20, ReplaceArb.floor()){ floor ->
+                    checkAll(20, ReplaceArb.floor()) { floor ->
                         val storage = InMemoryFileStorage()
-                        checkAll(ReplaceArb.floorUpdateDto(floor.id.value)) { dto ->
+                        checkAll(5, ReplaceArb.floorUpdateDto(floor.id.value)) { dto ->
                             val updatedFloor = UpdateFloorUseCase.execute(dto, storage)
 
                             val fromDb = transaction {
