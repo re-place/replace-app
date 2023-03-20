@@ -13,6 +13,16 @@ import replace.model.Floors
 import replace.model.TemporaryFiles
 import replace.model.Users
 
+val tables: Array<out Table> = arrayOf(
+    BookedEntities,
+    BookableEntities,
+    BookableEntityTypes,
+    Bookings,
+    Floors,
+    TemporaryFiles,
+    Users,
+)
+
 inline fun useDatabase(block: () -> Unit) {
     PostgreSQLContainer("postgres").use { container ->
         container.start()
@@ -24,15 +34,7 @@ inline fun useDatabase(block: () -> Unit) {
             password = "test",
         )
         println("Successfully connected to postgres")
-        val tables: Array<out Table> = arrayOf(
-            BookedEntities,
-            BookableEntities,
-            BookableEntityTypes,
-            Bookings,
-            Floors,
-            TemporaryFiles,
-            Users,
-        )
+
         transaction {
             SchemaUtils.create(*tables)
         }
