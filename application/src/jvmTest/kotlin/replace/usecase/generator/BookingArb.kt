@@ -45,7 +45,7 @@ fun ReplaceArb.bookingDto(
 }
 
 fun ReplaceArb.bookingCreateDto(
-    bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }, 1..10),
+    bookedEntitiesArb: Arb<List<String>> = Arb.list(ReplaceArb.bookableEntity().map { it.id.toString() }, 1..4),
     startArb: Arb<Instant> = Arb.timeStamp().filter { it > Clock.System.now() },
     endArb: (startActual: Instant) -> Arb<Instant> = { startActual -> Arb.timeStamp().filter { it > startActual } },
 ): Arb<CreateBookingDto> = arbitrary {

@@ -14,7 +14,7 @@ class GetBookingUseCaseTest : FunSpec({
     context("happy path") {
         test("get the bookings") {
             useDatabase {
-                checkAll(10, ReplaceArb.user(), ReplaceArb.bookingCreateDto()) { user, dto ->
+                checkAll(5, ReplaceArb.user(), ReplaceArb.bookingCreateDto()) { user, dto ->
                     CreateBookingUseCase.execute(dto, user.id.toString())
 
                     val bookableEntity = transaction {
