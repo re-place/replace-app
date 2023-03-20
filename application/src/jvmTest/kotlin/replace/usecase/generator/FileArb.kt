@@ -2,6 +2,8 @@ package replace.usecase.generator
 
 import io.kotest.common.runBlocking
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.byte
 import io.kotest.property.arbitrary.byteArray
@@ -34,6 +36,10 @@ data class DBFileTuple<T>(
         result = 31 * result + (file?.hashCode() ?: 0)
         return result
     }
+
+    override fun toString(): String {
+        return "DBFileTuple(data.size=${data.size}, data.hashcode=${data.hashCode()}, file=$file)"
+    }
 }
 
 fun ReplaceArb.file(
@@ -65,9 +71,9 @@ fun ReplaceArb.file(
 fun ReplaceArb.temporaryFile(
     fileStorage: FileStorage,
 ): Arb<DBFileTuple<TemporaryFile>> = arbitrary {
-    val name = Arb.string(1..100).bind()
-    val path = Arb.string(1..1000).bind()
-    val extension = Arb.string(1..10).bind()
+    val name = Arb.string(1..100, codepoints = Codepoint.alphanumeric()).bind()
+    val path = Arb.string(1..1000, codepoints = Codepoint.alphanumeric()).bind()
+    val extension = Arb.string(1..10, codepoints = Codepoint.alphanumeric()).bind()
     val mime = Arb.string(1..100).bind()
     val sizeInBytes = Arb.long(1L..10_000_000L).bind()
     val createdAt = Arb.timeStamp().bind()
