@@ -7,6 +7,7 @@ import replace.dto.UpdateBookableEntityDto
 import replace.dto.toDto
 import replace.model.BookableEntities
 import replace.model.BookableEntity
+import replace.model.Floors
 
 object UpdateBookableEntityUseCase {
     suspend fun execute(
@@ -23,7 +24,7 @@ object UpdateBookableEntityUseCase {
             }
 
             bookableEntity.name = bookableEntityDto.name
-//            bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
+            bookableEntity.floorId = EntityID(bookableEntityDto.floorId, Floors)
             bookableEntity.parentId = bookableEntityDto.parentId?.let { EntityID(it, BookableEntities) }
             bookableEntity.typeId = bookableEntityDto.typeId?.let { EntityID(it, BookableEntities) }
             bookableEntity.posX = bookableEntityDto.posX
