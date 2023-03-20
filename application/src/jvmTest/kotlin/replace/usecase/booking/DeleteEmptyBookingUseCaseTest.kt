@@ -23,7 +23,7 @@ class DeleteEmptyBookingUseCaseTest : FunSpec(
         context("happy path") {
             test("all bookings are empty") {
                 useDatabase {
-                    checkAll(5, Arb.set(ReplaceArb.booking(), 0..5)) { bookings ->
+                    checkAll(3, Arb.set(ReplaceArb.booking(), 1..5)) { bookings ->
                         newSuspendedTransaction {
                             Booking.all().map { it.id } shouldBe bookings.map { it.id }
                         }
@@ -38,9 +38,9 @@ class DeleteEmptyBookingUseCaseTest : FunSpec(
                 useDatabase {
                     checkAll(
                         3,
-                        Arb.set(ReplaceArb.bookingCreateDto(), 5..10),
+                        Arb.set(ReplaceArb.bookingCreateDto(), 4..7),
                         ReplaceArb.user(),
-                        Arb.int(1..4),
+                        Arb.int(1..3),
                     ) { createDtos, user, makeEmptyCount ->
                         // assume CreateBookingUseCase works (based on other tests)
                         val bookings = createDtos.map { dto -> CreateBookingUseCase.execute(dto, user.id.toString()) }

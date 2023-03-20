@@ -10,6 +10,7 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.string
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.datastore.FileStorage
+import replace.model.File
 import replace.model.TemporaryFile
 
 data class DBFileTuple<T>(
@@ -32,6 +33,32 @@ data class DBFileTuple<T>(
         var result = data.contentHashCode()
         result = 31 * result + (file?.hashCode() ?: 0)
         return result
+    }
+}
+
+fun ReplaceArb.file(
+    fileStorage: FileStorage,
+): Arb<DBFileTuple<File>> = arbitrary {
+    val name = Arb.string(1..100).bind()
+    val path = Arb.string(1..1000).bind()
+    val extension = Arb.string(1..10).bind()
+    val mime = Arb.string(1..100).bind()
+    val sizeInBytes = Arb.long(1L..10_000_000L).bind()
+    val data = Arb.byteArray(Arb.int(1_000..100_000), Arb.byte()).bind()
+    runBlocking {
+        fileStorage.saveFile(path, data.inputStream())
+    }
+    transaction {
+        DBFileTuple(
+            data,
+            File.new {
+                this.name = name
+                this.path = path
+                this.extension = extension
+                this.mime = mime
+                this.sizeInBytes = sizeInBytes
+            },
+        )
     }
 }
 
