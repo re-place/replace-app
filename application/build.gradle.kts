@@ -18,7 +18,7 @@ dependencies {
     jvmMainImplementation(libs.kotlinx.datetime)
     jvmTestImplementation(libs.kotest.core)
     jvmTestImplementation(libs.kotest.property)
-    jvmTestImplementation("org.testcontainers:postgresql:1.17.6")
+    jvmTestImplementation(libs.testcontainers.postgresql)
     jvmTestImplementation(libs.postgrsql)
 }
 

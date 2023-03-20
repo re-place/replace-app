@@ -39,6 +39,7 @@ logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "
 postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 tegral-openapi-base = { module = "guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
 tegral-openapi-swagger = { module = "guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
+testcontainers-postgresql = "org.testcontainers:postgresql:1.17.6"
 typesafe-config = "com.typesafe:config:1.4.2"
 
 [plugins]
