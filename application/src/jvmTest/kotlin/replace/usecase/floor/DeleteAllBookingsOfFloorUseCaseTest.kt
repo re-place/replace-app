@@ -36,7 +36,6 @@ class DeleteAllBookingsOfFloorUseCaseTest : FunSpec(
                                 val bookableEntities = BookableEntity.find(BookableEntities.floor_id eq floor.id)
                                 bookableEntities.shouldHaveSize(0)
                             }
-
                         }
                     }
                 }
