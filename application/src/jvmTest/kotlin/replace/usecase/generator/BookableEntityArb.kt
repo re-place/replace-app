@@ -10,7 +10,6 @@ import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
-
 import org.jetbrains.exposed.sql.transactions.transaction
 import replace.dto.BookableEntityDto
 import replace.dto.BookableEntityTypeDto
