@@ -16,4 +16,14 @@ dependencies {
     jvmMainImplementation(libs.exposed.jdbc)
     jvmMainImplementation(libs.exposed.java.time)
     jvmMainImplementation(libs.kotlinx.datetime)
+    jvmTestImplementation(libs.kotest.core)
+    jvmTestImplementation(libs.kotest.property)
+    jvmTestImplementation(libs.testcontainers.postgresql)
+    jvmTestImplementation(libs.postgrsql)
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
 }

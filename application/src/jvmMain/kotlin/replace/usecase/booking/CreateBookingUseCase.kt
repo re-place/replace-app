@@ -61,7 +61,8 @@ object CreateBookingUseCase {
                 throw IllegalArgumentException("One of the booked entities has a descendant that is already booked")
             }
 
-            val newBookedEntities = BookableEntity.forEntityIds(createBookingDto.bookedEntityIds.map { EntityID(it, BookableEntities) })
+            val newBookedEntities =
+                BookableEntity.forEntityIds(createBookingDto.bookedEntityIds.map { EntityID(it, BookableEntities) })
 
             val booking = Booking.new {
                 this.start = start
@@ -70,7 +71,7 @@ object CreateBookingUseCase {
                 this.bookedEntities = newBookedEntities
             }
 
-            booking.toDto()
+            booking.toDto(listOf(Booking::bookedEntities))
         }
     }
 

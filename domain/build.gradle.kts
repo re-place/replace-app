@@ -6,7 +6,6 @@ plugins {
 
 dependencies {
     jvmMainImplementation(libs.ktor.server.auth)
-    jvmTestImplementation(libs.kotest)
     jvmMainImplementation(libs.exposed.core)
     jvmMainImplementation(libs.exposed.dao)
     jvmMainImplementation(libs.exposed.jdbc)

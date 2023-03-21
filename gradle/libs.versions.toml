@@ -1,5 +1,6 @@
 [versions]
 exposed = "0.41.1"
+kotest = "5.5.5"
 kotlin = "1.8.10"
 ktor = "2.2.4"
 liquibase = "2.2.0"
@@ -15,7 +16,8 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 guice = "com.google.inject:guice:5.1.0"
-kotest = "io.kotest:kotest-runner-junit5-jvm:5.5.5"
+kotest-core = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
@@ -37,6 +39,7 @@ logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "
 postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 tegral-openapi-base = { module = "guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
 tegral-openapi-swagger = { module = "guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
+testcontainers-postgresql = "org.testcontainers:postgresql:1.17.6"
 typesafe-config = "com.typesafe:config:1.4.2"
 
 [plugins]

@@ -62,7 +62,8 @@ object GetBookingUseCase {
 
             val bookings = query.where?.let { Booking.find { it } } ?: Booking.all()
 
-            bookings.orderBy(Bookings.start to SortOrder.ASC).with(Booking::bookedEntities, Booking::user).map { it.toDto(listOf(Booking::bookedEntities, Booking::user)) }
+            bookings.orderBy(Bookings.start to SortOrder.ASC).with(Booking::bookedEntities, Booking::user)
+                .map { it.toDto(listOf(Booking::bookedEntities, Booking::user)) }
         }
 
         return bookingDtos

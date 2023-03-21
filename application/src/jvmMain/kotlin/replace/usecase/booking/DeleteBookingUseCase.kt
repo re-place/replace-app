@@ -13,8 +13,8 @@ object DeleteBookingUseCase {
         currentUserId: String,
     ) {
         return newSuspendedTransaction {
-            BookedEntities.deleteWhere { BookedEntities.booking_id eq bookingId }
-            Bookings.deleteWhere { Bookings.id eq bookingId and (Bookings.user_id eq currentUserId) }
+            BookedEntities.deleteWhere { booking_id eq bookingId }
+            Bookings.deleteWhere { (Bookings.id eq bookingId) and (user_id eq currentUserId) }
         }
     }
 }
