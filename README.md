@@ -36,6 +36,7 @@
 - Frontend runs on port 4200, backend on port 8000. Frontend requests are getting proxied by angular to port 8000, configure in `/web/src/angular/proxy.conf.json`
 - Frontend hot reloads, backends needs to get restarted.
 - You can execute `./gradlew ktlintCheck` and `./gradlew ktlintFormat` to check for backend formatting (alternatively ctrl + ctrl in intellij ot execute gradle commands)
+- You can execute `./gradlew dependencyCheckAnalyze` to check for vulnerabilities with a CVSS score higher than 5 (at least medium criticality). This threshold can be configured in build.gradle of the root project.
 
 ## DevOps
 

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.ktlint)
     id("kotlin-jvm.base-conventions")
+    id("org.owasp.dependencycheck") version "8.2.1"
     application
 }
 
@@ -18,6 +19,10 @@ allprojects {
 dependencies {
     jvmMainImplementation(project(":replace-application"))
     jvmMainImplementation(project(":replace-infrastructure"))
+}
+
+dependencyCheck {
+    failBuildOnCVSS= 5F
 }
 
 tasks {
