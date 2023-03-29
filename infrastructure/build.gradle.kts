@@ -34,7 +34,9 @@ dependencies {
     jvmMainImplementation(libs.ktor.server.status.pages)
     jvmMainImplementation(libs.tegral.openapi.base)
     jvmMainImplementation(libs.tegral.openapi.swagger)
-    liquibaseRuntime(libs.liquibase.core)
+    liquibaseRuntime(libs.liquibase.core) {
+        exclude("org.yaml:snakeyaml")
+    }
     liquibaseRuntime(libs.liquibase.picocli)
     liquibaseRuntime(libs.postgrsql)
     jvmMainImplementation(libs.exposed.core)
@@ -43,6 +45,26 @@ dependencies {
     jvmMainImplementation(libs.exposed.java.time)
     jvmMainImplementation(libs.postgrsql)
     jvmMainImplementation(libs.kotlinx.datetime)
+    jvmMainImplementation(libs.snakeyml) {
+        version {
+            strictly("2.0")
+        }
+    }
+    jvmMainImplementation(libs.jackson.databind) {
+        version {
+            strictly("2.13.5")
+        }
+    }
+    jvmMainImplementation(libs.logback.core) {
+        version {
+            strictly("1.4.6")
+        }
+    }
+    jvmMainImplementation(libs.logback.classic) {
+        version {
+            strictly("1.4.6")
+        }
+    }
 }
 
 application {

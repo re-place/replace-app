@@ -1,13 +1,17 @@
 [versions]
 exposed = "0.41.1"
+jackson-databind = "2.13.5"
 kotest = "5.5.5"
 kotlin = "1.8.10"
 ktor = "2.2.4"
 liquibase = "2.2.0"
 liquibase-core = "4.20.0"
 liquibase-picocli = "4.7.1"
+logback-classic = "1.4.6"
+logback-core = "1.4.6"
 log4j = "2.20.0"
 postgresql = "42.5.4"
+snakeyml = "2.0"
 tegral = "0.0.3"
 
 [libraries]
@@ -16,6 +20,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 guice = "com.google.inject:guice:5.1.0"
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
 kotest-core = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
@@ -33,10 +38,13 @@ ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = 
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
 liquibase-picocli = { module = "info.picocli:picocli", version.ref = "liquibase-picocli" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
+logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback-core" }
 logging-api = "org.slf4j:slf4j-api:1.7.36"
 logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 postgrsql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+snakeyml = { module = "org.yaml:snakeyaml", version.ref = "snakeyml" }
 tegral-openapi-base = { module = "guru.zoroark.tegral:tegral-openapi-ktor", version.ref = "tegral" }
 tegral-openapi-swagger = { module = "guru.zoroark.tegral:tegral-openapi-ktorui", version.ref = "tegral" }
 testcontainers-postgresql = "org.testcontainers:postgresql:1.17.6"
@@ -48,4 +56,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.3.1"
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
-ktor = { id = "io.ktor.plugin", version.ref = "ktor"}
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
