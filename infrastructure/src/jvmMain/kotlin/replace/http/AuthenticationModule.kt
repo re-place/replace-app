@@ -86,8 +86,8 @@ fun Application.authenticationModule() {
                 providerLookup = {
                     OAuthServerSettings.OAuth2ServerSettings(
                         name = "mock lab",
-                        authorizeUrl = "https://oauth.mocklab.io/oauth/authorize",
-                        accessTokenUrl = "https://oauth.mocklab.io/oauth/token",
+                        authorizeUrl = "https://oauth.wiremockapi.cloud/oauth/authorize",
+                        accessTokenUrl = "https://oauth.wiremockapi.cloud/oauth/token",
                         requestMethod = HttpMethod.Post,
                         clientId = "test-client-id",
                         clientSecret = "test-client-secret",
