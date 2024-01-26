@@ -3479,9 +3479,9 @@ __metadata:
   linkType: hard
 
 "@types/uuid@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@types/uuid@npm:9.0.0"
-  checksum: 59ae56d9547c8758588659da2a2b4c97cce79c2aae1798c892bb29452ef08e87859dea2ec3a66bfa88d0d2153147520be2b1893be920f9f0bc9c53a3207ea6aa
+  version: 9.0.8
+  resolution: "@types/uuid@npm:9.0.8"
+  checksum: b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
   languageName: node
   linkType: hard
 
@@ -10928,11 +10928,11 @@ __metadata:
   linkType: hard
 
 "uuid@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "uuid@npm:9.0.0"
+  version: 9.0.1
+  resolution: "uuid@npm:9.0.1"
   bin:
     uuid: dist/bin/uuid
-  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
+  checksum: 39931f6da74e307f51c0fb463dc2462807531dc80760a9bff1e35af4316131b4fc3203d16da60ae33f07fdca5b56f3f1dd662da0c99fea9aaeab2004780cc5f4
   languageName: node
   linkType: hard
 
