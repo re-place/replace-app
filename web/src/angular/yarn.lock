@@ -3243,13 +3243,13 @@ __metadata:
   linkType: hard
 
 "@tailwindcss/forms@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "@tailwindcss/forms@npm:0.5.3"
+  version: 0.5.9
+  resolution: "@tailwindcss/forms@npm:0.5.9"
   dependencies:
     mini-svg-data-uri: ^1.2.3
   peerDependencies:
-    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1"
-  checksum: 9eddb4dbd06d01b1068138ff52a54ed0e35a28e7bfd3c72e226fc28658ecd92a9c078c4abe9c83db090984672040644d7ae2e035933fb619dd703df1d87aa275
+    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20"
+  checksum: b242012974e1727d6c220076a713cd98218f0060a31fe09baf9cf712089fedc3c450242cf29b4b19ca2f7a96f99e11692b75a142f5f148709f500f8a61687f17
   languageName: node
   linkType: hard
 
