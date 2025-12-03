@@ -33,7 +33,7 @@
     "filepond-plugin-image-preview": "^4.6.11",
     "loadash": "^1.0.0",
     "ngx-filepond": "^6.0.1",
-    "ol": "7.1.0",
+    "ol": "7.5.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "type-fest": "^3.3.0",
