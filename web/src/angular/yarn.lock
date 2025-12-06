@@ -390,17 +390,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:^15.0.0":
-  version: 15.1.4
-  resolution: "@angular/compiler@npm:15.1.4"
+"@angular/compiler@npm:^19.2.17":
+  version: 19.2.17
+  resolution: "@angular/compiler@npm:19.2.17"
   dependencies:
     tslib: ^2.3.0
-  peerDependencies:
-    "@angular/core": 15.1.4
-  peerDependenciesMeta:
-    "@angular/core":
-      optional: true
-  checksum: ffad548bba6bd987421766c8e59fc3f9a1265f70ad8b5a496e334f30489df51a44fb23c6c8613d671b33d5452f79160df7aac9ae016947c26476262de8e6cbd1
+  checksum: d0cfa0c00d0ae59441decd417965039b0b2a327e3ddc06e11144ed35b60734d3adc57f1f11fec21290db607a405cb77bcb5184693015a1b90413c3893e2b08f8
   languageName: node
   linkType: hard
 
@@ -4049,7 +4044,7 @@ __metadata:
     "@angular/cdk": ^15.0.0
     "@angular/cli": ~15.0.0
     "@angular/common": ^15.0.0
-    "@angular/compiler": ^15.0.0
+    "@angular/compiler": ^19.2.17
     "@angular/compiler-cli": ^15.0.0
     "@angular/core": ^15.0.0
     "@angular/forms": ^15.0.0
@@ -6315,7 +6310,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -9640,7 +9635,7 @@ __metadata:
 
 "resolve@patch:resolve@1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -10766,11 +10761,11 @@ __metadata:
 
 "typescript@patch:typescript@~4.8.2#~builtin<compat/typescript>":
   version: 4.8.4
-  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=1a91c8"
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c981e82b77a5acdcc4e69af9c56cdecf5b934a87a08e7b52120596701e389a878b8e3f860e73ffb287bf649cc47a8c741262ce058148f71de4cdd88bb9c75153
+  checksum: 301459fc3eb3b1a38fe91bf96d98eb55da88a9cb17b4ef80b4d105d620f4d547ba776cc27b44cc2ef58b66eda23fe0a74142feb5e79a6fb99f54fc018a696afa
   languageName: node
   linkType: hard
 
